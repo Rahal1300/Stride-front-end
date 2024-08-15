@@ -94,9 +94,15 @@ const PaymentForm = () => {
                 'Content-Type': 'application/json',
                 Authorization: `Bearer ${usertoken.payload.token}`,
               },
-              body: JSON.stringify({ companyName: e.target.Company.value }),
+              body: JSON.stringify({ companyName: e.target.Company.value,
+                subscriptionType: title.toLocaleUpperCase(),
+                country: e.target.Country.value ,
+                state: e.target.State.value,
+                phoneNumber: e.target.phone.value,
+                address: e.target.Adresse.value}),
             }
-          );
+
+          );         
           if (response.ok) {
             try {
               // Check if the response is JSON before attempting to parse
@@ -105,40 +111,50 @@ const PaymentForm = () => {
                 const responseData = await response.json();
         
                 // Check if responseData is a valid JSON object
-                if (responseData && responseData.message === 'payment is successful') {
-                  setSuccessMessage('Payment successful!');
+                if (responseData.status===200) {
                   setSnackbarOpen(true);
-                  router.push('/pages/login');
 
+                  setSuccessMessage('Payment successful!');
+                  setTimeout(() => {
+                    router.push('/pages/login');
+                  }, 5000); 
                 } else {
                   console.error('Invalid JSON structure in the response:', responseData);
                   setPaymentError('Invalid server response format.');
                   setLoading(false); // Set loading to false in case of error
-
+                  const errorMessage = await responseData.text();
+                  console.error('Error response from API:', errorMessage);
+              
                 }
               } else {
                 // Handle non-JSON response
                 const textResponse = await response.text();
-                setSuccessMessage('Payment successful!');
+                setSnackbarOpen(true);
+
+                setSuccessMessage('Payment successful!');                setTimeout(() => {
+                  router.push('/pages/login');
+                }, 5000); 
 
               }
             } catch (jsonError) {
               console.error('Error parsing JSON:', jsonError);
               setPaymentError('Error parsing server response.');
               setLoading(false); // Set loading to false in case of error
-
+              console.error('Error response from API:', jsonError);
             }
           } else {
             console.error('Failed Payment:', response.status, response.statusText);
             setPaymentError('Failed to process payment.');
             setLoading(false); // Set loading to false in case of error
-
+            const errorMessage = await response.text();
+            console.error('Error response from API:', errorMessage);
           }
           } catch (error) {
             console.error('Error during payment request:', error);
             setPaymentError('An unexpected error occurred during payment.');
             setLoading(false); // Set loading to false in case of error
-
+            const errorMessage = await response.text();
+            console.error('Error response from API:', errorMessage);
           } finally {
             setLoading(false);
           }
@@ -164,7 +180,7 @@ const PaymentForm = () => {
   const cardElementStyle = {
     base: {
       fontWeight:'20px',
-      fontFamily: '"Nunito Sans", sans-serif',
+      fontFamily: '"Arial", sans-serif',
       color: '#32325d',
              // Optional: Add padding for better visual appearance
       '::placeholder': {

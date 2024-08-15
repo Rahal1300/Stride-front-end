@@ -53,12 +53,13 @@ const Index = () => {
   const [teamManager, setTeamManager ] = useState('');
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
-  
+  const [teamLead, setTeamLead] = useState('');
+
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/listuserswithoutteam`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/listusers`, {
           headers: {
             Authorization: `Bearer ${usertoken.payload.token}`,
           },
@@ -95,7 +96,6 @@ const Index = () => {
           setSnackbarOpen(true);
         }
         const data = await response.json();
-        console.log(data);
         if (!data || data.length === 0) {
           setSnackbarMessage("Oops, you don't have any  Team Manager yet");
           setSnackbarOpen(true);
@@ -114,62 +114,69 @@ const Index = () => {
     fetchData();
   }, [usertoken]);
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    setSelectedImage(file);
-  };
+
 
   const goBack = () => {
     router.back();
   };
 
   const handleCreateTeam = async () => {
-    if (!teamName || !selectedMembers.length || !teamCapacity || !description) {
-      setSnackbarMessage('Please fill Those  fields :Team Name ,Members ,Capacity,Description');
+    if (!teamName ) {
+      setSnackbarMessage('Team Name is missing');
       setSnackbarOpen(true);
       return;
     }
   
     const teamManagerValue = isUserRoleTeamManager ? teamManager : null;
-    // const formData = new FormData();
+     const formData = new FormData();
+    console.log('Selected Members:', selectedMembers.map(id => membersList.find(member => member.id === id)?.first_name));
+    console.log('Selected Team Lead:', teamLead);
+
+
+const selectedMembersExcludingLead = selectedMembers.filter(memberId => memberId !== teamLead);
+console.log('Selected Members (Excluding Team Lead):', selectedMembersExcludingLead.map(id => membersList.find(member => member.id === id)?.first_name));
+
+
+
+console.log('IDs of Selected Members (Excluding Team Lead):', selectedMembersExcludingLead);
+
 
     const payload = {
       teamName: teamName,
-      userIds: selectedMembers,
-      teamManagerId: selectedMembersmanager,
+      userIds: selectedMembersExcludingLead,
+      teamManagerId: teamLead,
       Capacity: teamCapacity,
       teamdescription:description,
       teamdiscipline:discipline,
     };
-    // formData.append('project', new Blob([JSON.stringify(payload)], { type: 'application/json' }));
-console.log(payload);
-    try {
+    console.log("payload",payload);
+   formData.append('project', new Blob([JSON.stringify(payload)], { type: 'application/json' }));
+     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/createTeam`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${usertoken.payload.token}`,
-        },
-        body: JSON.stringify(payload),
-      });
-      if (!response.ok) {
-        // Handle server errors
+         method: 'POST',
+       headers: {
+           'Content-Type': 'application/json',
+           Authorization: `Bearer ${usertoken.payload.token}`,
+         },
+         body: JSON.stringify(payload),
+       });
+       if (!response.ok) {
+         // Handle server errors
      
-        setSnackbarMessage('Something went wrong !!');
-        setSnackbarOpen(true);
-      }
-      if (response.ok) {
-        // Handle server errors
+         setSnackbarMessage('Something went wrong !!');
+         setSnackbarOpen(true);
+       }
+       if (response.ok) {
+         // Handle server errors
         setSnackbarMessage(`Team ${teamName} Has been Created`);
-        setSnackbarOpen(true);
-      }
+         setSnackbarOpen(true);
+       }
 
-    } catch (error) {
-      // Handle any errors
-      console.error('Error creating team:', error.message);
+     } catch (error) {
+       console.error('Error creating team:', error.message);
       setSnackbarMessage('Failed to create team. Please try again.');
-      setSnackbarOpen(true);
-    }
+       setSnackbarOpen(true);
+     }
   };
   
 
@@ -189,7 +196,16 @@ console.log(payload);
   
   const isUserRoleTeamManager = Role === 'User' &&  cr === 'TeamManager';
 
+  const handleMembersChange = (event) => {
+    const selectedMembers = event.target.value;
+    setSelectedMembers(selectedMembers);
+    
+    // Filter managers list based on selected members
+    const selectedMembersDetails = membersList.filter(member => selectedMembers.includes(member.id));
+    setManagersList(selectedMembersDetails);
 
+  };
+  
 
   return (
     <ThemeProvider theme={theme}>
@@ -206,7 +222,7 @@ console.log(payload);
          </Box>
           ) : (
             <>
-      <Typography variant="h3" component="h1" sx={{ fontFamily: 'Nunito Sans', fontWeight: 700, fontSize: '32px', color: '#202224', marginBottom: '20px' }}>
+      <Typography variant="h3" component="h1" sx={{ fontFamily: 'Arial', fontWeight: 700, fontSize: '32px', color: '#202224', marginBottom: '20px' }}>
         Team 
       </Typography>
 
@@ -215,8 +231,12 @@ console.log(payload);
           <Button variant="contained" color="primary" onClick={goBack} sx={{ background: '#6226EF' }}>Back</Button>
         </Box>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <Box sx={{ marginRight: '20px' }}>
-            <Image
+          
+         <Box sx={{ marginRight: '20px' }}>
+         <Typography variant="body1" gutterBottom>Team description</Typography>
+            <TextField fullWidth multiline rows={9} sx={{ backgroundColor: '#F5F6FA', border: 'none', width: '223px' }} value={description} onChange={(e) => setDescription(e.target.value)} />
+          
+          {/*    <Image
               src={'/images/icons/Photo.png'}
               alt="Selected Image"
               height={192}
@@ -233,52 +253,44 @@ console.log(payload);
                   style={{ display: 'none' }}
                 />
               </label>
-            </Typography>
-            <Typography variant="body1" gutterBottom>Team description</Typography>
-            <TextField fullWidth multiline rows={5} sx={{ backgroundColor: '#F5F6FA', border: 'none', width: '223px' }} value={description} onChange={(e) => setDescription(e.target.value)} />
-          </Box>
-          <Grid container spacing={2}>
-            <Grid item xs={6}>
-              <Box sx={{ padding: '20px' }}>
+            </Typography> */}
+            </Box>
+            <Grid container spacing={2}>
+                <Grid item xs={6}>
+                  <Box sx={{ padding: '20px' }}>
+                    <Typography variant="body1" gutterBottom sx>Team Name</Typography>
+                    <TextField fullWidth sx={{ backgroundColor: '#F5F6FA', borderColor: '#F5F6FA', marginBottom: 2 }} value={teamName} onChange={(e) => setTeamName(e.target.value)} />
 
-
-              <Typography variant="body1" gutterBottom sx>Team Name</Typography>
-                <TextField fullWidth sx={{ backgroundColor: '#F5F6FA', borderColor: '#F5F6FA',marginBottom:2 }} value={teamName} onChange={(e) => setTeamName(e.target.value)} />
-              {!isUserRoleTeamManager && (
-  <>
-    <Typography variant="body1" gutterBottom >Team Manager</Typography>
-    <Select fullWidth  value={selectedMembersmanager} onChange={(e) => setSelectedMembersManager(e.target.value)}>
-                  {managersList.map((member) => (
-                    <MenuItem key={member.id} value={member.id}>
-                      {member.first_name}
-                    </MenuItem>
-                  ))}
-                </Select>
-   
-  </>
-)}
-
-              
-                <Typography variant="body1" gutterBottom>Members</Typography>
-                <Select fullWidth multiple value={selectedMembers} onChange={(e) => setSelectedMembers(e.target.value)}>
-                  {membersList.map((member) => (
-                    <MenuItem key={member.id} value={member.id}>
-                      {member.first_name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </Box>
-            </Grid>
-            <Grid item xs={6}>
-              <Box sx={{ padding: '20px' }}>
-                <Typography variant="body1" gutterBottom>Decipline</Typography>
-                <TextField fullWidth sx={{ backgroundColor: '#F5F6FA',marginBottom:2 }} value={discipline} onChange={(e) => setDiscipline(e.target.value)} />
-  
-                <Typography variant="body1" gutterBottom>Team Capacity</Typography>
-                <TextField fullWidth type="number" value={teamCapacity} onChange={(e) => setTeamCapacity(e.target.value)} sx={{ backgroundColor: '#F5F6FA',marginBottom:2 }} />
-              </Box>
-            </Grid>
-          </Grid>
+                    <Typography variant="body1" gutterBottom>Members</Typography>
+                    <Select fullWidth multiple value={selectedMembers} onChange={handleMembersChange}>
+                      {membersList.map((member) => (
+                        <MenuItem key={member.id} value={member.id}>
+                          {member.first_name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                    
+                    <Typography variant="body1" gutterBottom>Team Lead</Typography>
+                    <Select fullWidth value={teamLead} onChange={(e) => {
+                      setTeamLead(e.target.value);
+                    }}>
+                      {managersList.map((member) => (
+                        <MenuItem key={member.id} value={member.id}>
+                          {member.first_name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </Box>
+                </Grid>
+                <Grid item xs={6}>
+                  <Box sx={{ padding: '20px' }}>
+                    <Typography variant="body1" gutterBottom>Discipline</Typography>
+                    <TextField fullWidth sx={{ backgroundColor: '#F5F6FA', marginBottom: 2 }} value={discipline} onChange={(e) => setDiscipline(e.target.value)} />
+                    <Typography variant="body1" gutterBottom>Team Capacity</Typography>
+                    <TextField fullWidth type="number" value={teamCapacity} onChange={(e) => setTeamCapacity(e.target.value)} sx={{ backgroundColor: '#F5F6FA', marginBottom: 2 }} />
+                  </Box>
+                </Grid>
+              </Grid>
         </Box>
       </Card>
       <Box sx={{ display: 'flex', justifyContent: 'right', alignItems: 'right', marginTop: '15px' }}>

@@ -75,7 +75,7 @@ const Plan = () => {
 
               <CardContent>
                 <Typography  className="text-center" sx={{color:'black',fontSize:'28px'}}>
-                  Basic 
+                  FREE
                 </Typography>
                 <Typography variant="body2" className="text-center mb-3">
                 Monthly Charge
@@ -119,7 +119,7 @@ const Plan = () => {
       background:'#6226EF'
     },
     }}
-    onClick={() => handleUpgrade('Basic', getPrice(14.99))}
+    onClick={() => handleUpgrade('FREE', getPrice(14.99))}
     >                
 
 Get Started</Button>
@@ -133,7 +133,7 @@ Get Started</Button>
        <Card style={{  height: '100%',borderRadius:'15px'}}>
               <CardContent>
               <Typography  className="text-center" sx={{color:'black',fontSize:'28px'}}>
-                  Standard 
+                  BASIC 
                 </Typography>
                 <Typography variant="body2" className="text-center mb-3">
                 Monthly Charge
@@ -176,7 +176,7 @@ Get Started</Button>
       background:'#6226EF'
     },
     }}
-    onClick={() => handleUpgrade('Standard', getPrice(49.99))}
+    onClick={() => handleUpgrade('BASIC', getPrice(49.99))}
 
 > 
 
@@ -193,7 +193,7 @@ Get Started</Button>
 
               <CardContent>
               <Typography  className="text-center" sx={{color:'black',fontSize:'28px'}}>
-                  Premium 
+                  STANDARD 
                 </Typography>
                 <Typography variant="body2" className="text-center mb-3">
                 Monthly Charge
@@ -240,7 +240,7 @@ Get Started</Button>
       background:'#6226EF'
     },
     }}
-    onClick={() => handleUpgrade('Premium', getPrice(89.99))}
+    onClick={() => handleUpgrade('STANDARD', getPrice(89.99))}
 
 >                 
 

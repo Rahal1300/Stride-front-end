@@ -47,11 +47,11 @@ const Index = () => {
   const [gender, setGender] = useState('');
 
   const [formData, setFormData] = useState({
-    First_name: '',
-    Last_name: '',
+    first_name: '',
+    last_name: '',
     email: '',
     Position: '',
-    Phone_number: '',
+    phone_number: '',
     company: '',
     channel: '',
     source: '',
@@ -77,9 +77,8 @@ const Index = () => {
   const handleSubmit = async () => {
     const updatedFormData = {
       ...formData,
-      gender: gender // Include the gender value from state
+      gender: gender 
     };
-    console.log(updatedFormData);
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/leads/create`, {
         method: 'POST',
@@ -92,9 +91,7 @@ const Index = () => {
         body: JSON.stringify(formData),
       });
   
-       // Check if the request was successful
        if (response.ok) {
-       // Handle success
          setSnackbarMessage('Lead added successfully.');
         setSnackbarOpen(true);
   
@@ -122,7 +119,7 @@ const Index = () => {
                       {loading ? (<CustomizedProgressBars/>):(<> 
 
 <DatePickerWrapper>
-      <Typography variant="h3" component="h1" sx={{ fontFamily: 'Nunito Sans', fontWeight: 700, fontSize: '32px', color: '#202224', marginBottom: '20px' }}>
+      <Typography variant="h3" component="h1" sx={{ fontFamily: 'Arial', fontWeight: 700, fontSize: '32px', color: '#202224', marginBottom: '20px' }}>
         User
       </Typography>
    
@@ -134,13 +131,15 @@ const Index = () => {
         <Grid  container spacing={2}>
         <Grid item xs={4}>
     <Typography variant="body1" gutterBottom>First Name *</Typography>
-    <TextField fullWidth sx={{ backgroundColor: '#F5F6FA', borderColor: '#F5F6FA' }}   value={formData.First_name}
-  name="First_name"
+    <TextField fullWidth sx={{ backgroundColor: '#F5F6FA', borderColor: '#F5F6FA' }}   value={formData.first_name}
+  name="first_name"
   onChange={handleChange} />
     <Typography variant="body1" gutterBottom>Email *</Typography>
     <TextField fullWidth sx={{ backgroundColor: '#F5F6FA' }}   value={formData.email}
   name="email"
-  onChange={handleChange} />
+  onChange={handleChange}                type="email"
+
+  />
     <Typography variant="body1" gutterBottom>Position (Optional)</Typography>
     <TextField fullWidth sx={{ backgroundColor: '#F5F6FA' }}   value={formData.Position}
   name="Position"
@@ -148,13 +147,20 @@ const Index = () => {
   </Grid>
   <Grid item xs={4}>
     <Typography variant="body1" gutterBottom>Last Name *</Typography>
-    <TextField fullWidth sx={{ backgroundColor: '#F5F6FA' }}  value={formData.Phone_number}
-  name="Phone_number"
-  onChange={handleChange} />
+        <TextField fullWidth sx={{ backgroundColor: '#F5F6FA' }}  value={formData.last_name}
+ name="last_name"
+ onChange={handleChange} />
+
     <Typography variant="body1" gutterBottom>Phone Number *</Typography>
-    <TextField fullWidth sx={{ backgroundColor: '#F5F6FA' }}  value={formData.Last_name}
-  name="Last_name"
-  onChange={handleChange} />
+    <TextField fullWidth sx={{ backgroundColor: '#F5F6FA' }}  value={formData.phone_number}
+  name="phone_number"
+  onChange={handleChange}
+  type="number"
+
+
+  
+  />
+ 
     <Typography variant="body1" gutterBottom>Company *</Typography>
     <TextField fullWidth sx={{ backgroundColor: '#F5F6FA' }} value={formData.company}
   name="company"
@@ -195,8 +201,8 @@ const Index = () => {
 </Box>
 <Grid container spacing={2}>
   <Grid item xs={6}>
-    <Box sx={{ display: 'flex' }}> {/* Use flexbox to align items horizontally */}
-      <Box sx={{ marginRight: 2 }}> {/* Add some margin to separate the components */}
+    <Box sx={{ display: 'flex' }}> 
+      <Box sx={{ marginRight: 2 }}>
         <Typography variant="body1" gutterBottom>Referral email (Optional)</Typography>
         <TextField fullWidth sx={{ backgroundColor: '#F5F6FA' }} value={formData.referral_email}
   name="referral_email"
@@ -208,7 +214,7 @@ const Index = () => {
   value={gender}
   onChange={handleChange}
   fullWidth
-  name="gender" // Add the name attribute
+  name="gender" 
   sx={{ backgroundColor: '#F5F6FA', minWidth: '250px' }}
 >
   <MenuItem value="">Select Gender</MenuItem>
@@ -220,7 +226,6 @@ const Index = () => {
     </Box>
   </Grid>
   <Grid item xs={6}>
-    {/* "Add Lead" button */}
     <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', height: '100%' }}>
       <Button variant="contained" onClick={handleSubmit} sx={{ background: '#6226EF', width: '206px', height: '50.06px' }}>Add Lead</Button>
     </Box>

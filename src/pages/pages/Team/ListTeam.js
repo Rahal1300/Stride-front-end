@@ -137,8 +137,8 @@ const handleEnableTeam = async (teamId) => {
       boxShadow: 'none',
       border: 'none',
     },
-    maxWidth: '500px', // Maximum width for the card
-    maxHeight: '325px', // Maximum height for the card
+    maxWidth: '500px', 
+    maxHeight: '325px', 
   }}
 >
 

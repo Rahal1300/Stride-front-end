@@ -7,7 +7,7 @@ const WeeklyOverview = () => {
     [new Date(2022, 0, 1, 8).getTime(), 12],   // January 1st, 2022, 8:00 AM, user spent 2 hours
     [new Date(2022, 0, 2, 10).getTime(), 1],  // January 2nd, 2022, 10:00 AM, user spent 1 hour
     [new Date(2022, 0, 3, 12).getTime(), 3],  // January 3rd, 2022, 12:00 PM, user spent 3 hours
-    [new Date(2022, 0, 4, 14).getTime(), 10],  // January 4th, 2022, 2:00 PM, user spent 2 hours
+    [new Date(2021, 0, 4, 14).getTime(), 10],  // January 4th, 2022, 2:00 PM, user spent 2 hours
     // Add more data as needed
   ];
 

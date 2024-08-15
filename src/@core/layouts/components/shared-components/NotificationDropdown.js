@@ -14,20 +14,29 @@ import MuiMenuItem from '@mui/material/MenuItem'
 import Typography from '@mui/material/Typography'
 import CircularProgress from '@mui/material/CircularProgress';
 
-// ** Icons Imports
 import NotificationsIcon from '@mui/icons-material/Notifications';
-// ** Third Party Components
 import PerfectScrollbarComponent from 'react-perfect-scrollbar'
 import { useSelector } from 'react-redux';
 import Alert from 'react-bootstrap/Alert';
 import { loginSuccess } from '../../../../features/reducers/authReducer'
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { useRouter } from 'next/router'
 
 import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
 import Badge from '@mui/material/Badge';
 
-// ** Styled Menu component
-const Menu = styled(MuiMenu)(({ theme }) => ({
+const theme = createTheme({
+  breakpoints: {
+    values: {
+      xs: 0,
+      sm: 600,
+      md: 960,
+      lg: 1280,
+      xl: 1920,
+    },
+  },
+});const Menu = styled(MuiMenu)(({ theme }) => ({
   '& .MuiMenu-paper': {
     width: 480,
     overflow: 'hidden',
@@ -41,7 +50,6 @@ const Menu = styled(MuiMenu)(({ theme }) => ({
   }
 }))
 
-// ** Styled MenuItem component
 const MenuItem = styled(MuiMenuItem)(({ theme }) => ({
   paddingTop: theme.spacing(3),
   paddingBottom: theme.spacing(3),
@@ -55,19 +63,16 @@ const styles = {
   }
 }
 
-// ** Styled PerfectScrollbar component
 const PerfectScrollbar = styled(PerfectScrollbarComponent)({
   ...styles
 })
 
-// ** Styled Avatar component
 const Avatar = styled(MuiAvatar)({
   width: '2.375rem',
   height: '2.375rem',
   fontSize: '1.125rem'
 })
 
-// ** Styled component for the title in MenuItems
 const MenuItemTitle = styled(Typography)(({ theme }) => ({
   fontWeight: 600,
   flex: '1 1 100%',
@@ -78,7 +83,6 @@ const MenuItemTitle = styled(Typography)(({ theme }) => ({
   marginBottom: theme.spacing(0.75)
 }))
 
-// ** Styled component for the subtitle in MenuItems
 const MenuItemSubtitle = styled(Typography)({
   flex: '1 1 100%',
   overflow: 'hidden',
@@ -87,14 +91,13 @@ const MenuItemSubtitle = styled(Typography)({
 })
 
 const NotificationDropdown = () => {
-  // ** States
+  const router = useRouter()
 
 
   const [lastUnreadCount, setLastUnreadCount] = useState(0);
 
   const [anchorEl, setAnchorEl] = useState(null)
 
-  // ** Hook
   const hidden = useMediaQuery(theme => theme.breakpoints.down('lg'))
 
   const handleDropdownOpen = event => {
@@ -131,7 +134,9 @@ const NotificationDropdown = () => {
   const [unreadCount, setUnreadCount] = useState(0);
   const [notification, setnotification] = useState([]); // Change this line
   const [notification2, setnotification2] = useState([]); // Change this line
-
+  const [countdown, setCountdown] = useState(5);
+  const [showRedirectMessage, setShowRedirectMessage] = useState(false);
+  
 
   const [x, setX] = useState(null); // Use state to manage x
 
@@ -215,10 +220,18 @@ const NotificationDropdown = () => {
         console.error('Error connecting to WebSocket:', error);
       });
     
-      return () => {
-        // Disconnect from the WebSocket when the component unmounts
+      // return () => {
+      //   // Disconnect from the WebSocket when the component unmounts
+      //   stompClient.disconnect();
+      // };
+
+
+      if (stompClient && stompClient.connected) {
         stompClient.disconnect();
-      };
+      }
+      if (socket && socket.readyState === SockJS.OPEN) {
+        socket.close();
+      }
     }
       
   }, [user.payload.token]);
@@ -238,9 +251,17 @@ const NotificationDropdown = () => {
         if (response.ok) {
           // Handle success
           setAcceptedInvitations((prevAcceptedInvitations) => [...prevAcceptedInvitations, Id]);
-
+          setShowRedirectMessage(true);
+          const countdownInterval = setInterval(() => {
+            setCountdown((prevCountdown) => {
+              if (prevCountdown === 1) {
+                clearInterval(countdownInterval);
+                router.push("/pages/login");
+              }
+              return prevCountdown - 1;
+            });
+          }, 1000);
         } else {
-          // Handle failure with detailed error message
 
           console.log(`Email confirmation failed: ${responseText || 'Unknown error'}`);
         }
@@ -256,6 +277,8 @@ const NotificationDropdown = () => {
   const combinedNotifications = [...notification, ...notification2];
 
   return (
+    <ThemeProvider theme={theme}>
+
     <div>
    
     <Fragment>
@@ -266,7 +289,29 @@ const NotificationDropdown = () => {
             <p>{alertMessage}</p>
           </Alert>
         </div>
+      )}  
+      {showRedirectMessage && (
+        <div style={{ position: 'fixed', top: '80px', right: '20px', zIndex: '9999' }}>
+          <Alert 
+            variant="success" 
+            style={{ 
+              width: '350px', 
+              background: 'linear-gradient(135deg, #b3e5fc, #81d4fa)', // Gradient background
+              borderColor: '#90caf9',                                    // Blue border
+              color: '#0d47a1',                                          // Dark blue text
+              borderRadius: '10px',                                      // Smooth rounded corners
+              boxShadow: '0px 4px 15px rgba(0, 0, 0, 0.1)',              // Subtle shadow for depth
+              padding: '20px',                                           // Comfortable padding
+              fontFamily: 'Arial',                          // Modern font
+              textAlign: 'center'        // Centered text
+            }}
+          >
+            <p style={{ margin: '0 0 10px 0', fontSize: '16px', fontWeight: 'bold' }}>Invitation Accepted!</p>
+            <p style={{ margin: 0, fontSize: '14px' }}>You will be redirected to the login page in {countdown} seconds.</p>
+          </Alert>
+        </div>
       )}
+      
       <IconButton color='inherit' aria-haspopup='true' onClick={handleDropdownOpen} aria-controls='customized-menu'>
         <NotificationsIcon   style={{color:'#3D42DF'}}/>
       </IconButton>
@@ -365,6 +410,8 @@ const NotificationDropdown = () => {
     </Badge>
     </Fragment>
     </div>
+    </ThemeProvider>
+
   )
 }
 

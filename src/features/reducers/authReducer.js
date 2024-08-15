@@ -4,6 +4,15 @@ export const loginSuccess = (token) => ({
   type: 'LOGIN_SUCCESS',
   payload: token,
 });
+export const Cr = (Cr) => ({
+  type: 'Cr',
+  payload: Cr,
+});
+
+export const SetRole = (Role) => ({
+  type: 'SetRole',
+  payload: Role,
+});
 export const loginSuccessGoogle = (googleToken) => ({
   type: 'LOGIN_SUCCESS_GOOGLE',
   payload: googleToken,
@@ -21,6 +30,8 @@ const initialState = {
   token: null,
   googleToken: null,
   isAuthenticated: false,
+  Role:null,
+  Cr:null,
 };
 
 const authReducer = (state = initialState, action) => {
@@ -52,6 +63,23 @@ const authReducer = (state = initialState, action) => {
 
     
           };
+          case 'SetRole':
+            return {
+              ...state,
+              Role: action.payload,
+  
+      
+            };
+            case 'Cr':
+              return {
+                ...state,
+                Cr:action.payload,
+        
+              };
+
+           
+
+          
      
     default:
       return state;

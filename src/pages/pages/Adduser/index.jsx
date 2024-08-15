@@ -16,6 +16,36 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import Snackbar from '@mui/material/Snackbar';
 import withAuth from '../../../features/reducers/withAuth';
+
+
+
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import Paper from '@mui/material/Paper';
+
+import { styled } from '@mui/system';
+
+import Container from '@mui/material/Container';
+
+// Styled components
+const StyledPaper = styled(Paper)(({ theme }) => ({
+  padding: theme.spacing(4),
+  marginTop: theme.spacing(4),
+  borderRadius: theme.spacing(2),
+  boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
+}));
+
+const StyledButton = styled(Button)(({ theme }) => ({
+  backgroundColor: '#6226EF',
+  color: 'white',
+  '&:hover': {
+    backgroundColor: '#4d1bbf',
+  },
+  width: '100%',
+  maxWidth: 300,
+  marginTop: theme.spacing(2),
+  marginBottom: theme.spacing(1),
+}));
 const CustomInput = forwardRef((props, ref) => {
   return <TextField fullWidth {...props} inputRef={ref}  autoComplete='off' />;
 });
@@ -46,6 +76,7 @@ const Index = () => {
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const isAuthenticated = useSelector((state) => state.isAuthenticated);
 
+  const [currentTab, setCurrentTab] = useState(1); // 0 for All Info, 1 for Email
 
 
   const handleImageChange = (e) => {
@@ -93,10 +124,23 @@ const Index = () => {
                       {loading ? (<CustomizedProgressBars/>):(<> 
 
 <DatePickerWrapper>
-      <Typography variant="h3" component="h1" sx={{ fontFamily: 'Nunito Sans', fontWeight: 700, fontSize: '32px', color: '#202224', marginBottom: '20px' }}>
+      <Typography variant="h3" component="h1" sx={{ fontFamily: 'Arial', fontWeight: 700, fontSize: '32px', color: '#202224', marginBottom: '20px' }}>
         User
       </Typography>
-   
+      <Box sx={{ padding: 2 }}>
+            <Tabs
+              value={currentTab}
+              onChange={(event, newValue) => setCurrentTab(newValue)}
+              indicatorColor="primary"
+              textColor="primary"
+              variant="fullWidth"
+              aria-label=" Tabs"
+            >
+        <Tab label="Create Account" />
+        <Tab label="Send Invitation" />
+            </Tabs>
+          </Box>
+          {currentTab === 0 && (
       <Card sx={{ padding: 10 }}>
         
         <Box sx={{ display: 'flex', justifyContent: 'right', alignItems: 'right' }}>
@@ -170,10 +214,44 @@ const Index = () => {
             </Grid>
           </Grid>
         </Box>
-      </Card>
-      <Box sx={{ display: 'flex', justifyContent: 'right', alignItems: 'right',marginTop:'15px' }}>
+      </Card>)}
+
+
+      {currentTab === 1 && (
+  <Container maxWidth="sm">
+    <StyledPaper elevation={3}>
+      <Typography variant="h4" align="center" gutterBottom>
+        Invite Someone
+      </Typography>
+      <Typography variant="body1" align="center" paragraph>
+        Enter the email address of the person you want to invite. 
+      </Typography>
+      <Grid container spacing={2} justifyContent="center">
+        <Grid item xs={12}>
+          <TextField
+            id="email"
+            label="Recipient's Email"
+            variant="outlined"
+            fullWidth
+            value={email}
+  onChange={(e) => setEmail(e.target.value)}
+          />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <StyledButton
+            variant="contained"
+            onClick={ADD}
+          >
+            Send Invitation
+          </StyledButton>
+        </Grid>
+      </Grid>
+    </StyledPaper>
+  </Container>
+)}
+      {currentTab === 0 && (<Box sx={{ display: 'flex', justifyContent: 'right', alignItems: 'right',marginTop:'15px' }}>
           <Button variant="contained" color="primary" onClick={ADD} sx={{background:'#6226EF'}}>+ Add User</Button>
-        </Box>
+        </Box>)}
     </DatePickerWrapper>  
     <Snackbar
         open={snackbarOpen}

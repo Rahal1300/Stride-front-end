@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, Button, Menu, MenuItem, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Box ,Grid  } from '@mui/material';
-// Adjust the path according to your project structure
+import { Card, CardContent, Button, Menu, MenuItem, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Box ,Grid,Pagination  } from '@mui/material';
 import Image from 'next/image';
 import { MarginRounded } from '@mui/icons-material';
 import GridViewRoundedIcon from '@mui/icons-material/GridViewRounded';
@@ -15,6 +14,15 @@ import TableUser from './table';
 import Snackbar from '@mui/material/Snackbar';
 import ImportExcelButton from './ImportExcelButton ';
 import withAuth from '../../../features/reducers/withAuth';
+import TeamCard from '../Team/TeamCard';
+const applyFilters = (data, filters) => {
+  let filteredData = [...data];
+
+  if (filters && filters.status) {
+    filteredData = filteredData.filter(row => row.companyStatus === filters.status);
+  }
+  return filteredData;
+};
 
 const Index = () => {
     const router = useRouter();
@@ -28,25 +36,67 @@ const Index = () => {
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const usertoken = useSelector(loginSuccess);
     const [templateUrl, setTemplateUrl] = useState('/assets/templateUsers.xlsx');
+    const [filters, setFilters] = useState({ status: '' });
+    const [teamData, setTeamData] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const teamsPerPage = 3;
+
+    const [decodedToken, setDecodedToken] = useState(null);
+    const userrole = useSelector(state => state.Role); 
+  const  cr  = useSelector(state => state.Cr); 
+  const Owner = userrole === 'Subscriber' && cr === 'Owner';
+  const TeamManagerandOwner = userrole === 'Subscriber' &&  cr === 'TeamManager';
+  const Manager= userrole === 'User' &&  cr === 'TeamManager';
+
 
 
 
   
+
+
+  
     useEffect(() => {
-    
+      if (usertoken) {
+        const base64Url = usertoken.payload.token.split('.')[1];
+        const base64 = base64Url.replace('-', '+').replace('_', '/');
+        const decodedToken = JSON.parse(window.atob(base64));
+        setDecodedToken(decodedToken);
+      }
+      const fetchDataa = async () => {
+        setLoading(true);  
+        try {
+          const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/user-teams`, {
+            headers: {
+              Authorization: `Bearer ${usertoken.payload.token}`,
+            },
+          });
+  
+          const data = await response.json();
+          if (!response.ok) {
+            console.error('Error fetching team data:', data);
+            setLoading(false);
+            return;
+          }
+          setTeamData(data);
+          console.log(data)
+          setLoading(false);
+        } catch (error) {
+          console.error('Error fetching team data:', error);
+          setLoading(false);
+        }
+      };
       const fetchData = async () => {
         setLoading(true);  
         try {
           // const response = await fetch('${process.env.NEXT_PUBLIC_BASE_URL}/listuserswithoutteam', {
             // const response = await fetch('${process.env.NEXT_PUBLIC_BASE_URL}/listusers', {
 
-          const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/listuserswithoutteam`, {
+          const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/listusers`, {
             headers: {
               Authorization: `Bearer ${usertoken.payload.token}`,
             },
           });
           const data = await response.json();
-
           if (!response.ok) {
             setSnackbarMessage('Something went wrong !!');
             setSnackbarOpen(true);     
@@ -56,21 +106,31 @@ const Index = () => {
             setSnackbarOpen(true);          }
           if (response.ok) {
             setCompany(data);
-            setLoading(false);          }
+            setLoading(false); 
+                }
       
         } catch (error) {
           setError(error.message);
           setLoading(false);
         }
       };
+      
     
       fetchData();
+      fetchDataa();
 
     }, [usertoken]);
+    const indexOfLastTeam = currentPage * teamsPerPage;
+    const indexOfFirstTeam = indexOfLastTeam - teamsPerPage;
+    const currentTeams = teamData.slice(indexOfFirstTeam, indexOfLastTeam);
+  
  
 
     const handleDateOpen = (event) => {
       setDateAnchorEl(event.currentTarget);
+    };
+    const handlePageChange = (event, value) => {
+      setCurrentPage(value);
     };
   
     const handleDateClose = () => {
@@ -107,6 +167,17 @@ const Index = () => {
         link.click();
         document.body.removeChild(link);
       };
+      const handleStatusSelect = (status) => {
+        setFilters((prevFilters) => ({ ...prevFilters, status }));
+        handleStatusClose();
+      };
+      const filteredCompany = applyFilters(Company, filters);
+      const isAdmin = decodedToken && decodedToken.role === 'Admin';
+      const isTeamManager = decodedToken && decodedToken.cr === 'TeamManager';
+      // const isCurrentUserTeamManager = team?.teamusers.some(user => user.role_in_team === 'TeamManager' && decodedToken && usertoken.email === decodedToken.email);
+    
+      // const shouldShowModifyIcon = isAdmin || (isTeamManager && isCurrentUserTeamManager);
+      const shouldShowModifyIcon = isAdmin || (isTeamManager);
 
     return (
       <div>
@@ -114,18 +185,20 @@ const Index = () => {
                   <>
 <Box sx={{ marginTop: 2 }}>
   <Grid container alignItems="center" justifyContent="space-between" spacing={2}>
-    <Grid item xs={12} sm={6}>
-      <Typography variant="h3" component="div" sx={{ fontWeight: 700 }}>
+    <Grid item xs={12} sm={6} style={{marginLeft:37}}>
+      <Typography variant="h3" component="div" sx={{ fontWeight: 700 }} >
       Users
       </Typography>
-    </Grid>
+    </Grid> 
+
+                        <>
     <Grid item xs={12} container alignItems="center" spacing={2}>
   <Grid item xs={6} sm={6}>
-    <input
+    {/* <input
       type="text"
       placeholder="Search"
       style={{
-        width: '50%', // Adjusted width
+        width: '50%', 
         height: '44px',
         border: '1px solid #ccc',
         borderRadius: '20px',
@@ -135,7 +208,7 @@ const Index = () => {
         backgroundPosition: '10px ',
         backgroundSize: '20px',
       }}
-    />
+    /> */}
   </Grid>
   <Grid item xs={6} sm={2}>
 <ImportExcelButton/>
@@ -153,7 +226,7 @@ const Index = () => {
         '&:hover': {
           background: '#6226EF',
         },
-        width: '100%', // Make the button take up full width
+        width: '100%', 
       }}
     >
       + Download Template
@@ -170,7 +243,7 @@ const Index = () => {
         '&:hover': {
           background: '#6226EF',
         },
-        width: '100%', // Make the button take up full width
+        width: '100%', 
       }}
       onClick={SendAdduser}
     >
@@ -178,7 +251,7 @@ const Index = () => {
     </Button>
   </Grid>
 </Grid>
-
+</>
   </Grid>
 </Box>
 
@@ -186,7 +259,7 @@ const Index = () => {
   
   
   
-        <TableContainer style={{ borderRadius: 10, border: '0.6px  #D5D5D5 ', maxWidth: 818,marginTop:100 }}>
+        <TableContainer style={{ borderRadius: 10, border: '0.6px  #D5D5D5 ', maxWidth: 818,marginTop:100,marginLeft:42 }}>
           <Table size="small" aria-label="filter options" style={{ borderCollapse: 'collapse', backgroundColor: '#FFFFFF', maxWidth: 818, borderRadius: 10, border: '0.6px solid #D5D5D5' }}>
             <TableBody>
               <TableRow>
@@ -195,7 +268,6 @@ const Index = () => {
                     <Image src="/images/icons/filter.png" width={20} height={20} alt="Filter Icon" />
              
                 </TableCell>
-                {/* Filter By label with icon */}
                 <TableCell style={{ borderRight: '1px solid #CCCCCC', borderLeft: '1px solid #CCCCCC' }}>
                   <Button
                     onClick={handleDateOpen}
@@ -204,13 +276,11 @@ const Index = () => {
                     Filter By
                   </Button>
                   <Menu anchorEl={dateAnchorEl} open={Boolean(dateAnchorEl)} onClose={handleDateClose}>
-                    {/* Add date options here */}
                     <MenuItem onClick={handleDateClose}>Option 1</MenuItem>
                     <MenuItem onClick={handleDateClose}>Option 2</MenuItem>
                     <MenuItem onClick={handleDateClose}>Option 3</MenuItem>
                   </Menu>
                 </TableCell>
-                {/* Date filter dropdown */}
                 <TableCell style={{ borderRight: '1px solid #CCCCCC', borderLeft: '1px solid #CCCCCC' }}>
                   <Button
                     onClick={handleDateOpen}
@@ -221,7 +291,6 @@ const Index = () => {
                   <Image src="/images/icons/path.png" width={12} height={7} alt="Filter Icon" />
   
                   <Menu anchorEl={dateAnchorEl} open={Boolean(dateAnchorEl)} onClose={handleDateClose}>
-                    {/* Add date options here */}
                     <MenuItem onClick={handleDateClose}>Option 1</MenuItem>
                     <MenuItem onClick={handleDateClose}>Option 2</MenuItem>
                     <MenuItem onClick={handleDateClose}>Option 3</MenuItem>
@@ -242,7 +311,6 @@ const Index = () => {
                     <MenuItem onClick={handleTypeClose}>Option 3</MenuItem>
                   </Menu>
                 </TableCell>
-                {/* Order Status filter dropdown */}
                 <TableCell >
                   <Button
                     onClick={handleStatusOpen}
@@ -255,9 +323,9 @@ const Index = () => {
                   <Image src="/images/icons/path.png" width={12} height={7} alt="Filter Icon" />
   
                   <Menu anchorEl={statusAnchorEl} open={Boolean(statusAnchorEl)} onClose={handleStatusClose}   >
-                    <MenuItem >Active</MenuItem>
-                    <MenuItem >Suspended</MenuItem>
-                    <MenuItem >Out</MenuItem>
+                  <MenuItem onClick={() => handleStatusSelect('ACTIVE')}>Active</MenuItem>
+                  <MenuItem onClick={() => handleStatusSelect('Suspended')}>Suspended</MenuItem>
+                  <MenuItem onClick={() => handleStatusSelect('Out')}>Out</MenuItem>
                   </Menu>
                 </TableCell>
                 <TableCell >
@@ -275,7 +343,84 @@ const Index = () => {
         </TableContainer> 
       
         <Box sx={{margin :10}}>
-        <TableUser Company={Company} />
+        <TableUser Company={filteredCompany} />
+        <Box sx={{ marginTop: 2 }}>
+        <Grid container alignItems="center" justifyContent="space-between" spacing={2} sx={{marginTop:8}}>
+          <Grid item xs={12} sm={6}>
+            <Typography variant="h3" component="div" sx={{ fontWeight: 700,marginBottom:3.5 ,marginLeft:1}}>
+           Teams
+            </Typography>
+          </Grid>
+          <Grid item xs={12} sm={6} container alignItems="center" spacing={2}>
+            <Grid item xs={12} sm={6}>
+              <input
+                type="text"
+                placeholder="Search "
+                style={{
+                  width: '100%', 
+                  height: '44px',
+                  border: '1px solid #ccc',
+                  borderRadius: '20px',
+                  padding: '0 10px 0 40px',
+                  backgroundImage: `url('/images/icons/search.png')`,
+                  backgroundRepeat: 'no-repeat',
+                  backgroundPosition: '10px center',
+                  backgroundSize: '20px',
+                }}
+              />
+            </Grid>
+            <Grid item xs={6} sm={6}>
+            {Owner || Manager || TeamManagerandOwner ? (
+      
+              <Button
+                type="submit"
+                sx={{
+                  marginLeft:0.3,
+                  color: 'white',
+                  height: '44px',
+                  textTransform: 'none',
+                  background: '#6226EF',
+                  '&:hover': {
+                    background: '#6226EF',
+                  },
+                  width: '100%', 
+                }}
+                onClick={SendAdduser}
+              >
+                Create a team  
+              </Button>    ) : null}
+            </Grid>
+          </Grid>
+        </Grid>
+      </Box>
+      <Box sx={{ marginTop: 15 }}>
+  {currentTeams.length > 0 ? (
+    <>
+      <Grid container spacing={2}>
+        {currentTeams.map((team) => (
+          <Grid item key={team.id} xs={12} sm={6} md={4}>
+            {team && <TeamCard team={team} />}
+          </Grid>
+        ))}
+      </Grid>
+      <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
+        <Pagination count={Math.ceil(teamData.length / teamsPerPage)} page={currentPage} onChange={handlePageChange} />
+      </Box>
+    </>
+  ) : (
+    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+      <Box sx={{ maxWidth: 400, textAlign: 'center' }}>
+        <Typography variant="h5" sx={{ mb: 2, fontWeight: 500 }}>
+          No teams found
+        </Typography>
+        <Typography variant="body1" sx={{ color: 'text.secondary' }}>
+          Create your first team to get started.
+        </Typography>
+      </Box>
+    </Box>
+  )}
+</Box>
+  
 
 
         </Box>   <Snackbar
@@ -285,6 +430,10 @@ const Index = () => {
           message={snackbarMessage}
         /></>  ) }
       </div>
+   
+   
+      
+    
     );
   };
   

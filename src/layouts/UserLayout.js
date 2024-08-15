@@ -21,6 +21,19 @@ import { loginSuccess } from '../features/reducers/authReducer'
 import BlankLayout from 'src/@core/layouts/BlankLayout'
 
 import { useSelector } from 'react-redux';
+
+
+
+
+
+import Toolbar from '@mui/material/Toolbar'
+import Typography from '@mui/material/Typography'
+import Switch from '@mui/material/Switch'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import Stack from '@mui/material/Stack'
+
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 const UserLayout = ({ children }) => {
   // ** Hooks
   const { settings, saveSettings } = useSettings()
@@ -63,11 +76,38 @@ const UserLayout = ({ children }) => {
   //     </Box>
   //   );
   // };
+  const [isChecked, setIsChecked] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [dataFromChild, setDataFromChild] = useState('')
+  const [childDataKey, setChildDataKey] = useState(0); // State variable for key
 
+  const handleSwitchChange = () => {
+    setIsChecked(!isChecked);
+    setSnackbarOpen(true); // Open snackbar when role changes
+  };
+
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSnackbarOpen(false);
+  };
+ 
+  const handleDataFromChild = (data) => {
+    setDataFromChild(data)
+    setChildDataKey(childDataKey + 1);  }
+  useEffect(() => {
+   
+    console.log('Data from UserDropdown here: ', dataFromChild)
+  
+  }, [dataFromChild]); 
   return (
     <>
-      {usertoken.payload.token ? (
+    
+      {usertoken.payload.token ? (<>
+  
         <VerticalLayout
+        key={childDataKey}
           hidden={hidden}
           settings={settings}
           saveSettings={saveSettings}
@@ -78,12 +118,13 @@ const UserLayout = ({ children }) => {
               settings={settings}
               saveSettings={saveSettings}
               toggleNavVisibility={props.toggleNavVisibility}
+              sendDataToParent={handleDataFromChild}
             />
           )}
           sx={{ height: 'calc(190vh - 150px)' }} 
         >
           {children}
-        </VerticalLayout>
+        </VerticalLayout></>
       ) : (
         <VerticalLayout
           hidden={hidden}
@@ -94,6 +135,34 @@ const UserLayout = ({ children }) => {
         >{children}        </VerticalLayout>
 
       )}
+            {/* <Box sx={{ display: 'flex', justifyContent: 'right', alignItems: 'right', position: 'fixed', top: 0, width: '100%'}}>
+        <Snackbar
+               open={snackbarOpen}
+               autoHideDuration={3000}
+               onClose={handleCloseSnackbar}
+               anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+             >
+                       <Alert onClose={handleCloseSnackbar} severity="success" sx={{ width: '100%' }}>
+                 Role successfully changed to {isChecked ? 'Manager' : 'Leader'}
+               </Alert>
+             </Snackbar>
+             <Stack direction="row" spacing={2} alignItems="center">
+               {/*  <Alert direction="row" spacing={2} alignItems="center"  severity="info">
+                
+                <Typography variant="subtitle1">
+                   Current Role: {isChecked ? 'Manager' : 'Leader'}
+                 </Typography>
+             
+               </Alert>   
+               
+               <Typography variant="body2">Lead </Typography>
+                <FormControlLabel
+      control={<Switch checked={isChecked} onChange={handleSwitchChange} size="small" />}
+      label={<Typography variant="body2">Manager </Typography>}
+      style={{ fontSize: '0.8rem' }} // Adjust label font size here
+    />
+             </Stack>
+           </Box> */}
     </>
   );
 };

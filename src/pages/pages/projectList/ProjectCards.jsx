@@ -20,10 +20,11 @@ const ProjectCard = ({ project }) => {
   if (!project || !project.image) {
     return null; // or render a loading indicator, an empty state, or handle it in any appropriate way
   }
+  console.log(project);
   return (
     <Card sx={{ maxWidth: 361 }}>
       <CardMedia
-        sx={{ height: 200 }}
+        sx={{ height: 300 }}
         image={`data:image/png;base64,${project.image}`}
         style={{ width: '100%' }}
       />
@@ -33,12 +34,13 @@ const ProjectCard = ({ project }) => {
         </Typography>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1 }}>
           <div>
-            <Typography variant="body2" color="text.secondary">
-              Owner: {project.owner}
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              Creation date: {project.startDate}
-            </Typography>
+          <Typography variant="body2" color="text.secondary">
+  Owner: {project.owner ? project.owner : 'No owner available'}
+</Typography>
+<Typography variant="body2" color="text.secondary">
+  Creation date: {project.startDate ? project.startDate : 'No creation date available'}
+</Typography>
+
           </div>
           <CircleProgress progress={project.progress} />
         </Box>
@@ -46,12 +48,12 @@ const ProjectCard = ({ project }) => {
         {project.projectUsersAndRoles && project.projectUsersAndRoles.length > 0 ? (
             <AvatarGroup max={4} sx={{ mr: 1 }}>
               {project.projectUsersAndRoles.map((user, index) => (
-                user.image && <Avatar key={index} alt={user.first_name} src={`data:image/png;base64,${user.image}`} />
+                user.email && <Avatar key={index} alt={user.first_name} src={`data:image/png;base64,${user.image}`} />
               ))}
             </AvatarGroup>
           ) : (
             <Typography variant="body2" color="text.secondary" sx={{ mr: 1 }}>
-              No team members yet
+              No team members yet 
             </Typography>
           )}
 

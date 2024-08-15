@@ -9,7 +9,7 @@ const FooterContent = () => {
 
   return (
     <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
-      <Typography sx={{ mr: 2 }}>
+      {/* <Typography sx={{ mr: 2 }}>
         {`© ${new Date().getFullYear()}, ${t('Made_with')} `}
         <Box component='span' sx={{ color: 'error.main' }}>
           ❤️
@@ -18,7 +18,7 @@ const FooterContent = () => {
         <Link target='_blank' href='https://hk.com.tn/'>
           Stride
         </Link>
-      </Typography>
+      </Typography> */}
     </Box>
   );
 };

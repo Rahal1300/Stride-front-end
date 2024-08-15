@@ -48,7 +48,6 @@ const ManagerTeam = () => {
         body: requestBody,
       });
 
-      console.log(requestBody,teamId);
       if (response.ok) {
         // Invitation sent successfully, fetch updated team data
         await fetchTeam(); // Update listOfTeam state

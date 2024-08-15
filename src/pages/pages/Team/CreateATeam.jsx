@@ -70,7 +70,6 @@ const ModalCard = ({ open, onClose, onTeamCreated }) => {
 
     <DialogContent>
         <CardContent>
-          {/* Your card content here */}
         
           <TextField
             label="Team Name"
@@ -82,7 +81,7 @@ const ModalCard = ({ open, onClose, onTeamCreated }) => {
             required 
           />
         <Button onClick={createTeam} variant="contained" color="primary" sx={{ display: 'block', margin: 'auto',marginTop:'5px' }}>
-  Create Team
+  Create Team 
 </Button>
 
                   <Snackbar

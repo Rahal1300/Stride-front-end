@@ -49,127 +49,299 @@ const navigation = () => {
     };
     checkAuthentication();
   }, []);
-  
+  const userrole = useSelector(state => state.Role); 
+  const  cr  = useSelector(state => state.Cr); 
  
   const base64Url =  usertoken.payload.token.split('.')[1];
   const base64 = base64Url.replace('-', '+').replace('_', '/');
   const decodedToken = JSON.parse(window.atob(base64));
-console.log(decodedToken);
   const Role=decodedToken.role;
 
-  const cr=decodedToken.cr;
-  
+  const isUserRoleUserfree = Role === 'User' &&  cr === 'Newcomer';
+  const HasSubscriber = Role === 'Subscriber' &&  cr === 'Newcomer';
+
   const isUserRoleUser = Role === 'User' &&  cr === 'Employee';
   const isUserRoleTeamManager = Role === 'User' &&  cr === 'TeamManager';
   const isUserRoleAdmin = Role === 'Admin';
   const isUserRoleTeamLead = Role === 'User' &&  cr === 'TeamLead';
 
+
+
+////////////////////////////////////////////////
+
+  
+  const TeamManagerandOwner = userrole === 'Subscriber' &&  cr === 'TeamManager';
+  const LeadsManagerandOwner = userrole === 'Subscriber' &&  cr === 'LeadsManager';
+
+  const HasSubscriberNewcomer = userrole === 'Subscriber' &&  cr === 'Newcomer';
+  const Owner= userrole === 'Subscriber' &&  (cr === 'Owner'||cr === 'Viewer');
+  const Leader= userrole === 'Subscriber' &&  cr === 'Owner';
+  const Manager= userrole === 'Subscriber' &&  cr === 'Owner';
+
+
+
+
+  const LeadsUser= userrole === 'User' &&  cr === 'LeadsManager';
+  const Employee= userrole === 'User' &&  cr === 'Employee';
+
+  const TeamManagerUser= userrole === 'User' &&  cr === 'TeamManager';
+
+  const Free= userrole === 'User' &&  cr === 'Free';
   return [
    
     {
       title: t('Dashboard') ,
       path: '/pages/DashboardLead',
-      ...(isUserRoleUser && { hidden: true }),
-      ...(isUserRoleTeamManager && { hidden: true }),
-      ...(isUserRoleAdmin && { hidden: true }),
-      ...(isUserRoleTeamLead && { hidden: false }),
+   
 
+      
+      ...(Free && { hidden: true}),
+
+      
+      ...(HasSubscriberNewcomer && { hidden: true }),
+      ...(Owner && { hidden: true}),
+
+      ...(Leader && { hidden: false}),
+
+      ...(Manager && { hidden: true}),
+      ...(TeamManagerandOwner && { hidden: true}),
+      ...(LeadsManagerandOwner && { hidden: false}),
+      ...(LeadsUser && { hidden: false}),
+      ...(TeamManagerUser && { hidden: true}),
+      ...(Employee && { hidden: true}),
+
+      
+      
       
     },
     
     {
       title: t('Dashboard') ,
       path: '/pages/userinterface',
-      ...(isUserRoleUser && { hidden: false }),
-      ...(isUserRoleTeamManager && { hidden: false }),
-      ...(isUserRoleAdmin && { hidden: false }),
-      ...(isUserRoleTeamLead && { hidden: true }),
 
-      
+      ...(Free && { hidden: false}),
+
+      ...(HasSubscriberNewcomer && { hidden: true }),
+      ...(Owner && { hidden: false}),
+      ...(Leader && { hidden: true}),
+      ...(Manager && { hidden: false}),
+      ...(TeamManagerandOwner && { hidden: false}),
+
+      ...(LeadsManagerandOwner && { hidden: true}),
+      ...(LeadsUser && { hidden: true}),
+      ...(TeamManagerUser && { hidden: false}),
+      ...(Employee && { hidden: false}),
+
     },
     {
       title: t('Leads') ,
       path: '/pages/Leads',
-      ...(isUserRoleUser && { hidden: true }),
-      ...(isUserRoleTeamManager && { hidden: true }),
-      ...(isUserRoleAdmin && { hidden: true }),
-      ...(isUserRoleTeamLead && { hidden: false }),
 
-      
+      ...(Free && { hidden: true}),
+
+      ...(HasSubscriberNewcomer && { hidden: true }),
+      ...(Owner && { hidden: true}),
+      ...(Leader && { hidden: false}),
+      ...(Manager && { hidden: true}),
+      ...(TeamManagerandOwner && { hidden: true}),
+
+      ...(LeadsManagerandOwner && { hidden: false}),
+      ...(LeadsUser && { hidden: false}),
+      ...(TeamManagerUser && { hidden: true}),
+      ...(Employee && { hidden: true}),
+
     },
     {
       title: t('Projects'),
       path: '/pages/projectList',
-      ...(isUserRoleUser && { hidden: false }),
-      ...(isUserRoleTeamManager && { hidden: false }),
-      ...(isUserRoleAdmin && { hidden: false }),
-      ...(isUserRoleTeamLead && { hidden: true }),
+
+      ...(TeamManagerUser && { hidden: false}),
+
+
+      ...(Free && { hidden: true}),
+
+      ...(HasSubscriberNewcomer && { hidden: true }),
+      ...(Owner && { hidden: false}),
+
+      ...(Leader && { hidden: false}),
+      ...(Manager && { hidden: false}),
+      ...(TeamManagerandOwner && { hidden: false}),
+      ...(LeadsManagerandOwner && { hidden: true}),
+      ...(LeadsUser && { hidden: true}),
+      ...(Employee && { hidden: false}),
 
     },
+    // {
+    //   title: t('Meeting'),
+    //   path: '/pages/meeting',
+    //   ...(isUserRoleUser && { hidden: true }),
+    //   ...(isUserRoleTeamManager && { hidden: true }),
+    //   ...(isUserRoleAdmin && { hidden: true }),
+    //   ...(isUserRoleTeamLead && { hidden: true }),
+
+    // },
     {
       title: t('Meeting'),
-      path: '/pages/meeting',
-      ...(isUserRoleUser && { hidden: true }),
-      ...(isUserRoleTeamManager && { hidden: false }),
-      ...(isUserRoleAdmin && { hidden: false }),
-      ...(isUserRoleTeamLead && { hidden: true }),
+      path: '/pages/meet',
+      ...(TeamManagerUser && { hidden: false}),
+
+      ...(LeadsUser && { hidden: true}),
+
+      ...(Free && { hidden: true}),
+
+      ...(HasSubscriberNewcomer && { hidden: true }),
+      ...(Owner && { hidden: false}),
+      ...(Manager && { hidden: false}),
+
+      ...(TeamManagerandOwner && { hidden: false}),
+      ...(LeadsManagerandOwner && { hidden: false}),
+      ...(Employee && { hidden: false}),
 
     },
-   
 
     {
       title: t('File Manager'),
-      path: '/pages/Files',
-      ...(isUserRoleUser && { hidden: true }),
-      ...(isUserRoleTeamManager && { hidden: true }),
-      ...(isUserRoleAdmin && { hidden: false }),
-      ...(isUserRoleTeamLead && { hidden: true }),
+      path: '/under_construction',
+ 
+      ...(LeadsUser && { hidden: true}),
+
+      ...(Free && { hidden: true}),
+      ...(TeamManagerUser && { hidden: true}),
+
+      ...(HasSubscriberNewcomer && { hidden: true }),
+      ...(Owner && { hidden: false}),
+      ...(Leader && { hidden: false}),
+      ...(Manager && { hidden: true}),
+      ...(TeamManagerandOwner && { hidden: false}),
+      ...(LeadsManagerandOwner && { hidden: true}),
+
+      ...(Employee && { hidden: true}),
 
     },
  
 
-    {
+   /* {
       title: t('Team'),
       path: '/pages/Team',
-      ...(isUserRoleUser && { hidden: true }),
-      ...(isUserRoleTeamManager && { hidden: false }),
-      ...(isUserRoleAdmin && { hidden: false }),
-      ...(isUserRoleTeamLead && { hidden: true }),
+      ...(TeamManagerUser && { hidden: false}),
 
-    },   
+
+      ...(LeadsUser && { hidden: true}),
+
+      ...(LeadsManagerandOwner && { hidden: true}),
+
+      ...(Free && { hidden: true}),
+
+      ...(HasSubscriberNewcomer && { hidden: true }),
+      ...(Owner && { hidden: false}),
+
+      ...(Leader && { hidden: false}),
+      ...(Manager && { hidden: false}),
+      ...(TeamManagerandOwner && { hidden: false}),
+      ...(Employee && { hidden: false}),
+
+    },   */
      {
       title: t('Users'),
       path: '/pages/user',
-      ...(isUserRoleUser && { hidden: true }),
-      ...(isUserRoleTeamManager && { hidden: true }),
-      ...(isUserRoleAdmin && { hidden: false }),
-      ...(isUserRoleTeamLead && { hidden: true }),
+
+      ...(TeamManagerUser && { hidden: true}),
+
+      ...(LeadsManagerandOwner && { hidden: false}),
+
+      ...(LeadsUser && { hidden: true}),
+
+      ...(Free && { hidden: true}),
+
+      ...(HasSubscriberNewcomer && { hidden: true }),
+      ...(Owner && { hidden: false}),
+      ...(Leader && { hidden: false}),
+      ...(Manager && { hidden: false}),
+      ...(TeamManagerandOwner && { hidden: false}),
+      ...(Employee && { hidden: true}),
+
 
     },
-    {
-      title: t('Messenges'),
+    /*{
+      title: t('Messages'),
       path: '/under_construction',
-      ...(isUserRoleUser && { hidden: true }),
-      ...(isUserRoleTeamManager && { hidden: false }),
-      ...(isUserRoleAdmin && { hidden: true }),
-    },
-     {
-      title: t('Profile'),
-      path: '/pages/Profile'
-    },
+
+      ...(TeamManagerUser && { hidden: false}),
+
+      ...(LeadsManagerandOwner && { hidden: true}),
+
+      ...(LeadsUser && { hidden: false}),
+
+      ...(Free && { hidden: true}),
+
+      ...(HasSubscriberNewcomer && { hidden: true }),
+      ...(Owner && { hidden: false}),
+      ...(Leader && { hidden: false}),
+      ...(Manager && { hidden: false}),
+      ...(TeamManagerandOwner && { hidden: false}),
+      ...(Employee && { hidden: false}),
+
+
+    }*/,
+ 
+  
     {
-      title: t('Calendar'),
-      path: '/pages/calendar',
-      ...(isUserRoleTeamLead && { hidden: true }),
+      sectionTitle: t('Pages'),
+      ...(TeamManagerUser && { hidden: false}),
+
+      ...(LeadsManagerandOwner && { hidden: false}),
+
+      ...(Free && { hidden: false}),
+      ...(LeadsUser && { hidden: false}),
+
+      ...(HasSubscriberNewcomer && { hidden: true }),
+      ...(Owner && { hidden: false}),
+      ...(Leader && { hidden: false}),
+      ...(Manager && { hidden: false}),
+      ...(TeamManagerandOwner && { hidden: false}),
+      ...(Employee && { hidden: false}),
+
 
     },
     {
-      sectionTitle: t('Pages')
+      title: t('Profile'),
+      path: '/pages/Profile',
+
+      ...(TeamManagerUser && { hidden: false}),
+
+      ...(LeadsManagerandOwner && { hidden: false}),
+      ...(LeadsUser && { hidden: false}),
+
+      ...(Free && { hidden: false}),
+
+      ...(HasSubscriberNewcomer && { hidden: true }),
+      ...(Owner && { hidden: false}),
+      ...(Leader && { hidden: false}),
+      ...(Manager && { hidden: false}),
+      ...(TeamManagerandOwner && { hidden: false}),
+
+      ...(Employee && { hidden: false}),
+
     },
     {
       title: t('Notifications'),
       path: '/pages/notification',
-      ...(isUserRoleTeamLead && { hidden: true }),
+  
+      ...(TeamManagerUser && { hidden: false}),
+
+      ...(LeadsManagerandOwner && { hidden: false}),
+
+      ...(LeadsUser && { hidden: false}),
+
+      ...(Free && { hidden: false}),
+
+      ...(HasSubscriberNewcomer && { hidden: true }),
+      ...(Owner && { hidden: false}),
+
+      ...(Leader && { hidden: false}),
+      ...(Manager && { hidden: false}),
+      ...(TeamManagerandOwner && { hidden: false}),
+      ...(Employee && { hidden: false}),
 
     },
 
@@ -177,13 +349,45 @@ console.log(decodedToken);
      {
       title: t('Pricing'),
       path: '/pages/pricing',
-      ...(isUserRoleTeamLead && { hidden: true }),
+      ...(TeamManagerUser && { hidden: true}),
+
+      ...(TeamManagerandOwner && { hidden: false}),
+
+      ...(LeadsManagerandOwner && { hidden: false}),
+      ...(LeadsUser && { hidden: true}),
+
+      ...(Employee && { hidden: true}),
+
+
+      ...(Free && { hidden: false}),
+
+      ...(HasSubscriberNewcomer && { hidden: true }),
+      ...(Owner && { hidden: false}),
+      ...(Leader && { hidden: false}),
+      ...(Manager && { hidden: false}),
+
 
     },
 
     {
       title: t('Support'),
       path: '/pages/help',
+      ...(TeamManagerUser && { hidden: false}),
+
+      ...(LeadsManagerandOwner && { hidden: false}),
+
+      ...(TeamManagerandOwner && { hidden: false}),
+      ...(LeadsUser && { hidden: false}),
+
+      ...(Free && { hidden: false}),
+
+      ...(HasSubscriberNewcomer && { hidden: true }),
+      ...(Owner && { hidden: false}),
+      ...(Leader && { hidden: false}),
+      ...(Manager && { hidden: false}),
+      ...(Employee && { hidden: false}),
+
+
     },
     ].filter(item => !item.hidden);
 

@@ -23,8 +23,7 @@ function TicketForm({ onClose }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle form submission, you can send ticketDetails to the backend here
-    // Close the modal
+    
     onClose();
   };
 

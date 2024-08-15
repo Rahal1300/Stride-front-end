@@ -15,13 +15,10 @@ const TeamView = () => {
   const decodedToken = JSON.parse(window.atob(base64));
 
   const isAdmin = decodedToken.role === 'Admin';
- console.log("isAdmin",isAdmin);
   const isTeamManager = decodedToken.cr === 'TeamManager';
-  console.log("isTeamManager",isTeamManager);
-
   const shouldShowModifyIcon = isAdmin || isTeamManager;
-  console.log("shouldShowModifyIcon",shouldShowModifyIcon);
 
+  const [refreshData, setRefreshData] = useState(false);
   const SendAdduser = () => {
     router.push('/pages/CreateTeam') ;  };
 
@@ -47,8 +44,18 @@ const TeamView = () => {
       
   
       fetchTeams();
-    }, [id]);
+    }, [id,refreshData]);
+    const handleRefreshData = () => {
+      setRefreshData(true);
+      fetchTeams();
+    };
 
+
+    const userrole = useSelector(state => state.Role); 
+    const  cr  = useSelector(state => state.Cr); 
+    const Owner = userrole === 'Subscriber' && cr === 'Owner';
+    const TeamManagerandOwner = userrole === 'Subscriber' &&  cr === 'TeamManager';
+    const Manager= userrole === 'Subscriber' &&  cr === 'Owner';
   return (
     <div>
         <Box sx={{ marginTop: 2, marginBottom:5}}>
@@ -64,7 +71,7 @@ const TeamView = () => {
           type="text"
           placeholder="Search "
           style={{
-            width: '100%', // Adjusted width
+            width: '100%', 
             height: '44px',
             border: '1px solid #ccc',
             borderRadius: '20px',
@@ -78,7 +85,7 @@ const TeamView = () => {
       </Grid>
 
       <Grid item xs={6} sm={4}>
-      {shouldShowModifyIcon && (
+       {Owner || Manager || TeamManagerandOwner ? (
       
         <Button
           type="submit"
@@ -90,18 +97,18 @@ const TeamView = () => {
             '&:hover': {
               background: '#6226EF',
             },
-            width: '100%', // Make the button take up full width
+            width: '100%', 
           }}          onClick={SendAdduser}
 
         >
-Create a team        </Button>  )} 
+Create a team      </Button>  ):(null)} 
       </Grid>
     </Grid>
   </Grid>
 </Box>
 
 
-{teams &&  <TeamComponent team={teams} Teamid={id}/>}
+{teams &&  <TeamComponent team={teams} Teamid={id}refreshData={refreshData} onRefreshData={handleRefreshData}/>}
 
     </div>
   );

@@ -23,72 +23,7 @@ const Meeting = () => {
   const [calendarEvents, setCalendarEvents] = useState([]);
 
   // Sample meetings data
-  const meetings = [
-    {
-      title: 'Meeting one',
-      date: 'January 12, 2022',
-      description: '12:56pm - 12:00am',
-      label: 'Meeting',
-      day: 'Wednesday',
-    },
-    {
-      title: 'Design Review',
-      date: 'January 13, 2022',
-      description: '12:56pm - 12:00am',
-      label: 'Review',
-      day: 'Thursday',
-    },
-    {
-      title: 'Dart Game?',
-      date: 'January 14, 2022',
-      description: 'all-day',
-      label: 'Game',
-      day: 'Tuesday',
-    },
-    {
-      title: 'Dinner',
-      date: 'January 14, 2022',
-      description: 'all-day',
-      label: 'Social',
-      day: 'Tuesday',
-    },
-    {
-        title: 'Dinner',
-        date: 'January 14, 2022',
-        description: 'all-day',
-        label: 'Social',
-        day: 'Tuesday',
-      },    {
-        title: 'Dinner',
-        date: 'January 14, 2022',
-        description: 'all-day',
-        label: 'Social',
-        day: 'Tuesday',
-      },    {
-        title: 'Dinner',
-        date: 'January 14, 2022',
-        description: 'all-day',
-        label: 'Social',
-        day: 'Tuesday',
-      },    {
-        title: 'Dinner',
-        date: 'January 14, 2022',
-        description: 'all-day',
-        label: 'Social',
-        day: 'Tuesday',
-      },    {
-        title: 'Dinner',
-        date: 'January 14, 2022',
-        description: 'all-day',
-        label: 'Social',
-        day: 'Tuesday',
-      },    {
-        title: 'Dinner',
-        date: 'January 14, 2022',
-        description: 'all-day',
-        label: 'Social',
-        day: 'Tuesday',
-      },  ];
+
 
       useEffect(() => {
      
@@ -141,7 +76,6 @@ const Meeting = () => {
           });
           // Update state or do whatever you need with filteredEvents
                      setCalendarEvents(filteredEvents);
-                     console.log("filteredEvents",filteredEvents);
 
         } else {
 
@@ -162,14 +96,9 @@ const Meeting = () => {
         setAccesstoken(codeResponse.access_token);
         setIsLoggedIn(true);
         dispatch(loginSuccessGoogle(codeResponse.access_token));
-
-
-
-
-
-setTimeout(() => {
-  dispatch(logoutGoogle());
-  setAccesstoken('');
+        setTimeout(() => {
+        dispatch(logoutGoogle());
+        setAccesstoken('');
 
 },  3600 * 1000); 
 

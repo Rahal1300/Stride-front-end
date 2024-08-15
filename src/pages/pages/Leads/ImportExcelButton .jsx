@@ -3,12 +3,16 @@ import Button from '@mui/material/Button';
 import Snackbar from '@mui/material/Snackbar';
 import * as XLSX from 'xlsx';
 import MuiSnackbarContent from '@mui/material/SnackbarContent';
+import { loginSuccess } from '../../../features/reducers/authReducer';
+import { useSelector } from 'react-redux';
 const ImportExcelButton = () => {
   const inputRef = useRef(null);
   const [loading, setLoading] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarColor, setSnackbarColor] = useState('');
+  const [excelData, setExcelData] = useState([]);
+  const usertoken = useSelector(loginSuccess);
 
   // const handleFileUpload = (event) => {
   //   const file = event.target.files[0];
@@ -88,12 +92,14 @@ const ImportExcelButton = () => {
       let errors = [];
       let hasErrors = false;
 
-      if (file.name !== 'Leads.xlsx') {
-        setSnackbarMessage('Please select the template file named Leads.xlsx');
+      const fileExtension = file.name.split('.').pop();
+      if (fileExtension !== 'xlsx') {
+        setSnackbarMessage('Please select a file with the .xlsx extension');
         setSnackbarOpen(true);
-       setSnackbarColor('red'); 
-             return;
-           }
+        setSnackbarColor('red');
+        inputRef.current.value = '';
+        return;
+      }
       // Loop through each row of the Excel data starting from index 1
       for (let i = 1; i < excelData.length; i++) {
         const row = excelData[i];
@@ -109,6 +115,7 @@ if (/\d/.test(firstName) || /\d/.test(lastName)) {
   setSnackbarOpen(true);
   setSnackbarColor('red');
   hasErrors = true;
+  inputRef.current.value = null;
   break;
 }
 
@@ -136,14 +143,14 @@ if (!/^\d+$/.test(phoneNumber)) {
 
   
         // Check if source is one of the required sources
-        if (!requiredSources.includes(source)) {
-          setSnackbarMessage(`Row ${i + 1}: Source must be one of the following: ${requiredSources.join(', ')}.`);
-          setSnackbarOpen(true);
-         setSnackbarColor('red'); 
-         inputRef.current.value = null;
-         hasErrors = true;
-         break;
-        }
+        // if (!requiredSources.includes(source)) {
+        //   setSnackbarMessage(`Row ${i + 1}: Source must be one of the following: ${requiredSources.join(', ')}.`);
+        //   setSnackbarOpen(true);
+        //  setSnackbarColor('red'); 
+        //  inputRef.current.value = null;
+        //  hasErrors = true;
+        //  break;
+        // }
       }
   
       // If there are errors, log them
@@ -154,12 +161,15 @@ if (!/^\d+$/.test(phoneNumber)) {
       }
 
       if (!hasErrors) {
-        setSnackbarMessage('Import done, creating invitations for your Leads, Please Wait');
+        setSnackbarMessage('Importing, Please Wait...');
         setSnackbarColor('green'); // Set green color for success
         setSnackbarOpen(true);
+        inputRef.current.value = null;
+        setExcelData(data);
+
+        API(excelData);
       }
    
-      console.log('Excel Data:', excelData);
     };
     reader.readAsArrayBuffer(file);
   };
@@ -168,24 +178,68 @@ if (!/^\d+$/.test(phoneNumber)) {
   
 
   const handleButtonClick = () => {
-    inputRef.current.click(); // Trigger file selection dialog
+    inputRef.current.click(); 
   };
 
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
   };
+  const API = async (excelData) => {
+    const requestData = excelData.slice(1).map(row => ({
+      first_name: row[0],
+      last_name: row[1],
+       channel: row[2],
+       email: row[3],
+       phone_number: row[4],
+       source: row[5],
+       Position: row[6],
+       company: row[7],
+       notes: row[8],
+       referral_email: row[9],
+       gender: row[10],
+       date: row[11],
 
+    }));
+   
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/leads/create_from_excel`, {
+        method: 'POST',
+        headers: {
+          
+          Authorization: `Bearer ${usertoken.payload.token}`,
+          'Content-Type': 'application/json',
+
+        },
+        body: JSON.stringify(requestData), 
+      });
+      if (response.ok) {
+        setSnackbarMessage('Importing successfully');
+        setSnackbarColor('green');
+        setSnackbarOpen(true);
+        inputRef.current.value = null;
+      } else {
+        setSnackbarMessage('Importing failed, please try again');
+        setSnackbarColor('red');
+        setSnackbarOpen(true);
+
+      }
+    } catch (error) {
+      console.error('Error sending data to the API:', error.message);
+    }
+  };
+  
+  
   return (
     <>
       <input
         type="file"
         accept=".xlsx, .xls"
         ref={inputRef}
-        style={{ display: 'none' }} // Hide the input element
+        style={{ display: 'none' }} 
         onChange={handleFileUpload}
       />
       <Button
-        type="button" // Ensure it's not treated as form submission
+        type="button"
         onClick={handleButtonClick}
         sx={{
           color: 'white',
@@ -195,7 +249,7 @@ if (!/^\d+$/.test(phoneNumber)) {
           '&:hover': {
             background: '#6226EF',
           },
-          width: '100%', // Make the button take up full width
+          width: '100%', 
         }}
       >
         {loading ? 'Importing...' : '+ Import'}

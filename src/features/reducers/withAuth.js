@@ -30,7 +30,7 @@ return (props) => {
  
 
    
-    return <WrappedComponent {...props} />;s
+    return <WrappedComponent {...props} />;
 
 };
 

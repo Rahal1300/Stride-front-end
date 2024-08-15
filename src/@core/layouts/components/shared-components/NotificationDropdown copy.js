@@ -68,7 +68,6 @@ const Avatar = styled(MuiAvatar)({
   fontSize: '1.125rem'
 })
 
-// ** Styled component for the title in MenuItems
 const MenuItemTitle = styled(Typography)(({ theme }) => ({
   fontWeight: 600,
   flex: '1 1 100%',
@@ -79,7 +78,6 @@ const MenuItemTitle = styled(Typography)(({ theme }) => ({
   marginBottom: theme.spacing(0.75)
 }))
 
-// ** Styled component for the subtitle in MenuItems
 const MenuItemSubtitle = styled(Typography)({
   flex: '1 1 100%',
   overflow: 'hidden',
@@ -88,7 +86,6 @@ const MenuItemSubtitle = styled(Typography)({
 })
 
 const NotificationDropdown = () => {
-  // ** States
 
 
   const [lastUnreadCount, setLastUnreadCount] = useState(0);
@@ -123,18 +120,18 @@ const NotificationDropdown = () => {
   }
 
 
-  const socketMessages = useSelector((state) => state.socketMessages); // Assuming your socket messages are stored in a field called socketMessages
+  const socketMessages = useSelector((state) => state.socketMessages); 
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
   const user = useSelector(loginSuccess);
   const [loading, setLoading] = useState(false);
 
   const [unreadCount, setUnreadCount] = useState(0);
-  const [notification, setnotification] = useState([]); // Change this line
-  const [notification2, setnotification2] = useState([]); // Change this line
+  const [notification, setnotification] = useState([]); 
+  const [notification2, setnotification2] = useState([]); 
 
 
-  const [x, setX] = useState(null); // Use state to manage x
+  const [x, setX] = useState(null); 
 
   const fetchData = async () => {
     setLoading(true);
@@ -148,7 +145,6 @@ const NotificationDropdown = () => {
         },
       });
       const data = await response.json();
-      // Set the fetched projects to the state
       setnotification(data);
       setLoading(false);
     } catch (error) {
@@ -169,7 +165,6 @@ const NotificationDropdown = () => {
         },
       });
       const data = await response.json();
-      // Set the fetched projects to the state
       setnotification2(data);
       setLoading(false);
     } catch (error) {
@@ -187,18 +182,16 @@ const NotificationDropdown = () => {
       const base64 = base64Url.replace('-', '+').replace('_', '/');
       const decodedX = JSON.parse(window.atob(base64));
   
-      setX(decodedX); // Set x using useState
-      // Connect to the WebSocket server with authentication token
+      setX(decodedX); 
       const socket = new SockJS(`${process.env.NEXT_PUBLIC_BASE_URL}/ws`);
       const stompClient = Stomp.over(socket);
-      stompClient.debug = null; // or stompClient.debug = () => {};
+      stompClient.debug = null;
 
       stompClient.connect({
         Authorization: `Bearer ${user.payload.token}`,
       }, (frame) => {
   
         stompClient.subscribe(`/topic/send-invitation/${decodedX.userId}`, (message) => {
-          // Handle received messages
           if (stompClient.connected) {
   
               setShowAlert(true);
@@ -210,7 +203,6 @@ const NotificationDropdown = () => {
               setShowAlert(true);
               setAlertMessage('something went wrong');
   
-            // Not connected to the specified destination
           }
         });
       }, (error) => {
@@ -218,7 +210,6 @@ const NotificationDropdown = () => {
       });
     
       return () => {
-        // Disconnect from the WebSocket when the component unmounts
         stompClient.disconnect();
       };
     }
@@ -238,17 +229,14 @@ const NotificationDropdown = () => {
         const responseText = await response.text();
 
         if (response.ok) {
-          // Handle success
           setAcceptedInvitations((prevAcceptedInvitations) => [...prevAcceptedInvitations, Id]);
 
         } else {
-          // Handle failure with detailed error message
 
           console.log(`Email confirmation failed: ${responseText || 'Unknown error'}`);
         }
       } catch (error) {
 
-        // Handle network errors or unexpected exceptions
      
         console.error('Error:', error);
       }

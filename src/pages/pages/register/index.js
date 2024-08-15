@@ -1,11 +1,6 @@
-// ** React Imports
 import { useState, Fragment } from 'react'
-
-// ** Next Imports
 import Link from 'next/link'
 import axios from 'axios';
-
-// ** MUI Components
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
@@ -21,28 +16,13 @@ import { styled, useTheme } from '@mui/material/styles'
 import MuiCard from '@mui/material/Card'
 import InputAdornment from '@mui/material/InputAdornment'
 import MuiFormControlLabel from '@mui/material/FormControlLabel'
-
-// ** Icons Imports
-import Google from 'mdi-material-ui/Google'
-import Github from 'mdi-material-ui/Github'
-import Twitter from 'mdi-material-ui/Twitter'
-import Facebook from 'mdi-material-ui/Facebook'
-import EyeOutline from 'mdi-material-ui/EyeOutline'
-import EyeOffOutline from 'mdi-material-ui/EyeOffOutline'
-
-// ** Configs
 import themeConfig from 'src/configs/themeConfig'
-
-// ** Layout Import
 import BlankLayout from 'src/@core/layouts/BlankLayout'
-
-// ** Demo Imports
 import FooterIllustrationsV1 from 'src/views/pages/auth/FooterIllustration'
-
+import Image from 'next/image';
 import CircularProgress from '@mui/material/CircularProgress';
-
-
-// ** Styled Components
+import bg from "../../../../public/images/icons/test.png";
+import bg2 from "../../../../public/images/icons/Shape.png";
 const Card = styled(MuiCard)(({ theme }) => ({
   [theme.breakpoints.up('sm')]: { width: '28rem' }
 }))
@@ -63,7 +43,6 @@ const FormControlLabel = styled(MuiFormControlLabel)(({ theme }) => ({
 }))
 
 const RegisterPage = () => {
-  // ** States
   
   const [formData, setFormData] = useState({
     first_name: '',
@@ -76,7 +55,6 @@ const RegisterPage = () => {
   const [registrationError, setRegistrationError] = useState(null);
   const [registrationSuccess, setRegistrationSuccess] = useState(false);
 
-  // ** Hook
   const theme = useTheme()
 
   const handleChange = (e) => {
@@ -87,7 +65,6 @@ const RegisterPage = () => {
   };
 
   const isValidEmail = (email) => {
-    // Regular expression for email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   };
@@ -108,6 +85,7 @@ const RegisterPage = () => {
     if (formData.first_name && formData.password && formData.email) {
       const config = { headers: { "Content-Type": "application/json" } };
       axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/auth/register`, formData, config)
+      
         .then((response) => {
           setRegistrationSuccess(true);
           setFormData({
@@ -139,6 +117,9 @@ const RegisterPage = () => {
       backgroundSize: 'cover, contain',
       backgroundPosition: 'center',
     }}>
+       <Image src={bg} layout="fill" objectFit="cover" objectPosition="center" />
+
+<Image src={bg2} layout="fill" objectFit="container" objectPosition="center" />
       <Card sx={{ zIndex: 1,borderRadius:'20px' }}>
         <CardContent sx={{ padding: theme => `${theme.spacing(12, 9, 7)} !important` }}>
         <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -238,11 +219,11 @@ const RegisterPage = () => {
                 onChange={handleCheckboxChange}
                 inputProps={{ 'aria-label': 'Accept terms and conditions' }}
                 sx={{
-                  color: 'gray', // Default color
+                  color: 'gray', 
                   '&.Mui-checked': {
-                    color: 'gray', // Color when checked
+                    color: 'gray', 
                   },'&:hover': {
-                    background: 'none', // You can set the hover background color to the same as the default background color to remove the hover effect
+                    background: 'none', 
                   },
                 }}                />
               <Typography variant='body2' sx={{ color: '#202224' }}>
@@ -258,7 +239,7 @@ const RegisterPage = () => {
     color: 'white',
     background: '#4880FF',
     '&:hover': {
-      background: '#4880FF', // You can set the hover background color to the same as the default background color to remove the hover effect
+      background: '#4880FF', 
     },
   }}
 >
@@ -271,7 +252,7 @@ const RegisterPage = () => {
               </Typography>
               <Typography variant='body2'>
                 <Link passHref href='/pages/login'>
-                  <LinkStyled sx={{color:'#5A8CFF',textDecoration: 'underline',fontFamily:'Nunito Sans',fontSize:'18'}}>Login</LinkStyled>
+                  <LinkStyled sx={{color:'#5A8CFF',textDecoration: 'underline',fontFamily:'Arial',fontSize:'18'}}>Login</LinkStyled>
                 </Link>
               </Typography>
             </Box>

@@ -12,8 +12,9 @@ import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
 import Chip from '@mui/material/Chip';
+import { useRouter } from 'next/router'; 
 
-function Team() {
+function Team({Team}) {
   function getStatusColor(status) {
   switch (status) {
     case 'Active':
@@ -22,45 +23,19 @@ function Team() {
       return '#6226EF';
    
     default:
-      return '#FFFFFF'; // default background color
+      return '#FFFFFF'; 
   }
 }
 
-  const data = [
-    {
-      role: 'Developer',
-      name: 'John Doe',
-      email: 'john@example.com',
-      joinedDate: '2023-04-01',
-      lastLogin: '2023-04-20',
-      progress: 80,
-      status: 'Active'
-    },    {
-      role: 'Developer',
-      name: 'John Doe',
-      email: 'john@example.com',
-      joinedDate: '2023-04-01',
-      lastLogin: '2023-04-20',
-      progress: 80,
-      status: 'Inactive'
-    },    {
-      role: 'Developer',
-      name: 'John Doe',
-      email: 'john@example.com',
-      joinedDate: '2023-04-01',
-      lastLogin: '2023-04-20',
-      progress: 80,
-      status: 'Active'
-    },
-    // Add more data as needed
-  ];
+ 
+  const router = useRouter(); 
 
 const customTheme = createTheme({
   components: {
     MuiAvatar: {
         styleOverrides: {
           root: {
-            border: '2px solid #6226EF', // Change border color here
+            border: '2px solid #6226EF', 
           },
         colorDefault: {
           color: '#6226EF',
@@ -73,7 +48,9 @@ const customTheme = createTheme({
     }
   }
 });
-
+const handleViewTeam = () => {
+  router.push('/pages/Team/'); 
+};
   return (
     <ThemeProvider theme={customTheme}>
 
@@ -83,14 +60,12 @@ const customTheme = createTheme({
       <AvatarGroup
   max={4}
   sx={{margin: '20px 20px',marginLeft: '15px'}}>
-          <Avatar src='/images/avatars/1.png' />
-          <Avatar src='/images/avatars/3.png' />
-          <Avatar src='/images/avatars/4.png' />
-          <Avatar src='/images/avatars/2.png' />
-          <Avatar src='/images/avatars/5.png' />
-          <Avatar src='/images/avatars/6.png' />
+  
+          {Team?.map(member => (
+        <Avatar key={member.id} src={`data:image/png;base64,${member.image}`} /> 
+      ))}
         </AvatarGroup>
-        <Button sx={{ backgroundColor: '#E2EAF8', width: '126px', height: '38px', color: '#202224', fontWeight: '550' }}> View Team</Button>
+        <Button sx={{ backgroundColor: '#E2EAF8', width: '126px', height: '38px', color: '#202224', fontWeight: '550' }} onClick={handleViewTeam}> View Team</Button>
       </Box>
     </Box>
 
@@ -98,25 +73,30 @@ const customTheme = createTheme({
         <Table sx={{ minWidth: 650 }} aria-label='simple table'>
           <TableHead>
           <TableRow >
-              <TableCell sx={{ fontFamily: 'Nunito Sans', fontWeight: 600, fontSize: '16px', color: '#202224' }}>Role</TableCell>
-              <TableCell align='right'sx={{ fontFamily: 'Nunito Sans', fontWeight: 600, fontSize: '16px', color: '#202224' }} >Name</TableCell>
-              <TableCell align='right'sx={{ fontFamily: 'Nunito Sans', fontWeight: 600, fontSize: '16px', color: '#202224' }} >Email</TableCell>
-              <TableCell align='right'sx={{ fontFamily: 'Nunito Sans', fontWeight: 600, fontSize: '16px', color: '#202224' }} >Joined Date</TableCell>
-              <TableCell align='right'sx={{ fontFamily: 'Nunito Sans', fontWeight: 600, fontSize: '16px', color: '#202224' }} >Last Login</TableCell>
-              <TableCell align='right' sx={{ fontFamily: 'Nunito Sans', fontWeight: 600, fontSize: '16px', color: '#202224' }}>Progress</TableCell>
-              <TableCell align='right' sx={{ fontFamily: 'Nunito Sans', fontWeight: 600, fontSize: '16px', color: '#202224' }}>STATUS</TableCell>
+              <TableCell sx={{ fontFamily: 'Arial', fontWeight: 600, fontSize: '16px', color: '#202224' }}>Role</TableCell>
+              <TableCell align='center'sx={{ fontFamily: 'Arial', fontWeight: 600, fontSize: '16px', color: '#202224' }} >Name</TableCell>
+              <TableCell align='center'sx={{ fontFamily: 'Arial', fontWeight: 600, fontSize: '16px', color: '#202224' }} >Email</TableCell>
+              {/* <TableCell align='right'sx={{ fontFamily: 'Arial', fontWeight: 600, fontSize: '16px', color: '#202224' }} >Joined Date</TableCell>
+              <TableCell align='right'sx={{ fontFamily: 'Arial', fontWeight: 600, fontSize: '16px', color: '#202224' }} >Last Login</TableCell> */}
+              <TableCell align='center' sx={{ fontFamily: 'Arial', fontWeight: 600, fontSize: '16px', color: '#202224' }}>phone Number</TableCell>
+              <TableCell align='center' sx={{ fontFamily: 'Arial', fontWeight: 600, fontSize: '16px', color: '#202224' }}>STATUS</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.map(row => (
+            {Team?.map(row => (
               <TableRow key={row.email}>
-                <TableCell component='th' scope='row'>{row.role}</TableCell>
-                <TableCell align='right'>{row.name}</TableCell>
-                <TableCell align='right'>{row.email}</TableCell>
-                <TableCell align='right'>{row.joinedDate}</TableCell>
-                <TableCell align='right'>{row.lastLogin}</TableCell>
-                <TableCell align='right'>{row.progress}%</TableCell>
-                <TableCell align='right'>
+                {row.projectRole === 'TeamManager' ? (
+   <TableCell component='th'  scope='row'>Team Manager</TableCell>
+) : (
+  <TableCell component='th' scope='row'>{row.projectRole}</TableCell>
+)}
+
+                <TableCell align='center'>{row.first_name ? row.first_name : 'Empty'}</TableCell>
+                <TableCell align='center'>{row.email}</TableCell>
+                {/* <TableCell align='right'>{row.joinedDate}</TableCell>
+                <TableCell align='right'>{row.lastLogin}</TableCell> */}
+                <TableCell align='center'>{row.phone_number ? row.phone_number : 'Empty'}</TableCell>
+                <TableCell align='center'>
                 <Chip
     size='small'
     label={row.status} 

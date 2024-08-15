@@ -98,7 +98,7 @@ const VerticalNavLink = ({ item, navVisible, toggleNavVisibility }) => {
 
           <MenuItemTextMetaWrapper>
             <Typography {...(themeConfig.menuTextTruncate && { noWrap: true })}   sx={{marginLeft:'15px',
-    fontFamily: 'Nunito Sans',
+    fontFamily: 'Arial',
     fontSize: '18px',
     lineHeight: '19.1px',
     letterSpacing: '0.3px',

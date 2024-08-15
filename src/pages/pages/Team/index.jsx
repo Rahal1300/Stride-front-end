@@ -19,18 +19,15 @@ const Team = () => {
   const usertoken = useSelector(loginSuccess);
   const isAuthenticated = useSelector((state) => state.isAuthenticated);
   const [loading, setLoading] = useState(false);
-  const [teamData, setTeamData] = useState([]); // Initialize as an empty array
+  const [teamData, setTeamData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const teamsPerPage = 3;
 
-  const base64Url = usertoken.payload.token.split('.')[1];
-  const base64 = base64Url.replace('-', '+').replace('_', '/');
-  const decodedToken = JSON.parse(window.atob(base64));
-
-  const isAdmin = decodedToken.role === 'Admin';
-  const isTeamManager = decodedToken.cr === 'TeamManager';
-
-  const shouldShowModifyIcon = isAdmin || isTeamManager;
+  const userrole = useSelector(state => state.Role); 
+  const  cr  = useSelector(state => state.Cr); 
+  const Owner = userrole === 'Subscriber' && cr === 'Owner';
+  const TeamManagerandOwner = userrole === 'Subscriber' &&  cr === 'TeamManager';
+  const Manager= userrole === 'User' &&  cr === 'TeamManager';
 
   useEffect(() => {
    
@@ -44,16 +41,15 @@ const Team = () => {
         });
 
         const data = await response.json();
-        console.log("Teams",data);
         if (!response.ok) {
           console.error('Error fetching team data:', data);
           setLoading(false);
           return;
         }
         setTeamData(data);
+        console.log(data)
         setLoading(false);
       } catch (error) {
-        // Handle error
         console.error('Error fetching team data:', error);
         setLoading(false);
       }
@@ -86,7 +82,7 @@ const Team = () => {
         <Grid container alignItems="center" justifyContent="space-between" spacing={2}>
           <Grid item xs={12} sm={6}>
             <Typography variant="h3" component="div" sx={{ fontWeight: 700 }}>
-              Teams
+           Teams  List :
             </Typography>
           </Grid>
           <Grid item xs={12} sm={6} container alignItems="center" spacing={2}>
@@ -95,7 +91,7 @@ const Team = () => {
                 type="text"
                 placeholder="Search "
                 style={{
-                  width: '100%', // Adjusted width
+                  width: '100%', 
                   height: '44px',
                   border: '1px solid #ccc',
                   borderRadius: '20px',
@@ -108,7 +104,7 @@ const Team = () => {
               />
             </Grid>
             <Grid item xs={6} sm={4}>
-            {shouldShowModifyIcon && (
+            {Owner || Manager || TeamManagerandOwner ? (
       
               <Button
                 type="submit"
@@ -120,31 +116,44 @@ const Team = () => {
                   '&:hover': {
                     background: '#6226EF',
                   },
-                  width: '100%', // Make the button take up full width
+                  width: '100%', 
                 }}
                 onClick={SendAdduser}
               >
-                Create a team
-              </Button>   )}
+                Create a team  
+              </Button>    ) : null}
             </Grid>
           </Grid>
         </Grid>
       </Box>
       <Box sx={{ marginTop: 15 }}>
-        <Grid container spacing={2}>
-        <Grid container spacing={2}>
-  {currentTeams.map(team => (
-    <Grid item key={team.id} xs={12} sm={6} md={4}>
-    {team && <TeamCard team={team} />} 
-    </Grid>
-  ))}
-</Grid>
-
-        </Grid>
-         <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
-         <Pagination count={Math.ceil(teamData.length / teamsPerPage)} page={currentPage} onChange={handlePageChange} />
-        </Box> 
+  {currentTeams.length > 0 ? (
+    <>
+      <Grid container spacing={2}>
+        {currentTeams.map((team) => (
+          <Grid item key={team.id} xs={12} sm={6} md={4}>
+            {team && <TeamCard team={team} />}
+          </Grid>
+        ))}
+      </Grid>
+      <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
+        <Pagination count={Math.ceil(teamData.length / teamsPerPage)} page={currentPage} onChange={handlePageChange} />
       </Box>
+    </>
+  ) : (
+    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+      <Box sx={{ maxWidth: 400, textAlign: 'center' }}>
+        <Typography variant="h5" sx={{ mb: 2, fontWeight: 500 }}>
+          No teams found
+        </Typography>
+        <Typography variant="body1" sx={{ color: 'text.secondary' }}>
+          Create your first team to get started.
+        </Typography>
+      </Box>
+    </Box>
+  )}
+</Box>
+
     </>  
   );
 };

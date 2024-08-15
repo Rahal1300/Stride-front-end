@@ -107,6 +107,7 @@ const Notification = () => {
         method: 'GET',
          headers: {
          Authorization: `Bearer ${usertoken.payload.token}`,
+         Credentials
         },
       };
    
@@ -115,7 +116,6 @@ const Notification = () => {
 
       if (response.ok) {
         setAcceptedInvitations((prevAcceptedInvitations) => [...prevAcceptedInvitations, Id]);
-        console.log('Invitation confirmed successfully');
       } else {
 
         console.log(responseText || 'Unknown error ');

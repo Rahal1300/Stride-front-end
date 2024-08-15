@@ -26,7 +26,7 @@ const themeOptions = settings => {
         'sans-serif',
         '"Apple Color Emoji"',
         '"Segoe UI Emoji"',
-
+        'Roboto', 'sans-serif',
         '"Segoe UI Symbol"'
 
 

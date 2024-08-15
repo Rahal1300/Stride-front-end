@@ -15,7 +15,6 @@ import CardContent from '@mui/material/CardContent'
 import FormControl from '@mui/material/FormControl'
 import OutlinedInput from '@mui/material/OutlinedInput'
 import FormControlLabel from '@mui/material/FormControlLabel'
-import CountrySelect from '../../pages/pages/addproject/addproject/Components/country'; // Adjust the import path
 import { loginSuccess } from '../../features/reducers/authReducer'
 import { useSelector } from 'react-redux';
 // ** Third Party Imports
@@ -44,9 +43,7 @@ const TabInfo = () => {
   const [dateError, setDateError] = useState(null);
   const [countryError, setCountryError] = useState(null);
 
-    const handleCountrySelect = (country) => {
-      setSelectedCountry(country);
-    };
+   
   
     const  usertoken  = useSelector(loginSuccess);  
     const handleSubmit = async (e) => {
@@ -195,7 +192,6 @@ const TabInfo = () => {
 />
           </Grid>
           <Grid item xs={12} sm={6}>
-          <CountrySelect onSelectCountry={handleCountrySelect} />
 
 
           </Grid>
@@ -215,7 +211,7 @@ const TabInfo = () => {
               <InputLabel id='form-layouts-separator-multiple-select-label'>Languages</InputLabel>
               <Select
             multiple
-            value={selectedLanguages} // Set the value prop to the selected languages
+            value={selectedLanguages} 
             onChange={(e) => setSelectedLanguages(e.target.value)} // Update the state when the value changes
             id='account-settings-multiple-select'
             labelId='account-settings-multiple-select-label'

@@ -9,6 +9,9 @@ import Card from '@mui/material/Card';
 import Grid from '@mui/material/Grid';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import withAuth from '../../../features/reducers/withAuth';
+import { useSelector } from 'react-redux';
+import { loginSuccess } from '../../../features/reducers/authReducer';
+import CustomizedProgressBars from './loading'
 const theme = createTheme({
   breakpoints: {
     values: {
@@ -20,95 +23,114 @@ const theme = createTheme({
     },
   },
 });
-const dummyData = {
-    name: 'John Doe',
-    phoneNumber: '1234567890',
-    country: 'USA',
-    company: 'ABC Inc.',
-    position: 'Software Engineer',
-    email: 'john.doe@example.com',
-    link: 'https://example.com',
-    city: 'New York',
-    dateJoined: '2022-01-01',
-    yearsOfExperience: '5',
-    profilePicture: '/images/icons/Photo.png',
-    bio:'Lorem ipsum dolor sit amet, consectetur adipiscing elit.posuere  Mauris vitae justo at enim aliquet tempus non eget augue.',
-  };
+
 const Index = () => {
+  const usertoken = useSelector(loginSuccess);
   const router = useRouter();
-  const [DummyData, setDummyData] = useState(dummyData);
-  const [profileInfo, setProfileInfo] = useState(dummyData);
+  const [profileInfo, setProfileInfo] = useState(null);
   const [editedProfileInfo, setEditedProfileInfo] = useState({});
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [imagePreviewUrl, setImagePreviewUrl] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    // Check if any field has been changed from the dummy data
-    const updatedProfileInfo = { ...dummyData };
-    Object.keys(editedProfileInfo).forEach((key) => {
-      if (editedProfileInfo[key] !== dummyData[key]) {
-        updatedProfileInfo[key] = editedProfileInfo[key];
-      }
-    });
+    const fetchProfileData = async () => {
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/profil`, {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${usertoken.payload.token}`,
+            'Content-Type': 'application/json',
+          },
+        });
 
-    // Update profile information
-    setProfileInfo(updatedProfileInfo);
-  }, [editedProfileInfo]);
+        if (!response.ok) {
+          throw new Error('Failed to fetch profile data');
+        }
+
+        const data = await response.json();
+        setProfileInfo(data);
+        setEditedProfileInfo(data);
+      } catch (error) {
+        console.error('Error fetching profile data:', error.message);
+      }
+    };
+
+    fetchProfileData();
+    if (profileInfo?.image) {
+      setImagePreviewUrl(profileInfo.image);
+    }
+  }, [usertoken]);
+
   const handleEditProfile = () => {
     setIsEditing(true);
   };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setEditedProfileInfo({ ...editedProfileInfo, [name]: value });
   };
 
-  const goBack = () => {
-    router.back();
-  };
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-    const reader = new FileReader();
-  
-    reader.onloadend = () => {
-      setEditedProfileInfo({ ...editedProfileInfo, profilePicture: reader.result });
-    };
-  
     if (file) {
-      reader.readAsDataURL(file);
+      setSelectedImage(file);
+      setImagePreviewUrl(URL.createObjectURL(file));
     }
   };
-  
-  
 
-  
-  const handleSubmit = () => {
-   
-       const updatedProfileInfo = { ...dummyData };
-        Object.keys(profileInfo).forEach((key) => {
-
-          if (profileInfo[key] !== dummyData[key]) {
-            updatedProfileInfo[key] = profileInfo[key];
-
-          }
-        });
-    
-        // Update profile information
-        setProfileInfo(updatedProfileInfo);
-        console.log(profileInfo); 
-        setIsEditing(false);
-
-      };
+  const handleSubmit = async () => {
+    const formData = new FormData();
+    setIsLoading(true); 
  
-  
-  
+    try {
+      Object.keys(editedProfileInfo).forEach((key) => {
+        if (key !== 'image') {
+          formData.append(key, editedProfileInfo[key]);
+        }
+      });
+      if (selectedImage) {
+        formData.append('image', selectedImage);
+      }
+     
+      const updateResponse = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/profil/updateInfo`, {
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${usertoken.payload.token}`,
+        },
+        body: formData,
+      });
+    
+      if (!updateResponse.ok) {
+        throw new Error('Failed to update profile data');
+      }
+      if (updateResponse.ok) {
+        const updatedData = await updateResponse.json();
+        setProfileInfo(updatedData);
+        setIsEditing(false);
+        window.location.reload(); 
+        setIsLoading(false);
+
+      }
+     
+    } catch (error) {
+      setIsLoading(false);
+
+      console.error('Error updating profile data:', error.message);
+    }
+ 
+  };
   
 
-  
   return (
     <ThemeProvider theme={theme}>
+ {isLoading ? <CustomizedProgressBars /> : (
+          <>
       <Box sx={{ padding: 2 }}>
         <Grid container spacing={2} justifyContent="center">
           <Grid item xs={12} sm={8}>
-            <Typography variant="h3" component="div" sx={{ fontWeight: 700,fontSize:32 }}>
+            <Typography variant="h3" component="div" sx={{ fontWeight: 700, fontSize: 32 }}>
               Profile
             </Typography>
           </Grid>
@@ -116,162 +138,181 @@ const Index = () => {
             <Button
               variant="contained"
               onClick={handleEditProfile}
-              disabled={isEditing}              sx={{ width: '50%', bgcolor: '#6226EF', color: 'white' }}
+              disabled={isEditing}
+              sx={{ width: '50%', bgcolor: '#6226EF', color: 'white' }}
             >
-              Edit Profile
-            </Button>
+Customize Profile            </Button>
           </Grid>
         </Grid>
 
-        <Card sx={{ padding: 2 ,marginTop:5}}>
-          <Grid container spacing={2} sx={{ padding: 2 ,marginTop:5}}>
-            <Grid item xs={12} sm={4} sx={{ padding: 2 ,marginTop:5}}>
-              {/* Profile picture */}
-              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-              <Image   
-  src={editedProfileInfo.profilePicture || DummyData.profilePicture} // Update this line
-  alt="Selected Image" 
-  height={192} 
-  width={192} 
-/>
+        <Card sx={{ padding: 2, marginTop: 5 }}>
+          <Grid container spacing={2} sx={{ padding: 2, marginTop: 5 }}>
+          <Grid item xs={12} sm={4} sx={{ padding: 2, marginTop: 5 }}>
+  <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+    {imagePreviewUrl || profileInfo?.image ? (
+      <div style={{ borderRadius: '50%', overflow: 'hidden', marginBottom: '1rem' }}>
+        <Image
+          src={imagePreviewUrl ? imagePreviewUrl : `data:image/png;base64, ${profileInfo.image}`}
+          alt="User Image"
+          height={192}
+          width={192}
+        />
+      </div>
+    ) : (
+      <Image src={'/images/icons/Photo.png'} alt="Placeholder Image" height={192} width={192} />
+    )}
+    <label htmlFor="image-upload">
+      <input
+        id="image-upload"
+        type="file"
+        accept="image/*"
+        style={{ display: 'none' }}
+        disabled={!isEditing}
+        onChange={handleImageChange}
+      />
+      <Typography component="span" sx={{ color: '#4379EE', mt: 1 }}>
+        Profile Picture
+      </Typography>
+    </label>
+    <Typography variant="body1" gutterBottom sx={{ marginRight: 'auto', marginTop: '1rem' }}>
+      BIO
+    </Typography>
+    <TextField
+      fullWidth
+      multiline
+      rows={8}
+      sx={{ width: '100%', marginRight: 'auto' }}
+      name="bio"
+      value={editedProfileInfo.bio || ''}
+      onChange={handleInputChange}
+      disabled={!isEditing}
+    />
+  </Box>
+</Grid>
 
-<label htmlFor="image-upload">
-  <input
-    id="image-upload"
-    type="file"
-    accept="image/*"
-    onChange={handleImageChange} // Uncomment this line
-    style={{ display: 'none' }}  disabled={!isEditing}
-  />
-  <Typography component="span" sx={{ color: '#4379EE', mt: 1 }}>
-    Profile Picture
-  </Typography>
-</label>
-                <Typography variant="body1" gutterBottom  sx={{ marginRight:'auto' }}>
-                  BIO
-                </Typography>
-                <TextField fullWidth multiline rows={8}  sx={{width:223,marginRight:'auto'}}  
-                  placeholder={DummyData.bio}
-                  name="bio"
-                  value={editedProfileInfo.bio || profileInfo.bio}
-                  onChange={handleInputChange}            disabled={!isEditing}
-
-    
-                  />
-              </Box>
+            <Grid item xs={12} sm={4} sx={{ padding: 2, marginTop: 5 }}>
+              <Typography variant="body1" gutterBottom>
+                First Name
+              </Typography>
+              <TextField
+                fullWidth
+                sx={{ paddingBottom: 2 }}
+                name="first_name"
+                value={editedProfileInfo.first_name || ''}
+                onChange={handleInputChange}
+                disabled={!isEditing}
+              />
+              <Typography variant="body1" gutterBottom>
+                Last Name
+              </Typography>
+              <TextField
+                fullWidth
+                sx={{ paddingBottom: 2 }}
+                name="last_name"
+                value={editedProfileInfo.last_name || ''}
+                onChange={handleInputChange}
+                disabled={!isEditing}
+              />
+              <Typography variant="body1" gutterBottom>
+                Phone Number
+              </Typography>
+              <TextField
+                fullWidth
+                sx={{ paddingBottom: 2 }}
+                name="phone_number"
+                value={editedProfileInfo.phone_number || ''}
+                onChange={handleInputChange}
+                disabled={!isEditing}
+                type='number'
+                />
+              <Typography variant="body1" gutterBottom>
+                Country
+              </Typography>
+              <TextField
+                fullWidth
+                sx={{ paddingBottom: 2 }}
+                name="country"
+                value={editedProfileInfo.country || ''}
+                onChange={handleInputChange}
+                disabled={!isEditing}
+              />
+              <Typography variant="body1" gutterBottom>
+                Company
+              </Typography>
+              <TextField
+                fullWidth
+                sx={{ paddingBottom: 2 }}
+                name="company"
+                value={editedProfileInfo.company || ''}
+                onChange={handleInputChange}
+                disabled
+              />
+             
             </Grid>
-            <Grid item xs={12} sm={4}  sx={{ padding: 2 ,marginTop:5}}>
-              {/* Inputs */}
-              <Typography variant="body1" gutterBottom >
-              Name and Last Name
-                </Typography>
-              <TextField fullWidth   sx={{ paddingBottom: 2 }}
-              placeholder={DummyData.name}
-              name="name" // Adding name attribute to identify input
-              value={editedProfileInfo.name || profileInfo.name}
-              onChange={handleInputChange}            disabled={!isEditing}
-
-
-              />
-              <Typography variant="body1" gutterBottom>
-              Phone Number
-                </Typography>
-              <TextField fullWidth  sx={{ paddingBottom: 2 }}
-              placeholder={DummyData.phoneNumber}
-              name="phoneNumber"
-              value={editedProfileInfo.phoneNumber || profileInfo.phoneNumber}
-              onChange={handleInputChange}            disabled={!isEditing}
-
-              />
-              <Typography variant="body1" gutterBottom>
-              Country                </Typography>
-              <TextField fullWidth  sx={{ paddingBottom: 2 }}                 name="country"
-   placeholder={DummyData.country}
-   value={editedProfileInfo.country || profileInfo.country}
-   onChange={handleInputChange}            disabled={!isEditing}
-
-             />
-              <Typography variant="body1" gutterBottom>
-              Company
-                </Typography>
-              <TextField fullWidth  sx={{ paddingBottom: 2 }}   placeholder={DummyData.company}
-                           name="company"
-                           value={editedProfileInfo.company || profileInfo.company}
-                           onChange={handleInputChange}            disabled={!isEditing}
-
-              />
-              <Typography variant="body1" gutterBottom>
-              Position
-                </Typography>
-              <TextField fullWidth  sx={{ paddingBottom: 2 }}  placeholder={DummyData.position}         value={editedProfileInfo.position || profileInfo.position}
-                           onChange={handleInputChange}            disabled={!isEditing}
-
-                 name="position"/>
-            </Grid>
-            <Grid item xs={12} sm={4} sx={{ padding: 2 ,marginTop:5}}>
-              <Box >
-       
-              <Typography variant="body1" gutterBottom>
-              Email
-                </Typography>
-                <TextField fullWidth   sx={{ paddingBottom: 2 }}   placeholder={DummyData.email}
-               name="email"
-               value={editedProfileInfo.email || profileInfo.email}                            onChange={handleInputChange}
-               disabled={!isEditing}
-
-              />
+            <Grid item xs={12} sm={4} sx={{ padding: 2, marginTop: 5 }}>
+              <Box>
                 <Typography variant="body1" gutterBottom>
-                Link
+                  Link
                 </Typography>
-              <TextField fullWidth   sx={{ paddingBottom: 2 }}   placeholder={DummyData.link}
-               name="link"
-               value={editedProfileInfo.link || profileInfo.link}                            onChange={handleInputChange}
-               disabled={!isEditing}
-
-
-              />
-              <Typography variant="body1" gutterBottom>
-              City
+                <TextField
+                  fullWidth
+                  sx={{ paddingBottom: 2 }}
+                  name="link"
+                  value={editedProfileInfo.link || ''}
+                  onChange={handleInputChange}
+                  disabled={!isEditing}
+                />
+                <Typography variant="body1" gutterBottom>
+                  City
                 </Typography>
-              <TextField fullWidth  sx={{ paddingBottom: 2 }}    placeholder={DummyData.city}
-              name="city"
-              value={editedProfileInfo.city || profileInfo.city}                           onChange={handleInputChange}
-              disabled={!isEditing}
-
-
-              />
-              <Typography variant="body1" gutterBottom>
-              Date joined
+                <TextField
+                  fullWidth
+                  sx={{ paddingBottom: 2 }}
+                  name="city"
+                  value={editedProfileInfo.city || ''}
+                  onChange={handleInputChange}
+                  disabled={!isEditing}
+                />
+                <Typography variant="body1" gutterBottom>
+                  Date joined
                 </Typography>
-              <TextField fullWidth   sx={{ paddingBottom: 2 }}   placeholder={DummyData.dateJoined}
-            name="dateJoined"
-            value={editedProfileInfo.dateJoined || profileInfo.dateJoined}                           onChange={handleInputChange}
-            disabled={!isEditing}
-
-
-              />
-              <Typography variant="body1" gutterBottom>
-              Years Of Experience
+                <TextField
+                  fullWidth
+                  sx={{ paddingBottom: 2 }}
+                  name="join_Date"
+                  value={editedProfileInfo.join_Date || ''}
+                  onChange={handleInputChange}
+                  disabled={true}
+                />
+                <Typography variant="body1" gutterBottom>
+                  Years Of Experience
                 </Typography>
-              <TextField fullWidth sx={{ paddingBottom: 2 }}   placeholder={DummyData.yearsOfExperience}
-            name="yearsOfExperience"
-            value={editedProfileInfo.yearsOfExperience || profileInfo.yearsOfExperience}                           onChange={handleInputChange}
-            disabled={!isEditing}
+                <TextField
+                  fullWidth
+                  sx={{ paddingBottom: 2 }}
+                  name="yearsOfExperience"
+                  value={editedProfileInfo.yearsOfExperience || ''}
+                  onChange={handleInputChange}
+                  disabled={!isEditing}
+                  type='number'
 
-
-               />
+                />
               </Box>
             </Grid>
           </Grid>
-
-      
         </Card>
-        <Box sx={{ display: 'flex', justifyContent: 'right', mt: 2  }}>
-            <Button variant="contained" onClick={handleSubmit} disabled={!isEditing} sx={{ bgcolor: '#6226EF', color: 'white',width:'10%' }}>
-              Edit
-            </Button>
-          </Box>
-      </Box>
+        <Box sx={{ display: 'flex', justifyContent: 'right', mt: 2 }}>
+          <Button
+            variant="contained"
+            onClick={handleSubmit}
+            disabled={!isEditing}
+            sx={{ bgcolor: '#6226EF', color: 'white', width: '10%' }}
+          >
+            Save
+          </Button>
+        </Box>
+      </Box>  </>
+        )}
     </ThemeProvider>
   );
 };

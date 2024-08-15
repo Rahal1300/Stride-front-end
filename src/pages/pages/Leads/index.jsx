@@ -96,7 +96,7 @@ const PageLeads = () => {
               setSnackbarOpen(true);          }
             if (response.ok) {
               setLeads(data);
-              console.log(data);
+              
               setLoading(false);          }
         
           } catch (error) {
@@ -275,7 +275,7 @@ const PageLeads = () => {
         </TableContainer> 
       
         <Box sx={{margin :10}}>
-        <TableLeads  />
+        <TableLeads leads={leads}  />
 
 
         </Box>   <Snackbar

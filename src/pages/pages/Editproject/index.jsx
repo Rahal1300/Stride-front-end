@@ -77,8 +77,10 @@ const EditProject = () => {
   const [assignedTeam, setAssignedTeam] = useState('');
   const [discipline, setDiscipline] = useState([]);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarMessage, setSnackbarMessage] = useState('Project has been updated');
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const [showErrorMessage, setShowErrorMessage] = useState(false);
+  const [snackbarMessageError, setSnackbarMessageError] = useState('Error');
   const handleDepartementChange = (event) => {
     setDepartement(event.target.value); // event.target.value will be an array of selected values
   };
@@ -108,23 +110,20 @@ const EditProject = () => {
       status:'Active'
     };
     // Append project data as JSON
-    formData.append('project', new Blob([JSON.stringify(projectData)], { type: 'application/json' }));
-    formData.append('imageFile', logoFile);
-    formData.append('projectLogo', logoFile, 'hi');
-    console.log(projectData); 
+   //formData.append('project', new Blob([JSON.stringify(projectData)], { type: 'application/json' }));
+    //formData.append('imageFile', logoFile);
+   //// formData.append('projectLogo', logoFile, 'hi');
 
-    for (let pair of formData.entries()) {
-      console.log(pair[0]+ ', ' + pair[1]); 
-    }    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/projects/AddProject`, {
-        method: 'POST',
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/projects/update/${id}`, {
+        method: 'PUT',
         headers: {
           
           Authorization: `Bearer ${usertoken.payload.token}`,
-         //  'Content-Type': 'multipart/form-data', Explicitly set the Content-Type
+        'Content-Type': 'application/json', 
   
         },
-        body: formData,
+        body: JSON.stringify(projectData)
       });
       if (response.status === 200) {
         // Request was successful
@@ -206,7 +205,7 @@ const EditProject = () => {
       ) : (
         <>
           <DatePickerWrapper>
-            <Typography variant="h3" component="h1" sx={{ fontFamily: 'Nunito Sans', fontWeight: 700, fontSize: '32px', color: '#202224', marginBottom: '20px' }}>
+            <Typography variant="h3" component="h1" sx={{ fontFamily: 'Arial', fontWeight: 700, fontSize: '32px', color: '#202224', marginBottom: '20px' }}>
               Project
             </Typography>
             <Card sx={{ padding: 10 }}>
@@ -412,16 +411,23 @@ const EditProject = () => {
               </Box>
             </Card>
             <Box sx={{ display: 'flex', justifyContent: 'right', alignItems: 'right', marginTop: '15px' }}>
-              <Button variant="contained" color="primary" onClick={sendDataToServer} sx={{ background: '#6226EF' }}>+ Add User</Button>
+              <Button variant="contained" color="primary" onClick={sendDataToServer} sx={{ background: '#6226EF' }}>+ Update Project</Button>
             </Box>
           </DatePickerWrapper>
           <Snackbar
-            open={snackbarOpen}
-            autoHideDuration={6000} // Adjust as needed
-            onClose={handleCloseSnackbar}
-            message={snackbarMessage}
-            // You can customize Snackbar appearance further if needed
-          />
+  open={showSuccessMessage} // Use showSuccessMessage state variable here
+  autoHideDuration={6000}
+  onClose={handleCloseSnackbar}
+  message={snackbarMessage}
+/>
+
+<Snackbar
+  open={showErrorMessage} // Use showErrorMessage state variable here
+  autoHideDuration={6000}
+  onClose={handleCloseSnackbar}
+  message={snackbarMessageError}
+/>
+
         </>
       )}
     </ThemeProvider>

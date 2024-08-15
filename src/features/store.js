@@ -9,7 +9,7 @@ import authReducer from './reducers/authReducer'; // Assuming you have a combine
 const persistConfig = {
   key: 'KF',
   storage,
-  whitelist: ['token', 'googleToken','isAuthenticated'], // Ensure both tokens are part of the persist whitelist
+  whitelist: ['token', 'googleToken','isAuthenticated','Role','Cr'], // Ensure both tokens are part of the persist whitelist
 
 };
 

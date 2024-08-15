@@ -36,6 +36,7 @@ const Dashboard = () => {
         }
       } else {
         console.log('Token does not contain an expiration claim');
+        
       }
     } catch (error) {
       console.error('Error decoding the token:', error);

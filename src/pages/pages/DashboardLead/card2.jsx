@@ -18,22 +18,22 @@ const Card2 = ({ number,percentage }) => {
             left: '20px',
             opacity: 0.7,
             fontSize: '18px',
-            fontFamily: 'Nunito Sans',
+            fontFamily: 'Arial',
             color: '#404040'
           }}
         >
 Total Qualified        </Typography>
         <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
 
-          <Typography variant="h4" style={{ fontSize: '24px', fontWeight: '600', fontFamily: 'Nunito Sans', margin: '0' }}>{number}</Typography>
+          <Typography variant="h4" style={{ fontSize: '24px', fontWeight: '600', fontFamily: 'Arial', margin: '0' }}>{number}</Typography>
           
           <img src="/images/icons/Icon2.png" style={{ marginLeft: 'auto', width: '40px', height: '40px' }} alt="Manage Icon" />
         </Box>
         <Box sx={{ display: 'flex', alignItems: 'center'}}>
         <img src="/images/icons/stonks.png" style={{ marginLeft: 'auto', width: '24px', height: '24px' }} alt="Manage Icon" />
 
-        <Typography style={{ color: '#00B69B', marginRight: '5px',fontFamily:'Nunito Sans',fontSize:'16px' }}>{percentage}%</Typography>
-        <Typography variant="body2" style={{ fontSize: '14px', fontFamily: 'Nunito Sans', color: '#404040', display: 'inline' }}>
+        <Typography style={{ color: '#00B69B', marginRight: '5px',fontFamily:'Arial',fontSize:'16px' }}>{percentage}%</Typography>
+        <Typography variant="body2" style={{ fontSize: '14px', fontFamily: 'Arial', color: '#404040', display: 'inline' }}>
             Up from past month
           </Typography>
         </Box>

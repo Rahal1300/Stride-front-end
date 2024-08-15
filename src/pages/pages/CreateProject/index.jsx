@@ -55,6 +55,7 @@ const Index = () => {
   const [projectLang, setProjectLang] = useState('');
   const [company, setCompany] = useState('');
   const [country, setCountry] = useState('');
+
   const [estimatedDuration, SetEstimatedDuration] = useState('');
   const usertoken = useSelector(loginSuccess);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -66,22 +67,59 @@ const Index = () => {
   const [membersList, setMembersList] = useState([]); // Define membersList state variable
   const [teamList, setTeamList] = useState([]); // Define membersList state variable
   const [selectedMembers, setSelectedMembers] = useState([]); // State variable to hold selected users
-  const [selectedTeams, setSelectedTeams] = useState([]); // State variable to hold selected users
+  const [selectedTeams, setSelectedTeams] = useState([]); 
+  
+  const [floor, setFloor] = useState('');
+  const [base, setBase] = useState('');
+
+  const [selectedImageUrl, setSelectedImageUrl] = useState(null);
+  // Define state variables for discipline selection
+  const [customDiscipline, setCustomDiscipline] = useState('');
+  const [otherDiscipline, setOtherDiscipline] = useState(false); 
   const handleDepartementChange = (event) => {
-    setDepartement(event.target.value); // event.target.value will be an array of selected values
+    const selectedValue = event.target.value;
+    const isOtherSelected = selectedValue.includes('Other');
+    
+    if (isOtherSelected) {
+      setOtherDiscipline(true);
+    } else {
+      setOtherDiscipline(false);
+      setDepartement(selectedValue);
+    }
   };
+  
+  const handleCustomDisciplineChange = (event) => {
+    setCustomDiscipline(event.target.value);
+  };
+  
+  const addCustomDiscipline = () => {
+    if (customDiscipline.trim() !== '') {
+      setDepartement([...departement, customDiscipline]);
+      setCustomDiscipline('');
+      setOtherDiscipline(false); // Hide the custom discipline input field after adding
+    }
+  };
+
+
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-    setLogoFile(file);  };
-
+    setLogoFile(file); 
+  
+    // Create a temporary URL for the selected image
+    const imageUrl = URL.createObjectURL(file);
+    setSelectedImageUrl(imageUrl);
+  };
+  
   const goBack = () => {
     router.back();
   };
 
   
   const sendDataToServer = async () => {
-    if(!logoFile){console.log("u need to pick image ");};
-    const departementString = departement.join('-');
+
+    setLoading(true);
+
+    const departementString =departement.join('-');
     const formData = new FormData();
     const projectData = {
       projectName: projectName,
@@ -97,55 +135,83 @@ const Index = () => {
       progress: '0',
       country: country,
       projectlang: projectLang,
-      company: company,
+      project_company: company,
       status:status,
       projectsPhase:projectsPhase,
+      Floor:floor,
+      Base:base,
+
  
     };
-    // selectedMembers: selectedMembers,
-    // selectedTeams: selectedTeams,
-    // Append project data as JSON
+    console.log(projectData);
+   
     const teamIds = selectedTeams.map(team => team.id);
-const memberIds = selectedMembers.map(member => member.id);
+    const memberIds = selectedMembers.map(member => member.id);
     formData.append('project', new Blob([JSON.stringify(projectData)], { type: 'application/json' }));
-    formData.append('projectLogo', logoFile);
-    formData.append('selectedTeamId', selectedTeams); // Remove { type: 'application/json' }
+    if (logoFile) {
+      formData.append('projectLogo', logoFile);
+    } else {
+      // Create a Blob from the default image URL
+      const defaultImageBlob = await fetch('/images/icons/Photo.png').then(res => res.blob());
+      formData.append('projectLogo', defaultImageBlob, 'Photo.png');
+    } 
+     formData.append('selectedTeamId', selectedTeams); // Remove { type: 'application/json' }
     formData.append('additionalUserIds', selectedMembers);
 
 
-    console.log(projectData); 
 
-    for (let pair of formData.entries()) {
-      console.log(pair[0]+ ', ' + pair[1]); 
-    }    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/projects/Addproject`, {
+      try {
+     const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/projects/Addproject`, {
         method: 'POST',
         headers: {
           
-          Authorization: `Bearer ${usertoken.payload.token}`,
+         Authorization: `Bearer ${usertoken.payload.token}`,
          //  'Content-Type': 'multipart/form-data', Explicitly set the Content-Type
   
         },
         body: formData,
-      });
+     });
       if (response.status === 200) {
-        // Request was successful
         setShowSuccessMessage(true);
+       setLoading(false);
+         setProjectName('');
+       setDepartement([]);
+        setDate(null);
+        setDate2(null);
+       setDescription('');
+        SetEstimatedDuration('');
+        setLod('');
+        setLoi('');
+        setProjectWebsite('');
+        setOwner('');
+       setCountry('');
+        setProjectLang('');
+         setCompany('');
+        setStatus('');
+        setProjectsPhase('');
+       setFloor('');
+         setBase('');
+        setSelectedImageUrl(null);
+       setLogoFile(null);
+       setSelectedMembers([]);
+        setSelectedTeams([]);
+       } else {
         setLoading(false);
-  
-      } else {
-        // Handle error responses
-        setLoading(false);
-        setShowErrorMessage(true);
+         setShowErrorMessage(true);
 
         
-        console.error('Server error:', response.statusText);
-      }
-    } catch (error) {
-      setLoading(false);
-  
-      console.error('Error occurred:', error.message);
-    }
+        const errorMessage = await response.text();
+        console.log('Error response from API:', errorMessage);
+     }
+     } catch (error) {
+       setLoading(false);
+       console.log('Server error:', response.statusText);
+      const errorMessage = await response.text();
+       console.log('Error response from API:', errorMessage);
+      console.error('Error sending data to the API:', error.message);
+
+       console.error('Error occurred:', error.message);
+     }
    
   };
   const handleCloseSnackbar = () => {
@@ -159,7 +225,7 @@ const memberIds = selectedMembers.map(member => member.id);
     const fetchData = async () => {
       setLoading(true);
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/listuserswithoutteam`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/users-without-team`, {
           headers: {
             Authorization: `Bearer ${usertoken.payload.token}`,
           },
@@ -169,10 +235,7 @@ const memberIds = selectedMembers.map(member => member.id);
           setSnackbarOpen(true);
         }
         const data = await response.json();
-        if (!data || data.length === 0) {
-          setSnackbarMessage("Oops, you don't have any members yet. Please create members first.");
-          setSnackbarOpen(true);
-        }
+     
         if (response.ok) {
           setMembersList(data);
        setLoading(false);
@@ -196,13 +259,9 @@ const memberIds = selectedMembers.map(member => member.id);
           setSnackbarOpen(true);
         }
         const data = await response.json();
-        if (!data || data.length === 0) {
-          setSnackbarMessage("Oops, you don't have any members yet. Please create members first.");
-          setSnackbarOpen(true);
-        }
+      
         if (response.ok) {
           setTeamList(data);
-          console.log(data);
        setLoading(false);
         }
 
@@ -221,7 +280,7 @@ const memberIds = selectedMembers.map(member => member.id);
       ) : (
         <>
           <DatePickerWrapper>
-            <Typography variant="h3" component="h1" sx={{ fontFamily: 'Nunito Sans', fontWeight: 700, fontSize: '32px', color: '#202224', marginBottom: '20px' }}>
+            <Typography variant="h3" component="h1" sx={{ fontWeight: 700, fontSize: '32px', color: '#202224', marginBottom: '20px' }}>
               Project
             </Typography>
             <Card sx={{ padding: 10 }}>
@@ -230,12 +289,22 @@ const memberIds = selectedMembers.map(member => member.id);
               </Box>
               <Box sx={{ display: 'flex', alignItems: 'center' }}>
                 <Box sx={{ marginRight: '20px' }}>
-                  <Image
-                    src={'/images/icons/Photo.png'}
-                    alt="Selected Image"
-                    height={192}
-                    width={192}
-                  />
+                {selectedImageUrl ? (
+  <Image
+    src={selectedImageUrl}
+    alt="Selected Image"
+    height={192}
+    width={192}
+  />
+) : (
+  <Image
+    src={'/images/icons/Photo.png'}
+    alt="Placeholder Image"
+    height={192}
+    width={192}
+  />
+)}
+
 <Typography variant="body1" sx={{ color: '#4379EE', fontWeight: 500, marginRight: '20px', marginBottom: '60px', marginLeft: '50px', cursor: 'pointer' }}>
 <label htmlFor="image-upload">
        Project Picture
@@ -257,9 +326,9 @@ const memberIds = selectedMembers.map(member => member.id);
                     onChange={(e) => setDescription(e.target.value)}
                     sx={{ backgroundColor: '#F5F6FA', border: 'none', width: '223px' }}
                   />
-                   <Typography variant="body1" gutterBottom>Team</Typography>
+                   <Typography variant="body1" gutterBottom>Team *</Typography>
 
-              <Select fullWidth multiple value={selectedTeams} onChange={(e) => setSelectedTeams(e.target.value)}>
+              <Select fullWidth multiple value={selectedTeams} onChange={(e) => setSelectedTeams(e.target.value)} >
                   {teamList.map((team) => (
                     <MenuItem key={team.id} value={team.id}>
                       {team.teamName}
@@ -277,7 +346,7 @@ const memberIds = selectedMembers.map(member => member.id);
                 <Grid container spacing={2}>
                   <Grid item xs={6}>
                     <Box sx={{ padding: '20px' }}>
-                      <Typography variant="body1" gutterBottom>Project Name</Typography>
+                      <Typography variant="body1" gutterBottom>Project Name *</Typography>
                       <TextField
                         fullWidth
                         value={projectName}
@@ -329,19 +398,47 @@ const memberIds = selectedMembers.map(member => member.id);
                         onChange={(e) => setCompany(e.target.value)}
                         sx={{ backgroundColor: '#F5F6FA' }}
                       />    
-                          <Typography variant="body1" gutterBottom>Dicipline</Typography>
+                      <Typography variant="body1" gutterBottom>Discipline *</Typography>
                       <Select
-                        fullWidth
-                        multiple
-                        value={departement}
-                        onChange={handleDepartementChange} 
-                        sx={{ backgroundColor: '#F5F6FA' }}
-                      >
-                        <MenuItem value='Structure'>Structure</MenuItem>
-                        <MenuItem value='Architecture'>Architecture</MenuItem>
-                        <MenuItem value='MEP'>MEP</MenuItem>
-                        <MenuItem value='Electrical'>Electrical</MenuItem>
-                      </Select>
+  fullWidth
+  multiple
+  value={departement}
+  onChange={handleDepartementChange}
+  sx={{ backgroundColor: '#F5F6FA' }}
+>
+{departement.map((discipline) => (
+    (discipline !== 'Fluids' && discipline !== 'Electrical') && (
+      <MenuItem key={discipline} value={discipline}>
+        {discipline}
+      </MenuItem>
+    )
+  ))}  <MenuItem value='Fluids'>Fluids</MenuItem>
+  <MenuItem value='Electrical'>Electrical</MenuItem>
+  <MenuItem value='Other'>Other</MenuItem>
+
+  {/* Custom disciplines */}
+ 
+</Select>
+
+{/* Show custom discipline input field if Other is selected */}
+{otherDiscipline && (
+  <Box sx={{ display: 'flex', alignItems: 'center', marginTop: '10px' }}>
+    <TextField
+      fullWidth
+      value={customDiscipline}
+      onChange={handleCustomDisciplineChange}
+      label="Custom Discipline"
+      sx={{ backgroundColor: '#F5F6FA' }}
+    />
+    <Button onClick={addCustomDiscipline}>Add</Button>
+  </Box>
+)}
+
+
+
+
+        
+ 
                      
                       <Typography variant="body1" gutterBottom>Status</Typography>
                       <Select
@@ -356,6 +453,15 @@ const memberIds = selectedMembers.map(member => member.id);
                         <MenuItem value='Inactive'>Inactive</MenuItem>
              
                       </Select>
+                      <Typography variant="body1" gutterBottom>Basement</Typography>
+                      <TextField
+                        fullWidth
+                        value={base}
+                        onChange={(e) => setBase(e.target.value)}
+                        sx={{ backgroundColor: '#F5F6FA' }}
+                        type="number"
+                        inputProps={{ min: 0 }}
+                      />
                     </Box>
                   </Grid>
                   <Grid item xs={6}>
@@ -449,6 +555,15 @@ const memberIds = selectedMembers.map(member => member.id);
                         onChange={(e) => setProjectsPhase(e.target.value)}
                         sx={{ backgroundColor: '#F5F6FA' }}
                       />
+                             <Typography variant="body1" gutterBottom>Main Floor</Typography>
+                      <TextField
+                        fullWidth
+                        value={floor}
+                        onChange={(e) => setFloor(e.target.value)}
+                        sx={{ backgroundColor: '#F5F6FA' }}
+                        type="number"
+                        inputProps={{ min: 0 }}
+                      />
                       {/* <Typography variant="body1" gutterBottom>Client</Typography>
                       <TextField
                         fullWidth
@@ -496,4 +611,4 @@ const memberIds = selectedMembers.map(member => member.id);
   );
 };
 
-export default withAuth(Index);
+ export default withAuth(Index);

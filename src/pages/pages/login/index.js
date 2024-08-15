@@ -1,7 +1,7 @@
 // ** React Imports
 import { useState,useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux'
-import {loginSuccess,logout,logoutGoogle } from '../../../features/reducers/authReducer';
+import {loginSuccess,logout,logoutGoogle,SetRole,Cr } from '../../../features/reducers/authReducer';
 
 // ** Next Imports
 import Link from 'next/link';
@@ -125,15 +125,20 @@ const handleSubmit = async (e) => {
   } else {
     dispatch(loginSuccess(data.token));
 
+
+    
     const base64Url = data.token.split('.')[1];
     const base64 = base64Url.replace('-', '+').replace('_', '/');
     const decodedToken = JSON.parse(window.atob(base64));
+    dispatch(SetRole(decodedToken.role));
+    dispatch(Cr(decodedToken.cr));
 
-    if (decodedToken.role === 'User') {
-      router.push('/pages/userinterface');
+  
+     if (decodedToken.cr === 'LeadsManager') {
+       router.push('/pages/DashboardLead');
     } else {
-      router.push('/pages/userinterface');
-    }
+       router.push('/pages/userinterface');
+     }
   }
 } catch (error) {
   console.error('Error parsing JSON:', error);
@@ -218,7 +223,7 @@ const MaskImg = styled('img')(() => ({
                 color:'Black'
               }}
             />
-          </div>     <Box sx={{ position: 'absolute', top: '52%', right: '40%', transform: 'translateY(-50%)' }}>
+          </div>     <Box sx={{ position: 'absolute', top: '52%', right: '42%', transform: 'translateY(-50%)' }}>
   <Link passHref href="/">
     <LinkStyled onClick={(e) => e.preventDefault()}  sx={{color:'gray'}}>Forgot Password?</LinkStyled>
   </Link>
@@ -295,7 +300,7 @@ const MaskImg = styled('img')(() => ({
             Don’t have an account?               </Typography>
             <Typography variant="body2">
               <Link passHref href="/pages/register">
-                <LinkStyled sx={{color:'#5A8CFF',fontFamily:'Nunito Sans',fontSize:'18',textDecoration: 'underline'}}>Create an account</LinkStyled>
+                <LinkStyled sx={{color:'#5A8CFF',fontFamily:'Arial',fontSize:'18',textDecoration: 'underline'}}>Create an account</LinkStyled>
               </Link>
             </Typography>
           </Box>

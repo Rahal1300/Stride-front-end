@@ -12,7 +12,8 @@ const TeamCard = ({ team }) => {
   const router = useRouter();
   const [decodedToken, setDecodedToken] = useState(null);
   const usertoken = useSelector(loginSuccess);
-
+  const userrole = useSelector(state => state.Role); 
+  const  cr  = useSelector(state => state.Cr); 
   useEffect(() => {
     if (usertoken) {
       const base64Url = usertoken.payload.token.split('.')[1];
@@ -23,8 +24,10 @@ const TeamCard = ({ team }) => {
   }, [usertoken]);
   const isAdmin = decodedToken && decodedToken.role === 'Admin';
   const isTeamManager = decodedToken && decodedToken.cr === 'TeamManager';
-  const isCurrentUserTeamManager = team?.teamusers.some(user => user.role_in_team === 'TeamManager' && user.email === decodedToken.email);
-  const shouldShowModifyIcon = isAdmin || (isTeamManager && isCurrentUserTeamManager);
+  // const isCurrentUserTeamManager = team?.teamusers.some(user => user.role_in_team === 'TeamManager' && decodedToken && usertoken.email === decodedToken.email);
+
+  // const shouldShowModifyIcon = isAdmin || (isTeamManager && isCurrentUserTeamManager);
+  const shouldShowModifyIcon = isAdmin || (isTeamManager);
 
   if (!team || !team.teamusers) {
     return <div>No Team or Team Users</div>;
@@ -62,6 +65,13 @@ const TeamCard = ({ team }) => {
     router.push(`/pages/TeamView?id=${team.id}`);
   };
 
+
+
+
+  const Owner = userrole === 'Subscriber' && cr === 'Owner';
+  const TeamManagerandOwner = userrole === 'Subscriber' &&  cr === 'TeamManager';
+  const Manager= userrole === 'Subscriber' &&  cr === 'Owner';
+  console.log("hi",(Owner || Manager || TeamManagerandOwner));
   return (
     <div >
       <ThemeProvider theme={customTheme}>
@@ -78,10 +88,10 @@ const TeamCard = ({ team }) => {
           </Box>
           <CardContent>
             <Typography variant="h5" gutterBottom>
-              {team.teamName}
+              Team Name : {team.teamName}
             </Typography>
             <Typography variant="body1">
-              Team Manager: {team.teamManager}
+              Team Leader: {team.teamManager}
             </Typography>
             <Typography variant="body1" sx={{ marginTop: 2, marginBottom: 1 }}>
               Assigned Projects: {team.numberofprojects}
@@ -104,7 +114,8 @@ const TeamCard = ({ team }) => {
                   <Avatar
                     key={member.id}
                     alt={member.first_name}
-                    src={member.image || '/default-avatar.jpg'} // Provide a default avatar image URL
+                    src={`data:image/png;base64,${member.image}`}
+
                   />
                 ))}
               </AvatarGroup>
@@ -118,9 +129,9 @@ const TeamCard = ({ team }) => {
             onClose={handleClose}
           >
             <MenuItem onClick={handleView}>View List</MenuItem>
-            {shouldShowModifyIcon && (
-              <MenuItem onClick={handleClose}>Delete</MenuItem>
-            )}
+                      {Owner || Manager || TeamManagerandOwner ? (
+              <MenuItem onClick={handleClose} disabled>Delete</MenuItem>
+            ):(null)}
           </Menu>
         </Card>
       </ThemeProvider>

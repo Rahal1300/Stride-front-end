@@ -1,12 +1,53 @@
-import React, { useState } from 'react';
+import React, { useState ,useEffect} from 'react';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
 import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
-import TicketForm from './TicketForm'; // Assuming you have a component for the ticket form
+import TicketForm from './TicketForm'; 
+import { styled } from '@mui/material/styles'
+import Typography from '@mui/material/Typography'
+import { useSelector } from 'react-redux';
+import { loginSuccess } from 'src/features/reducers/authReducer';
+
+
+import BlankLayout from 'src/@core/layouts/BlankLayout'
+
+
+import FooterIllustrations from 'src/views/pages/misc/FooterIllustrations'
+import { useRouter } from 'next/router';
+
+
+const BoxWrapper = styled(Box)(({ theme }) => ({
+  [theme.breakpoints.down('md')]: {
+    width: '90vw'
+  }
+}))
+
+const Img = styled('img')(({ theme }) => ({
+  marginBottom: theme.spacing(10),
+  [theme.breakpoints.down('lg')]: {
+    height: 450,
+    marginTop: theme.spacing(10)
+  },
+  [theme.breakpoints.down('md')]: {
+    height: 400
+  },
+  [theme.breakpoints.up('lg')]: {
+    marginTop: theme.spacing(13)
+  }
+}))
+
 
 function Tickets() {
   const [open, setOpen] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const usertoken = useSelector(loginSuccess);
+  const router = useRouter();
+  const [data,setData] = useState([]);
+  const { id } = router.query;
 
   const handleOpen = () => {
     setOpen(true);
@@ -15,6 +56,38 @@ function Tickets() {
   const handleClose = () => {
     setOpen(false);
   };
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/posts/project/${id}`, {
+          headers: {
+            Authorization: `Bearer ${usertoken.payload.token}`,
+          },
+        });
+        if (!response.ok) {
+          setSnackbarMessage('Something went wrong !!');
+          setSnackbarOpen(true);
+        }
+        const data = await response.json();
+     
+        if (response.ok) {
+          setData(data);
+          setSnackbarMessage('Project posts');
+         // setMembersList(data);
+        setLoading(false);
+        }
+
+      } catch (error) {
+        setError(error.message);
+        setLoading(false);
+      }
+    };
+   
+
+    fetchData();
+  }, [usertoken]);
+
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -22,7 +95,7 @@ function Tickets() {
         borderColor: 'gray',
         borderWidth: '1px',width:'80%',marginBottom:'20px'
       }} />
-      <Button
+      {/* <Button
   variant="contained"
   onClick={handleOpen}
   sx={{
@@ -37,7 +110,7 @@ function Tickets() {
   }}
 >
   Create a ticket
-</Button>
+</Button> */}
 
       <Modal
         open={open}
@@ -47,8 +120,18 @@ function Tickets() {
       >
         <TicketForm onClose={handleClose} />
       </Modal>
-      {/* Display existing tickets here */}
-    </Box>
+      <Box sx={{ p: 5, display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
+        <BoxWrapper>
+          <Typography variant='h1'>Under Construction</Typography>
+          <Typography variant='h5' sx={{ mb: 1, fontSize: '1.5rem !important' }}>
+            This page is currently under construction! 🚧 👨🏻‍💻 
+          </Typography>
+          <p>{data.length}</p>
+          <Typography variant='body2'>We are working hard to bring you an amazing experience. Please check back later!</Typography>
+        </BoxWrapper>
+        <Img height='487' alt='under-construction' src='/images/pages/under-construction.png' />
+       
+      </Box>    </Box>
   );
 }
 

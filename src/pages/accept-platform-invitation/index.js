@@ -23,7 +23,7 @@ function AcceptInvitation() {
   
     const handleGetStartedClick = () => {
       // Use router.push to navigate to the desired page
-      router.push('https://front-two-sigma-23.vercel.app/pages/addproject/');
+      router.push('pages/addproject/');
     };
   useEffect(() => {
     const confirmInvitation = async () => {

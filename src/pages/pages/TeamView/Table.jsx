@@ -25,7 +25,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 
-const TeamComponent = ({ team, Teamid }) => {
+const TeamComponent = ({ team, Teamid, refreshData, onRefreshData }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedMember, setSelectedMember] = useState(null);
   const [selectedImageMember, setSelectedImageMember] = useState(null);
@@ -48,10 +48,10 @@ const TeamComponent = ({ team, Teamid }) => {
     }
   }, [usertoken]);
   const handleClick = (event, member) => {
-    setSelectedMember(null); // Reset selected member after logging the role
+    setSelectedMember(null); 
 
     setAnchorEl(event.currentTarget);
-    setSelectedImageMember(member); // Save the selected member when image is clicked
+    setSelectedImageMember(member); 
   };
 
   const handleClose = () => {
@@ -95,8 +95,9 @@ const TeamComponent = ({ team, Teamid }) => {
       });
       // const data = await response.json();
       setLoading(false);
-      setSelectedMember(null); // Reset selected member after logging the role
+      setSelectedMember(null); 
       handleSnackbarOpen('Role updated successfully', 'success');
+      onRefreshData();
     } catch (error) {
       console.error('Error updating role:', error);
       setLoading(false);
@@ -116,10 +117,10 @@ const TeamComponent = ({ team, Teamid }) => {
   
       if (response.ok) {
         setLoading(false);
-        setSelectedMember(null); // Reset selected member after logging the role
+        setSelectedMember(null); 
         handleSnackbarOpen('User removed from team successfully', 'success');
       } else {
-        // If response status is not OK (i.e., the request failed)
+      
         setLoading(false);
         handleSnackbarOpen('Failed to remove user from team', 'error');
       }
@@ -159,10 +160,14 @@ const isTeamManager = decodedToken && decodedToken.cr === 'TeamManager';
 
 const isCurrentUserTeamManager = team && team.teamusers && team.teamusers.some(user => user.role_in_team === 'TeamManager' && user.email === (decodedToken && decodedToken.email));
 
-const shouldShowModifyIcon = isAdmin || (isTeamManager && isCurrentUserTeamManager);
+const shouldShowModifyIcon = isAdmin || isTeamManager ;
 
 
-
+const userrole = useSelector(state => state.Role); 
+const  cr  = useSelector(state => state.Cr); 
+const Owner = userrole === 'Subscriber' && cr === 'Owner';
+const TeamManagerandOwner = userrole === 'Subscriber' &&  cr === 'TeamManager';
+const Manager= userrole === 'Subscriber' &&  cr === 'Owner';
   return (
     <>
       <TableContainer component={Paper}>
@@ -173,7 +178,7 @@ const shouldShowModifyIcon = isAdmin || (isTeamManager && isCurrentUserTeamManag
               <TableCell>Email</TableCell>
               <TableCell>Role</TableCell>
               <TableCell>Status</TableCell>
-              {shouldShowModifyIcon && <TableCell>Edit</TableCell>}
+              {Owner || Manager || TeamManagerandOwner   ?( <TableCell>Edit</TableCell>):(null)}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -195,7 +200,7 @@ const shouldShowModifyIcon = isAdmin || (isTeamManager && isCurrentUserTeamManag
                       <MenuItem value={'Guest'}>Guest</MenuItem>
                       <MenuItem value={'TeamLeader'}>Team Leader</MenuItem>
                       <MenuItem value={'Collaborator'}>Collaborator</MenuItem>
-                      <MenuItem value={'TeamManager'}>Team Manager</MenuItem>
+                      {/* <MenuItem value={'TeamManager'}>Team Manager</MenuItem> */}
                     </Select>
                   ) : (
                     <div>
@@ -226,12 +231,12 @@ const shouldShowModifyIcon = isAdmin || (isTeamManager && isCurrentUserTeamManag
                   >
                     <MenuItem onClick={createEditRoleHandler(selectedImageMember)}>Edit Role</MenuItem>
                     <Divider sx={{ borderWidth: '1px', borderColor: '#979797' }} />
-                    <MenuItem onClick={handleClose}>Change status</MenuItem>
+                    <MenuItem onClick={handleClose} disabled>Change status</MenuItem>
                     <Divider sx={{ borderWidth: '1px', borderColor: '#979797' }} />
-                    <MenuItem onClick={handleClose}>Suspend</MenuItem>
+                    <MenuItem onClick={handleClose} disabled>Suspend</MenuItem>
                   </Menu>
                 </TableCell>
-                {shouldShowModifyIcon && (
+                {Owner || Manager || TeamManagerandOwner   ? (
                   <TableCell>
                     <DeleteIcon onClick={() => handleRemoveClick(member)} sx={{ marginRight: 8 }} />
                     <Image
@@ -242,7 +247,7 @@ const shouldShowModifyIcon = isAdmin || (isTeamManager && isCurrentUserTeamManag
                       onClick={(event) => handleClick(event, member)}
                     />
                   </TableCell>
-                )}
+                ):(null)}
               </TableRow>
             ))}
           </TableBody>
