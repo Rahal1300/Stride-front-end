@@ -245,7 +245,7 @@ const navigation = () => {
       title: t('Users'),
       path: '/pages/user',
 
-      ...(TeamManagerUser && { hidden: true}),
+      ...(TeamManagerUser && { hidden: false}),
 
       ...(LeadsManagerandOwner && { hidden: false}),
 

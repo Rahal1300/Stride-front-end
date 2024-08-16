@@ -154,7 +154,7 @@ const Index = () => {
     };
   
     const SendAdduser = () => {
-      router.push('/pages/Adduser') ;  };
+      router.push('/pages/CreateTeam') ;  };
   
       const handleCloseSnackbar = () => {
         setSnackbarOpen(false);
