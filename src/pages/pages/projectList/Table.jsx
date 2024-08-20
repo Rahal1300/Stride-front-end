@@ -17,6 +17,7 @@ import Box from '@mui/material/Box';
 const TableProject = ({ rows }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredRows, setFilteredRows] = useState(rows);
+  const router = useRouter();
   const customTheme = createTheme({
     components: {
       MuiAvatar: {
@@ -55,7 +56,7 @@ const TableProject = ({ rows }) => {
     return null; 
   }
   
-  const router = useRouter();
+
 
   const handleView = (row) => {
     router.push({

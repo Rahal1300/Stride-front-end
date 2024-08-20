@@ -1,27 +1,25 @@
-import React, { useState ,useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
 import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
-import TicketForm from './TicketForm'; 
-import { styled } from '@mui/material/styles'
-import Typography from '@mui/material/Typography'
+import TicketForm from './TicketForm';
+import { styled } from '@mui/material/styles';
+import Typography from '@mui/material/Typography';
 import { useSelector } from 'react-redux';
 import { loginSuccess } from 'src/features/reducers/authReducer';
-
-
-import BlankLayout from 'src/@core/layouts/BlankLayout'
-
-
-import FooterIllustrations from 'src/views/pages/misc/FooterIllustrations'
+import BlankLayout from 'src/@core/layouts/BlankLayout';
+import FooterIllustrations from 'src/views/pages/misc/FooterIllustrations';
 import { useRouter } from 'next/router';
-
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import CardActions from '@mui/material/CardActions';
 
 const BoxWrapper = styled(Box)(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
     width: '90vw'
   }
-}))
+}));
 
 const Img = styled('img')(({ theme }) => ({
   marginBottom: theme.spacing(10),
@@ -35,8 +33,7 @@ const Img = styled('img')(({ theme }) => ({
   [theme.breakpoints.up('lg')]: {
     marginTop: theme.spacing(13)
   }
-}))
-
+}));
 
 function Tickets() {
   const [open, setOpen] = useState(false);
@@ -46,7 +43,7 @@ function Tickets() {
   const [error, setError] = useState(null);
   const usertoken = useSelector(loginSuccess);
   const router = useRouter();
-  const [data,setData] = useState([]);
+  const [data, setData] = useState([]);
   const { id } = router.query;
 
   const handleOpen = () => {
@@ -56,11 +53,12 @@ function Tickets() {
   const handleClose = () => {
     setOpen(false);
   };
+
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/posts/project/${id}`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/posts`, {
           headers: {
             Authorization: `Bearer ${usertoken.payload.token}`,
           },
@@ -70,24 +68,16 @@ function Tickets() {
           setSnackbarOpen(true);
         }
         const data = await response.json();
-     
-        if (response.ok) {
-          setData(data);
-          setSnackbarMessage('Project posts');
-         // setMembersList(data);
+        setData(data);
         setLoading(false);
-        }
-
       } catch (error) {
         setError(error.message);
         setLoading(false);
       }
     };
-   
 
     fetchData();
   }, [usertoken]);
-
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -95,22 +85,6 @@ function Tickets() {
         borderColor: 'gray',
         borderWidth: '1px',width:'80%',marginBottom:'20px'
       }} />
-      {/* <Button
-  variant="contained"
-  onClick={handleOpen}
-  sx={{
- 
-   
-    backgroundColor: '#E2EAF8',
-    opacity: 0.7,
-
-    color: '#202224',
- 
-    borderRadius: '10%',
-  }}
->
-  Create a ticket
-</Button> */}
 
       <Modal
         open={open}
@@ -122,16 +96,33 @@ function Tickets() {
       </Modal>
       <Box sx={{ p: 5, display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
         <BoxWrapper>
-          <Typography variant='h1'>Under Construction</Typography>
-          <Typography variant='h5' sx={{ mb: 1, fontSize: '1.5rem !important' }}>
-            This page is currently under construction! 🚧 👨🏻‍💻 
-          </Typography>
-          <p>{data.length}</p>
-          <Typography variant='body2'>We are working hard to bring you an amazing experience. Please check back later!</Typography>
+          <Typography variant='h1'>Posts</Typography>
+          {data.map((post) => (
+            <Card key={post.id} sx={{ mb: 2 }}>
+              <CardContent>
+                <Typography variant="h5" component="div">
+                  {post.title}
+                </Typography>
+                <Typography variant="body2">
+                  {post.content}
+                </Typography>
+              </CardContent>
+              <CardActions>
+                <Typography variant="body2" color="text.secondary">
+                  Comments:
+                </Typography>
+                {post.comments.map(comment => (
+                  <Typography key={comment.id} variant="body2" color="text.secondary">
+                    {comment.content}
+                  </Typography>
+                ))}
+              </CardActions>
+            </Card>
+          ))}
         </BoxWrapper>
         <Img height='487' alt='under-construction' src='/images/pages/under-construction.png' />
-       
-      </Box>    </Box>
+      </Box>
+    </Box>
   );
 }
 

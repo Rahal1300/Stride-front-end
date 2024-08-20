@@ -8,6 +8,7 @@ import React, { useState, useEffect } from 'react'
 import Typography from '@mui/material/Typography'
 import Snackbar from '@mui/material/Snackbar'
 import { useSelector } from 'react-redux'
+import { useRouter } from 'next/router'
 
 // ** Icons Imports
 import Menu from 'mdi-material-ui/Menu'
@@ -28,6 +29,7 @@ const AppBarContent = props => {
   const hiddenSm = useMediaQuery(theme => theme.breakpoints.down('sm'))
   const [dataFromChild, setDataFromChild] = useState('');
   const [snackbarOpen, setSnackbarOpen] = useState(false)
+  const router = useRouter()
 
   const userRole = useSelector(state => state.Role)
   const cr = useSelector(state => state.Cr)
@@ -66,6 +68,11 @@ const notyours=  userRole === 'Subscriber' && cr === 'Newcomer'
       },
     },
   })
+
+  const handleLogout = () => {
+    localStorage.removeItem('token') // Adjust this key to match the token storage key
+    router.push("/pages/login");// Adjust this route to match your login page route
+  }
   return (
     <Box sx={{ width: '100%', display: 'flex', alignItems: 'right', justifyContent: 'space-between' }}>
       <Box className='actions-left' sx={{ mr: 2, display: 'flex', alignItems: 'center' }}>
@@ -116,6 +123,10 @@ const notyours=  userRole === 'Subscriber' && cr === 'Newcomer'
         <LanguageDropdown/>
 
         <UserDropdown sendDataToParent={sendDataToParent} />
+        <IconButton onClick={handleLogout} color="inherit">
+          <Typography variant="body2">Logout</Typography>
+        </IconButton>
+      
       </Box>
     </Box>
   )

@@ -186,94 +186,84 @@ const PageLeads = () => {
   
   
   
-        <TableContainer style={{ borderRadius: 10, border: '0.6px  #D5D5D5 ', maxWidth: 818,marginTop:100 }}>
-          <Table size="small" aria-label="filter options" style={{ borderCollapse: 'collapse', backgroundColor: '#FFFFFF', maxWidth: 818, borderRadius: 10, border: '0.6px solid #D5D5D5' }}>
-            <TableBody>
-              <TableRow>
-                <TableCell >
-             
-                    <Image src="/images/icons/filter.png" width={20} height={20} alt="Filter Icon" />
-             
-                </TableCell>
-                {/* Filter By label with icon */}
-                <TableCell style={{ borderRight: '1px solid #CCCCCC', borderLeft: '1px solid #CCCCCC' }}>
-                  <Button
-                    onClick={handleDateOpen}
-                    style={{ backgroundColor: '#FFFFFF', color: '#202224', textTransform: 'none', fontSize: '14px' }}
-                  >
-                    Filter By
-                  </Button>
-                  <Menu anchorEl={dateAnchorEl} open={Boolean(dateAnchorEl)} onClose={handleDateClose}>
-                    {/* Add date options here */}
-                    <MenuItem onClick={handleDateClose}>Option 1</MenuItem>
-                    <MenuItem onClick={handleDateClose}>Option 2</MenuItem>
-                    <MenuItem onClick={handleDateClose}>Option 3</MenuItem>
-                  </Menu>
-                </TableCell>
-                {/* Date filter dropdown */}
-                <TableCell style={{ borderRight: '1px solid #CCCCCC', borderLeft: '1px solid #CCCCCC' }}>
-                  <Button
-                    onClick={handleDateOpen}
-                    style={{ backgroundColor: '#FFFFFF', color: '#202224', textTransform: 'none', fontSize: '14px' }}
-                  >
-                    Date
-                  </Button>
-                  <Image src="/images/icons/path.png" width={12} height={7} alt="Filter Icon" />
-  
-                  <Menu anchorEl={dateAnchorEl} open={Boolean(dateAnchorEl)} onClose={handleDateClose}>
-                    {/* Add date options here */}
-                    <MenuItem onClick={handleDateClose}>Option 1</MenuItem>
-                    <MenuItem onClick={handleDateClose}>Option 2</MenuItem>
-                    <MenuItem onClick={handleDateClose}>Option 3</MenuItem>
-                  </Menu>
-  
-                  <Button
-                    onClick={handleTypeOpen}
-                    style={{ backgroundColor: '#FFFFFF', color: '#202224', textTransform: 'none', fontSize: '14px' }}
-                  >
-                    Order Type
-                  </Button>
-                  <Image src="/images/icons/path.png" width={12} height={7} alt="Filter Icon" />
-  
-                  <Menu anchorEl={typeAnchorEl} open={Boolean(typeAnchorEl)} onClose={handleTypeClose}>
-                    {/* Add order type options here */}
-                    <MenuItem onClick={handleTypeClose}>Option 1</MenuItem>
-                    <MenuItem onClick={handleTypeClose}>Option 2</MenuItem>
-                    <MenuItem onClick={handleTypeClose}>Option 3</MenuItem>
-                  </Menu>
-                </TableCell>
-                {/* Order Status filter dropdown */}
-                <TableCell >
-                  <Button
-                    onClick={handleStatusOpen}
-                    sx={{}}
-  
-                    style={{ backgroundColor: '#FFFFFF', color: '#202224', textTransform: 'none', fontSize: '14px' }}
-                  >
-                     Status
-                  </Button>
-                  <Image src="/images/icons/path.png" width={12} height={7} alt="Filter Icon" />
-  
-                  <Menu anchorEl={statusAnchorEl} open={Boolean(statusAnchorEl)} onClose={handleStatusClose}   >
-                    <MenuItem >Active</MenuItem>
-                    <MenuItem >Suspended</MenuItem>
-                    <MenuItem >Out</MenuItem>
-                  </Menu>
-                </TableCell>
-                <TableCell >
-                  <Button
-                    style={{ backgroundColor: '#FFFFFF', color: '#EA0234', textTransform: 'none' }}
-                  >
-                    <Image src="/images/icons/replay.png" width={18} height={18} alt="Reset Icon" />
-                    Reset Filter
-                  </Button>
-  
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </TableContainer> 
-      
+<TableContainer style={{ borderRadius: 10, border: '0.6px solid #D5D5D5', width: '94.2%', marginTop: 100, marginLeft: 42 }}>
+  <Table size="small" aria-label="filter options" style={{ borderCollapse: 'collapse', backgroundColor: '#FFFFFF', width: '100%', borderRadius: 10, border: '0.6px solid #D5D5D5' }}>
+    <TableBody>
+      <TableRow>
+        <TableCell style={{ width: '5%' }}>
+          <Image src="/images/icons/filter.png" width={20} height={20} alt="Filter Icon" />
+        </TableCell>
+        <TableCell style={{ width: '19%', borderRight: '1px solid #CCCCCC', borderLeft: '1px solid #CCCCCC' }}>
+          <Button
+            onClick={handleDateOpen}
+            style={{ backgroundColor: '#FFFFFF', color: '#202224', textTransform: 'none', fontSize: '14px' }}
+          >
+            Filter By
+          </Button>
+          <Menu anchorEl={dateAnchorEl} open={Boolean(dateAnchorEl)} onClose={handleDateClose}>
+            <MenuItem onClick={handleDateClose}>Option 1</MenuItem>
+            <MenuItem onClick={handleDateClose}>Option 2</MenuItem>
+            <MenuItem onClick={handleDateClose}>Option 3</MenuItem>
+          </Menu>
+        </TableCell>
+        <TableCell style={{ width: '19%', borderRight: '1px solid #CCCCCC', borderLeft: '1px solid #CCCCCC' }}>
+          <Button
+            onClick={handleDateOpen}
+            style={{ backgroundColor: '#FFFFFF', color: '#202224', textTransform: 'none', fontSize: '14px' }}
+          >
+            Date
+          </Button>
+          <Image src="/images/icons/path.png" width={12} height={7} alt="Filter Icon" />
+
+          <Menu anchorEl={dateAnchorEl} open={Boolean(dateAnchorEl)} onClose={handleDateClose}>
+            <MenuItem onClick={handleDateClose}>Option 1</MenuItem>
+            <MenuItem onClick={handleDateClose}>Option 2</MenuItem>
+            <MenuItem onClick={handleDateClose}>Option 3</MenuItem>
+          </Menu>
+
+          <Button
+            onClick={handleTypeOpen}
+            style={{ backgroundColor: '#FFFFFF', color: '#202224', textTransform: 'none', fontSize: '14px' }}
+          >
+            Order Type
+          </Button>
+          <Image src="/images/icons/path.png" width={12} height={7} alt="Filter Icon" />
+
+          <Menu anchorEl={typeAnchorEl} open={Boolean(typeAnchorEl)} onClose={handleTypeClose}>
+            <MenuItem onClick={handleTypeClose}>Option 1</MenuItem>
+            <MenuItem onClick={handleTypeClose}>Option 2</MenuItem>
+            <MenuItem onClick={handleTypeClose}>Option 3</MenuItem>
+          </Menu>
+        </TableCell>
+        <TableCell style={{ width: '19%' }}>
+          <Button
+            onClick={handleStatusOpen}
+            sx={{}}
+            style={{ backgroundColor: '#FFFFFF', color: '#202224', textTransform: 'none', fontSize: '14px' }}
+          >
+            Status
+          </Button>
+          <Image src="/images/icons/path.png" width={12} height={7} alt="Filter Icon" />
+
+          <Menu anchorEl={statusAnchorEl} open={Boolean(statusAnchorEl)} onClose={handleStatusClose}>
+            <MenuItem onClick={() => handleStatusSelect('ACTIVE')}>Active</MenuItem>
+            <MenuItem onClick={() => handleStatusSelect('Suspended')}>Suspended</MenuItem>
+            <MenuItem onClick={() => handleStatusSelect('Out')}>Out</MenuItem>
+          </Menu>
+        </TableCell>
+        <TableCell style={{ width: '19%' }}>
+          <Button
+            style={{ backgroundColor: '#FFFFFF', color: '#EA0234', textTransform: 'none' }}
+          >
+            <Image src="/images/icons/replay.png" width={18} height={18} alt="Reset Icon" />
+            Reset Filter
+          </Button>
+        </TableCell>
+      </TableRow>
+    </TableBody>
+  </Table>
+</TableContainer>
+
         <Box sx={{margin :10}}>
         <TableLeads leads={leads}  />
 

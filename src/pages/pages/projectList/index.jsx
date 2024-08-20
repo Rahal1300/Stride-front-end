@@ -331,89 +331,60 @@ const FilterCard = () => {
   </Box>
   
   
-        <TableContainer  style={{ borderRadius: 10,border: '0.6px  #D5D5D5 ', maxWidth: 818,marginTop:100, marginLeft:77}}>
-          <Table size="small" aria-label="filter options" style={{ borderCollapse: 'collapse', backgroundColor: '#FFFFFF', maxWidth: 818, borderRadius: 10, border: '0.6px solid #D5D5D5'}}>
-            <TableBody style={{width:5000}}>
-              <TableRow>
-                <TableCell style={{height:20}} >
-             
-                    <Image src="/images/icons/filter.png" width={20} height={20} alt="Filter Icon" />
-             
-                </TableCell>
-                <TableCell style={{ borderRight: '1px solid #CCCCCC', borderLeft: '1px solid #CCCCCC' }}>
-                  <Button
-                    style={{ backgroundColor: '#FFFFFF', color: '#202224', textTransform: 'none', fontSize: '14px' }}
-                  >
-                    Filter By
-                  </Button>
-              
-                </TableCell>
-                <TableCell style={{ borderRight: '1px solid #CCCCCC', borderLeft: '1px solid #CCCCCC' }}>
-                  <Button
-                    onClick={handleDateOpen}
-                    style={{ backgroundColor: '#FFFFFF', color: '#202224', textTransform: 'none', fontSize: '14px' }}
-                  >
-                    Date
-                  <Image src="/images/icons/path.png" width={12} height={7} alt="Filter Icon" />
-                  </Button>
+  <TableContainer style={{ borderRadius: 10, border: '0.6px solid #D5D5D5', width: '89.2%', marginTop: 100, marginLeft:70 }}>
+  <Table size="small" aria-label="filter options" style={{ borderCollapse: 'collapse', backgroundColor: '#FFFFFF', width: '100%', borderRadius: 10, border: '0.6px solid #D5D5D5' }}>
+    <TableBody>
+      <TableRow>
+        <TableCell style={{ width: '5%', height: 20 }}>
+          <Image src="/images/icons/filter.png" width={20} height={20} alt="Filter Icon" />
+        </TableCell>
+        <TableCell style={{ width: '19%', borderRight: '1px solid #CCCCCC', borderLeft: '1px solid #CCCCCC' }}>
+          <Button style={{ backgroundColor: '#FFFFFF', color: '#202224', textTransform: 'none', fontSize: '14px' }}>
+            Filter By
+          </Button>
+        </TableCell>
+        <TableCell style={{ width: '19%', borderRight: '1px solid #CCCCCC', borderLeft: '1px solid #CCCCCC' }}>
+          <Button onClick={handleDateOpen} style={{ backgroundColor: '#FFFFFF', color: '#202224', textTransform: 'none', fontSize: '14px' }}>
+            Date
+            <Image src="/images/icons/path.png" width={12} height={7} alt="Filter Icon" />
+          </Button>
+          <Menu anchorEl={dateAnchorEl} open={Boolean(dateAnchorEl)} onClose={handleDateClose}>
+            <MenuItem onClick={() => handleDateSelect('This Week')}>This Week</MenuItem>
+            <MenuItem onClick={() => handleDateSelect('This Month')}>This Month</MenuItem>
+            <MenuItem onClick={() => handleDateSelect('This Year')}>This Year</MenuItem>
+          </Menu>
 
-                  <Menu anchorEl={dateAnchorEl} open={Boolean(dateAnchorEl)} onClose={handleDateClose}>
-                    <MenuItem onClick={() => handleDateSelect('This Week')}>This Week</MenuItem>
-                    <MenuItem onClick={() => handleDateSelect('This Month')}>This Month</MenuItem>
-                    <MenuItem  onClick={() => handleDateSelect('This Year')}>This Year</MenuItem>
+          <Button onClick={handleProgressOpen} style={{ backgroundColor: '#FFFFFF', color: '#202224', textTransform: 'none', fontSize: '14px' }}>
+            Progress
+          </Button>
+          <Image src="/images/icons/path.png" width={12} height={7} alt="Filter Icon" />
+          <Menu anchorEl={progressAnchorEl} open={Boolean(progressAnchorEl)} onClose={handleProgressClose}>
+            <MenuItem onClick={() => handleProgressSelect('0-25%')}>0%-25%</MenuItem>
+            <MenuItem onClick={() => handleProgressSelect('25-50%')}>25%-50%</MenuItem>
+            <MenuItem onClick={() => handleProgressSelect('50-75%')}>50%-75%</MenuItem>
+            <MenuItem onClick={() => handleProgressSelect('75-100%')}>75%-100%</MenuItem>
+          </Menu>
+        </TableCell>
+        <TableCell style={{ width: '19%' }}>
+          <Button onClick={handleStatusOpen} style={{ backgroundColor: '#FFFFFF', color: '#202224', textTransform: 'none', fontSize: '14px' }}>
+            Status
+          </Button>
+          <Image src="/images/icons/path.png" width={12} height={7} alt="Filter Icon" />
+          <Menu anchorEl={statusAnchorEl} open={Boolean(statusAnchorEl)} onClose={handleStatusClose}>
+            <MenuItem onClick={() => handleStatusSelect('ACTIVE')}>Active</MenuItem>
+          </Menu>
+        </TableCell>
+        <TableCell style={{ width: '19%' }}>
+          <Button style={{ backgroundColor: '#FFFFFF', color: '#EA0234', textTransform: 'none' }} onClick={handleResetFilters}>
+            <Image src="/images/icons/replay.png" width={18} height={18} alt="Reset Icon" />
+            Reset Filter
+          </Button>
+        </TableCell>
+      </TableRow>
+    </TableBody>
+  </Table>
+</TableContainer>
 
-                  </Menu>
-  
-                  <Button
-                onClick={handleProgressOpen}
-                style={{ backgroundColor: '#FFFFFF', color: '#202224', textTransform: 'none', fontSize: '14px' }}
-                  >
-                   Progress
-                  </Button>
-                  <Image src="/images/icons/path.png" width={12} height={7} alt="Filter Icon" />
-  
-                  <Menu anchorEl={progressAnchorEl} open={Boolean(progressAnchorEl)} onClose={handleProgressClose}>
-                    <MenuItem onClick={() => handleProgressSelect('0-25%')}>0%-25%</MenuItem>
-                    <MenuItem onClick={() => handleProgressSelect('25-50%')}>25%-50%</MenuItem>
-                    <MenuItem onClick={() => handleProgressSelect('50-75%')}>50%-75%</MenuItem>
-                    <MenuItem onClick={() => handleProgressSelect('75-100%')}>75%-100%</MenuItem>
-
-              </Menu>
-                </TableCell>
-                <TableCell >
-                  <Button
-                    onClick={handleStatusOpen}
-                    sx={{}}
-  
-                    style={{ backgroundColor: '#FFFFFF', color: '#202224', textTransform: 'none', fontSize: '14px' }}
-                  >
-                     Status
-                  </Button>
-                  <Image src="/images/icons/path.png" width={12} height={7} alt="Filter Icon" />
-  
-                  <Menu anchorEl={statusAnchorEl} open={Boolean(statusAnchorEl)} onClose={handleStatusClose}>
-    <MenuItem onClick={() => handleStatusSelect('ACTIVE')}>Active
-</MenuItem>
-    {/* <MenuItem onClick={() => handleStatusSelect('In Progress')}>In Progress</MenuItem>
-    <MenuItem onClick={() => handleStatusSelect('Canceled')}>Canceled</MenuItem>
-    <MenuItem onClick={() => handleStatusSelect('On Hold')}>On Hold</MenuItem> */}
-
-  </Menu>                
-  </TableCell>
-                {/* Reset Filter button */}
-                <TableCell >
-                  <Button
-                    style={{ backgroundColor: '#FFFFFF', color: '#EA0234', textTransform: 'none' }} onClick={handleResetFilters}
-                  >
-                    <Image src="/images/icons/replay.png" width={18} height={18} alt="Reset Icon"    />
-                    Reset Filter
-                  </Button>
-  
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </TableContainer>   
         <Box sx={{margin :10}}>
           {error && <p>Error: {error}</p>}
       
