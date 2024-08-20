@@ -245,7 +245,7 @@ const TableUser = ({ Company }) => {
             marginRight: '10px'
           }}
         />
-        {(cr==='Owner')  || (cr==='TeamManager')|| (cr==='TeamManager')?(
+        {(cr==='Owner' )|| (cr==='Viewer')  || (cr==='TeamManager')?(
           <>
             <Image
               src={'/images/icons/modify.png'}

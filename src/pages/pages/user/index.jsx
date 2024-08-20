@@ -42,8 +42,8 @@ const Index = () => {
     const teamsPerPage = 3;
 
     const [decodedToken, setDecodedToken] = useState(null);
-    const userrole = useSelector(state => state.Role); 
-  const  cr  = useSelector(state => state.Cr); 
+    const userrole = useSelector(state => state.Role);
+  const  cr  = useSelector(state => state.Cr);
   const Owner = userrole === 'Subscriber' && cr === 'Owner';
   const TeamManagerandOwner = userrole === 'Subscriber' &&  cr === 'TeamManager';
   const Manager= userrole === 'User' &&  cr === 'TeamManager';
@@ -51,10 +51,10 @@ const Index = () => {
 
 
 
-  
 
 
-  
+
+
     useEffect(() => {
       if (usertoken) {
         const base64Url = usertoken.payload.token.split('.')[1];
@@ -63,14 +63,14 @@ const Index = () => {
         setDecodedToken(decodedToken);
       }
       const fetchDataa = async () => {
-        setLoading(true);  
+        setLoading(true);
         try {
           const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/user-teams`, {
             headers: {
               Authorization: `Bearer ${usertoken.payload.token}`,
             },
           });
-  
+
           const data = await response.json();
           if (!response.ok) {
             console.error('Error fetching team data:', data);
@@ -86,7 +86,7 @@ const Index = () => {
         }
       };
       const fetchData = async () => {
-        setLoading(true);  
+        setLoading(true);
         try {
           // const response = await fetch('${process.env.NEXT_PUBLIC_BASE_URL}/listuserswithoutteam', {
             // const response = await fetch('${process.env.NEXT_PUBLIC_BASE_URL}/listusers', {
@@ -99,23 +99,23 @@ const Index = () => {
           const data = await response.json();
           if (!response.ok) {
             setSnackbarMessage('Something went wrong !!');
-            setSnackbarOpen(true);     
+            setSnackbarOpen(true);
                }
           if (!data || data.length === 0) {
             setSnackbarMessage("Oops, you don't have any members yet");
             setSnackbarOpen(true);          }
           if (response.ok) {
             setCompany(data);
-            setLoading(false); 
+            setLoading(false);
                 }
-      
+
         } catch (error) {
           setError(error.message);
           setLoading(false);
         }
       };
-      
-    
+
+
       fetchData();
       fetchDataa();
 
@@ -123,8 +123,8 @@ const Index = () => {
     const indexOfLastTeam = currentPage * teamsPerPage;
     const indexOfFirstTeam = indexOfLastTeam - teamsPerPage;
     const currentTeams = teamData.slice(indexOfFirstTeam, indexOfLastTeam);
-  
- 
+
+
 
     const handleDateOpen = (event) => {
       setDateAnchorEl(event.currentTarget);
@@ -132,30 +132,30 @@ const Index = () => {
     const handlePageChange = (event, value) => {
       setCurrentPage(value);
     };
-  
+
     const handleDateClose = () => {
       setDateAnchorEl(null);
     };
-  
+
     const handleTypeOpen = (event) => {
       setTypeAnchorEl(event.currentTarget);
     };
-  
+
     const handleTypeClose = () => {
       setTypeAnchorEl(null);
     };
-  
+
     const handleStatusOpen = (event) => {
       setStatusAnchorEl(event.currentTarget);
     };
-  
+
     const handleStatusClose = () => {
       setStatusAnchorEl(null);
     };
-  
+
     const SendAdduser = () => {
       router.push('/pages/CreateTeam') ;  };
-  
+
       const handleCloseSnackbar = () => {
         setSnackbarOpen(false);
       };
@@ -175,7 +175,7 @@ const Index = () => {
       const isAdmin = decodedToken && decodedToken.role === 'Admin';
       const isTeamManager = decodedToken && decodedToken.cr === 'TeamManager';
       // const isCurrentUserTeamManager = team?.teamusers.some(user => user.role_in_team === 'TeamManager' && decodedToken && usertoken.email === decodedToken.email);
-    
+
       // const shouldShowModifyIcon = isAdmin || (isTeamManager && isCurrentUserTeamManager);
       const shouldShowModifyIcon = isAdmin || (isTeamManager);
 
@@ -189,7 +189,7 @@ const Index = () => {
       <Typography variant="h3" component="div" sx={{ fontWeight: 700 }} >
       Users
       </Typography>
-    </Grid> 
+    </Grid>
 
                         <>
     <Grid item xs={12} container alignItems="center" spacing={2}>
@@ -198,7 +198,7 @@ const Index = () => {
       type="text"
       placeholder="Search"
       style={{
-        width: '50%', 
+        width: '50%',
         height: '44px',
         border: '1px solid #ccc',
         borderRadius: '20px',
@@ -221,12 +221,12 @@ const Index = () => {
       sx={{
         color: 'white',
         height: '44px',
-        textTransform: 'none',      
+        textTransform: 'none',
         background: '#6226EF',
         '&:hover': {
           background: '#6226EF',
         },
-        width: '100%', 
+        width: '100%',
       }}
     >
       + Download Template
@@ -243,7 +243,7 @@ const Index = () => {
         '&:hover': {
           background: '#6226EF',
         },
-        width: '100%', 
+        width: '100%',
       }}
       onClick={SendAdduser}
     >
@@ -256,92 +256,86 @@ const Index = () => {
 </Box>
 
 
-  
-  
-  
-        <TableContainer style={{ borderRadius: 10, border: '0.6px  #D5D5D5 ', maxWidth: 818,marginTop:100,marginLeft:42 }}>
-          <Table size="small" aria-label="filter options" style={{ borderCollapse: 'collapse', backgroundColor: '#FFFFFF', maxWidth: 818, borderRadius: 10, border: '0.6px solid #D5D5D5' }}>
-            <TableBody>
-              <TableRow>
-                <TableCell >
-             
-                    <Image src="/images/icons/filter.png" width={20} height={20} alt="Filter Icon" />
-             
-                </TableCell>
-                <TableCell style={{ borderRight: '1px solid #CCCCCC', borderLeft: '1px solid #CCCCCC' }}>
-                  <Button
-                    onClick={handleDateOpen}
-                    style={{ backgroundColor: '#FFFFFF', color: '#202224', textTransform: 'none', fontSize: '14px' }}
-                  >
-                    Filter By
-                  </Button>
-                  <Menu anchorEl={dateAnchorEl} open={Boolean(dateAnchorEl)} onClose={handleDateClose}>
-                    <MenuItem onClick={handleDateClose}>Option 1</MenuItem>
-                    <MenuItem onClick={handleDateClose}>Option 2</MenuItem>
-                    <MenuItem onClick={handleDateClose}>Option 3</MenuItem>
-                  </Menu>
-                </TableCell>
-                <TableCell style={{ borderRight: '1px solid #CCCCCC', borderLeft: '1px solid #CCCCCC' }}>
-                  <Button
-                    onClick={handleDateOpen}
-                    style={{ backgroundColor: '#FFFFFF', color: '#202224', textTransform: 'none', fontSize: '14px' }}
-                  >
-                    Date
-                  </Button>
-                  <Image src="/images/icons/path.png" width={12} height={7} alt="Filter Icon" />
-  
-                  <Menu anchorEl={dateAnchorEl} open={Boolean(dateAnchorEl)} onClose={handleDateClose}>
-                    <MenuItem onClick={handleDateClose}>Option 1</MenuItem>
-                    <MenuItem onClick={handleDateClose}>Option 2</MenuItem>
-                    <MenuItem onClick={handleDateClose}>Option 3</MenuItem>
-                  </Menu>
-  
-                  <Button
-                    onClick={handleTypeOpen}
-                    style={{ backgroundColor: '#FFFFFF', color: '#202224', textTransform: 'none', fontSize: '14px' }}
-                  >
-                    Order Type
-                  </Button>
-                  <Image src="/images/icons/path.png" width={12} height={7} alt="Filter Icon" />
-  
-                  <Menu anchorEl={typeAnchorEl} open={Boolean(typeAnchorEl)} onClose={handleTypeClose}>
-                    {/* Add order type options here */}
-                    <MenuItem onClick={handleTypeClose}>Option 1</MenuItem>
-                    <MenuItem onClick={handleTypeClose}>Option 2</MenuItem>
-                    <MenuItem onClick={handleTypeClose}>Option 3</MenuItem>
-                  </Menu>
-                </TableCell>
-                <TableCell >
-                  <Button
-                    onClick={handleStatusOpen}
-                    sx={{}}
-  
-                    style={{ backgroundColor: '#FFFFFF', color: '#202224', textTransform: 'none', fontSize: '14px' }}
-                  >
-                     Status
-                  </Button>
-                  <Image src="/images/icons/path.png" width={12} height={7} alt="Filter Icon" />
-  
-                  <Menu anchorEl={statusAnchorEl} open={Boolean(statusAnchorEl)} onClose={handleStatusClose}   >
-                  <MenuItem onClick={() => handleStatusSelect('ACTIVE')}>Active</MenuItem>
-                  <MenuItem onClick={() => handleStatusSelect('Suspended')}>Suspended</MenuItem>
-                  <MenuItem onClick={() => handleStatusSelect('Out')}>Out</MenuItem>
-                  </Menu>
-                </TableCell>
-                <TableCell >
-                  <Button
-                    style={{ backgroundColor: '#FFFFFF', color: '#EA0234', textTransform: 'none' }}
-                  >
-                    <Image src="/images/icons/replay.png" width={18} height={18} alt="Reset Icon" />
-                    Reset Filter
-                  </Button>
-  
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </TableContainer> 
-      
+
+
+
+<TableContainer style={{ borderRadius: 10, border: '0.6px solid #D5D5D5', width: '94.2%', marginTop: 100, marginLeft: 42 }}>
+  <Table size="small" aria-label="filter options" style={{ borderCollapse: 'collapse', backgroundColor: '#FFFFFF', width: '100%', borderRadius: 10, border: '0.6px solid #D5D5D5' }}>
+    <TableBody>
+      <TableRow>
+        <TableCell style={{ width: '5%' }}>
+          <Image src="/images/icons/filter.png" width={20} height={20} alt="Filter Icon" />
+        </TableCell>
+        <TableCell style={{ width: '19%', borderRight: '1px solid #CCCCCC', borderLeft: '1px solid #CCCCCC' }}>
+          <Button
+            onClick={handleDateOpen}
+            style={{ backgroundColor: '#FFFFFF', color: '#202224', textTransform: 'none', fontSize: '14px' }}
+          >
+            Filter By
+          </Button>
+          <Menu anchorEl={dateAnchorEl} open={Boolean(dateAnchorEl)} onClose={handleDateClose}>
+            <MenuItem onClick={handleDateClose}>Option 1</MenuItem>
+            <MenuItem onClick={handleDateClose}>Option 2</MenuItem>
+            <MenuItem onClick={handleDateClose}>Option 3</MenuItem>
+          </Menu>
+        </TableCell>
+        <TableCell style={{ width: '19%', borderRight: '1px solid #CCCCCC', borderLeft: '1px solid #CCCCCC' }}>
+          <Button
+            onClick={handleDateOpen}
+            style={{ backgroundColor: '#FFFFFF', color: '#202224', textTransform: 'none', fontSize: '14px' }}
+          >
+            Date
+          </Button>
+          <Image src="/images/icons/path.png" width={12} height={7} alt="Filter Icon" />
+
+          <Menu anchorEl={dateAnchorEl} open={Boolean(dateAnchorEl)} onClose={handleDateClose}>
+            <MenuItem onClick={handleDateClose}>Option 1</MenuItem>
+            <MenuItem onClick={handleDateClose}>Option 2</MenuItem>
+            <MenuItem onClick={handleDateClose}>Option 3</MenuItem>
+          </Menu>
+
+          <Button
+            onClick={handleTypeOpen}
+            style={{ backgroundColor: '#FFFFFF', color: '#202224', textTransform: 'none', fontSize: '14px' }}
+          >
+            Order Type
+          </Button>
+          <Image src="/images/icons/path.png" width={12} height={7} alt="Filter Icon" />
+
+          <Menu anchorEl={typeAnchorEl} open={Boolean(typeAnchorEl)} onClose={handleTypeClose}>
+            <MenuItem onClick={handleTypeClose}>Option 1</MenuItem>
+            <MenuItem onClick={handleTypeClose}>Option 2</MenuItem>
+            <MenuItem onClick={handleTypeClose}>Option 3</MenuItem>
+          </Menu>
+        </TableCell>
+        <TableCell style={{ width: '19%' }}>
+          <Button
+            onClick={handleStatusOpen}
+            style={{ backgroundColor: '#FFFFFF', color: '#202224', textTransform: 'none', fontSize: '14px' }}
+          >
+            Status
+          </Button>
+          <Image src="/images/icons/path.png" width={12} height={7} alt="Filter Icon" />
+
+          <Menu anchorEl={statusAnchorEl} open={Boolean(statusAnchorEl)} onClose={handleStatusClose}>
+            <MenuItem onClick={() => handleStatusSelect('ACTIVE')}>Active</MenuItem>
+            <MenuItem onClick={() => handleStatusSelect('Suspended')}>Suspended</MenuItem>
+            <MenuItem onClick={() => handleStatusSelect('Out')}>Out</MenuItem>
+          </Menu>
+        </TableCell>
+        <TableCell style={{ width: '19%' }}>
+          <Button
+            style={{ backgroundColor: '#FFFFFF', color: '#EA0234', textTransform: 'none' }}
+          >
+            <Image src="/images/icons/replay.png" width={18} height={18} alt="Reset Icon" />
+            Reset Filter
+          </Button>
+        </TableCell>
+      </TableRow>
+    </TableBody>
+  </Table>
+</TableContainer>
+
         <Box sx={{margin :10}}>
         <TableUser Company={filteredCompany} />
         <Box sx={{ marginTop: 2 }}>
@@ -357,7 +351,7 @@ const Index = () => {
                 type="text"
                 placeholder="Search "
                 style={{
-                  width: '100%', 
+                  width: '100%',
                   height: '44px',
                   border: '1px solid #ccc',
                   borderRadius: '20px',
@@ -371,7 +365,7 @@ const Index = () => {
             </Grid>
             <Grid item xs={6} sm={6}>
             {Owner || Manager || TeamManagerandOwner ? (
-      
+
               <Button
                 type="submit"
                 sx={{
@@ -383,11 +377,11 @@ const Index = () => {
                   '&:hover': {
                     background: '#6226EF',
                   },
-                  width: '100%', 
+                  width: '100%',
                 }}
                 onClick={SendAdduser}
               >
-                Create a team  
+                Create a team
               </Button>    ) : null}
             </Grid>
           </Grid>
@@ -420,7 +414,7 @@ const Index = () => {
     </Box>
   )}
 </Box>
-  
+
 
 
         </Box>   <Snackbar
@@ -430,11 +424,11 @@ const Index = () => {
           message={snackbarMessage}
         /></>  ) }
       </div>
-   
-   
-      
-    
+
+
+
+
     );
   };
-  
+
   export default withAuth(Index);
