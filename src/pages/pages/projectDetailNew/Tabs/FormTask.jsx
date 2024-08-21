@@ -42,7 +42,7 @@ const CustomInput2 = forwardRef((props, ref) => {
 
 CustomInput2.displayName = 'CustomInputTask2';
 function TaskForm({ onClose, discipline, progress, base, floor, Team, id, onAddTask, documents, remain,start,end }) {
- 
+
   const theme = createTheme({
     breakpoints: {
       values: {
@@ -61,9 +61,9 @@ function TaskForm({ onClose, discipline, progress, base, floor, Team, id, onAddT
   const [missingLevel2Index, setMissingLevel2Index] = useState(null);
   const [missingLevel3Index, setMissingLevel3Index] = useState(null);
 
-  
+
   const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [responseStatus, setResponseStatus] = useState(null); 
+  const [responseStatus, setResponseStatus] = useState(null);
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
   };
@@ -90,7 +90,7 @@ function TaskForm({ onClose, discipline, progress, base, floor, Team, id, onAddT
       updatedTasks[index][field] = value;
       setLevel1Tasks(updatedTasks);
     } else if (field !== 'percentage') {
-      updatedTasks[index][field] = value instanceof Date ? value : value; 
+      updatedTasks[index][field] = value instanceof Date ? value : value;
       setLevel1Tasks(updatedTasks);
     }
   };
@@ -114,7 +114,7 @@ function TaskForm({ onClose, discipline, progress, base, floor, Team, id, onAddT
       level3Tasks: [],
       description: '',
     });
-  
+
     setLevel1Tasks(updatedTasks);
     setMissingLevel1Index(null); // Reset missing index on add
 
@@ -123,7 +123,7 @@ function TaskForm({ onClose, discipline, progress, base, floor, Team, id, onAddT
     const updatedTasks = [...level1Tasks];
     updatedTasks[level1Index].level2Tasks.splice(level2Index, 1);
     setLevel1Tasks(updatedTasks);
-    
+
   };
   const handleLevel2TaskChange = (level1Index, level2Index, field, value) => {
     const updatedTasks = [...level1Tasks];
@@ -131,7 +131,7 @@ function TaskForm({ onClose, discipline, progress, base, floor, Team, id, onAddT
     const level2Tasks = currentTask.level2Tasks;
     setMissingLevel2Index(null);
 
-    setMissingLevel1Index(null); 
+    setMissingLevel1Index(null);
     if (field === 'startDate') {
       const minDate = level1Tasks.startDate;
       const maxDate = level1Tasks.deadline;
@@ -149,10 +149,10 @@ function TaskForm({ onClose, discipline, progress, base, floor, Team, id, onAddT
     if (field === 'percentage' && (value === '' || (value >= 0 && value <= 100))) {
       let newTotalPercentage = currentTotalPercentage - level2Tasks[level2Index].percentage + Number(value);
       if (newTotalPercentage > 100) {
-       
+
 
         alert("Warning: Updating this percentage will cause the total percentage of all Level 2 Tasks to exceed 100%. Please adjust accordingly.");
-        return; 
+        return;
       }
       level2Tasks[level2Index][field] = Number(value);
     } else if (field !== 'percentage') {
@@ -161,8 +161,8 @@ function TaskForm({ onClose, discipline, progress, base, floor, Team, id, onAddT
     currentTask.level2Tasks = level2Tasks;
     setLevel1Tasks(updatedTasks);
     let updatedTotalPercentage = level2Tasks.reduce((acc, task) => acc + task.percentage, 0);
-    if (updatedTotalPercentage > 100) {  
-     
+    if (updatedTotalPercentage > 100) {
+
 
       alert("Warning: The total percentage of all Level2Tasks exceeds 100%. Please adjust the percentages to ensure they sum up to 100%.");
     }
@@ -170,10 +170,10 @@ function TaskForm({ onClose, discipline, progress, base, floor, Team, id, onAddT
   const handleAddLevel3Task = (level1Index, level2Index) => {
     const updatedTasks = [...level1Tasks];
     const level2TaskName = updatedTasks[level1Index].level2Tasks[level2Index].name;
-    
 
 
-   
+
+
     if (level2TaskName.trim() === '') {
       setMissingLevel2Index(level2Index); // Set missing index
 
@@ -195,7 +195,7 @@ function TaskForm({ onClose, discipline, progress, base, floor, Team, id, onAddT
     setLevel1Tasks(updatedTasks);
     setMissingLevel2Index(null);
 
-    setMissingLevel1Index(null); 
+    setMissingLevel1Index(null);
   };
 
   const handleRemoveLevel3Task = (level1Index, level2Index, level3Index) => {
@@ -209,7 +209,7 @@ function TaskForm({ onClose, discipline, progress, base, floor, Team, id, onAddT
 
   const handleLevel3TaskChange = (level1Index, level2Index, level3Index, field, value) => {
     const updatedTasks = [...level1Tasks];
-    setMissingLevel1Index(null); 
+    setMissingLevel1Index(null);
     setMissingLevel3Index(null);
     setMissingLevel2Index(null);
     if (field === 'startDate') {
@@ -237,15 +237,15 @@ function TaskForm({ onClose, discipline, progress, base, floor, Team, id, onAddT
       setLevel1Tasks(updatedTasks);
     }
   };
-  
+
 
   const handleFinish = () => {
-  
+
     for (let i = 0; i < level1Tasks.length; i++) {
       const task = level1Tasks[i];
       if (!task.name) {
         alert(`Please enter a name for  Task ${i + 1}.`);
-        setMissingLevel1Index(i + 1); 
+        setMissingLevel1Index(i + 1);
         return;
       }
         for (let j = 0; j < task.level2Tasks.length; j++) {
@@ -254,7 +254,7 @@ function TaskForm({ onClose, discipline, progress, base, floor, Team, id, onAddT
           alert(`Please enter a name for  Task ${i + 1}.${j + 1}.`);
           setMissingLevel2Index({ level1Index: i + 1, level2Index: j + 1 });
 
-          setMissingLevel1Index(i + 1); 
+          setMissingLevel1Index(i + 1);
 
           return;
         }
@@ -265,7 +265,7 @@ function TaskForm({ onClose, discipline, progress, base, floor, Team, id, onAddT
             setMissingLevel3Index({ level1Index: i + 1, level2Index: j + 1, level3Index: k + 1 });
             setMissingLevel2Index({ level1Index: i + 1, level2Index: j + 1 });
 
-            setMissingLevel1Index(i + 1); 
+            setMissingLevel1Index(i + 1);
 
             return;
           }
@@ -290,8 +290,8 @@ function TaskForm({ onClose, discipline, progress, base, floor, Team, id, onAddT
           basement: subtask.basement.join(', '),
           startDate: subtask.startDate,
           deadline: subtask.deadline,
-          description: subtask.description ,   
-          assignedUserId: subtask.members ,    
+          description: subtask.description ,
+          assignedUserId: subtask.members ,
            subtasks: subtask.level3Tasks.map((level3Task) => ({
             name: level3Task.name,
             weight: parseInt(level3Task.percentage, 10),
@@ -305,7 +305,7 @@ function TaskForm({ onClose, discipline, progress, base, floor, Team, id, onAddT
         })),
       })),
     };
-    
+
     console.log('Formatted Tasks:', formattedTasks);
 
     fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/tasks/createTasks`, {
@@ -332,17 +332,17 @@ function TaskForm({ onClose, discipline, progress, base, floor, Team, id, onAddT
       .catch(error => {
         console.error('Error:', error);
         setSnackbarMessage('Error saving task');
-        setResponseStatus(null); 
+        setResponseStatus(null);
         setSnackbarOpen(true);
       });
   };
 
   const saveLevel1Tasks = (index) => {
-  
+
     const task = level1Tasks[index];
     let level2Index = -1;
     let level3Index = -1;
-  
+
     // Check for empty names in level 2 tasks
     const hasEmptyLevel2Names = task.level2Tasks.some((subtask, subtaskIndex) => {
       if (subtask.name.trim() === '') {
@@ -351,14 +351,14 @@ function TaskForm({ onClose, discipline, progress, base, floor, Team, id, onAddT
       }
       return false;
     });
-  
+
     if (hasEmptyLevel2Names) {
       alert(` task  ${index + 1}.${level2Index + 1} has an empty name.`);
-      setMissingLevel1Index(index + 1); 
-      setMissingLevel2Index({ level1Index: index + 1, level2Index: level2Index + 1 }); 
+      setMissingLevel1Index(index + 1);
+      setMissingLevel2Index({ level1Index: index + 1, level2Index: level2Index + 1 });
       return;
     }
-  
+
     // Check for empty names in level 3 tasks
     const hasEmptyLevel3Names = task.level2Tasks.some((subtask, subtaskIndex) => {
       return subtask.level3Tasks.some((subsubtask, subsubtaskIndex) => {
@@ -370,12 +370,12 @@ function TaskForm({ onClose, discipline, progress, base, floor, Team, id, onAddT
         return false;
       });
     });
-  
+
     if (hasEmptyLevel3Names) {
       alert(` task  ${index + 1}.${level2Index + 1}.${level3Index + 1} has an empty name.`);
-      setMissingLevel1Index(index + 1); 
+      setMissingLevel1Index(index + 1);
       setMissingLevel2Index({ level1Index: index + 1, level2Index: level2Index + 1 });
-      setMissingLevel3Index({ level1Index: index + 1, level2Index: level2Index + 1, level3Index: level3Index + 1 }); 
+      setMissingLevel3Index({ level1Index: index + 1, level2Index: level2Index + 1, level3Index: level3Index + 1 });
       return;
     }
     const formattedTask = {
@@ -407,14 +407,14 @@ function TaskForm({ onClose, discipline, progress, base, floor, Team, id, onAddT
             deadline: level3Task.deadline,
             description: level3Task.description,
             assignedUserId: level3Task.members,
-            
+
           })),
         })),
       })),
     };
-    
+
     console.log('Formatted Task:', formattedTask);
-  
+
     fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/tasks/createTasks`, {
       method: 'POST',
       headers: {
@@ -433,12 +433,12 @@ function TaskForm({ onClose, discipline, progress, base, floor, Team, id, onAddT
             const updatedTasks = [...prevTasks];
             updatedTasks.splice(index, 1); // Remove 1 element at `index`
             return updatedTasks;
-            
-          });      
+
+          });
            setMissingLevel1Index(null);
           setMissingLevel2Index(null);
           setMissingLevel3Index(null);
-        
+
         } else {
           setSnackbarMessage('Error saving task');
           setResponseStatus(response.status);
@@ -448,14 +448,14 @@ function TaskForm({ onClose, discipline, progress, base, floor, Team, id, onAddT
       .catch(error => {
         console.error('Error:', error);
         setSnackbarMessage('Error saving task');
-        setResponseStatus(null); 
+        setResponseStatus(null);
         setSnackbarOpen(true);
       });
   };
 
 
   return (
-    <ThemeProvider theme={theme}> 
+    <ThemeProvider theme={theme}>
     <Box
       sx={{
         position: 'absolute',
@@ -478,7 +478,7 @@ function TaskForm({ onClose, discipline, progress, base, floor, Team, id, onAddT
       <Typography variant="h6" gutterBottom>
        Creating Tasks
       </Typography>
-      
+
       <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginLeft: 'auto', marginRight: '20px' }}>
         <IconButton onClick={onClose} aria-label="close">
           <CloseIcon />
@@ -491,12 +491,12 @@ function TaskForm({ onClose, discipline, progress, base, floor, Team, id, onAddT
       {level1Tasks.map((task, index) => (
      <Accordion
      key={index}
-     sx={{
+     sx={{ backgroundColor: '#f0f0f0',
        mb: 2,
       }}
    >
-    
-   
+
+
           <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
             aria-controls={`level1-task-${index}-content`}
@@ -526,18 +526,18 @@ function TaskForm({ onClose, discipline, progress, base, floor, Team, id, onAddT
                   label="Title"
                   fullWidth
                   value={task.name}
-                    
+
                   onChange={(e) => handleLevel1TaskChange(index, 'name', e.target.value)}
-                  required 
+                  required
                   error={task.name === ''}
-  helperText={task.name === '' ? 'Title is required' : ''} 
+  helperText={task.name === '' ? 'Title is required' : ''}
                 />
               </Grid>
               <Grid item xs={12} sm={4}>
                 <TextField
                   label="Percentage"
                   fullWidth
-                  
+
                   value={task.percentage}
                   onChange={(e) => handleLevel1TaskChange(index, 'percentage', e.target.value)}
                   type="number"
@@ -549,7 +549,7 @@ function TaskForm({ onClose, discipline, progress, base, floor, Team, id, onAddT
                   fullWidth
                   label="Assign Member"
                   value={task.members}
-                  
+
                   onChange={(e) => handleLevel1TaskChange(index,'members', e.target.value)}
                 >
                   {Team?.map((member) => (
@@ -599,51 +599,51 @@ function TaskForm({ onClose, discipline, progress, base, floor, Team, id, onAddT
     ))}
   </TextField>
               </Grid>
-              
+
               <Grid item xs={12}sm={2}>
               <DatePickerWrapper     sx={{ marginTop:2}}>
 
     <DatePicker
    label="Start Date"
-   selected={task.startDate} 
+   selected={task.startDate}
    onChange={(date) =>
      handleLevel1TaskChange(index, 'startDate', date)
    } // 'date' will be a Date object
    showYearDropdown
    showMonthDropdown
    placeholderText="DD/MM/YYYY"
-   dateFormat="dd/MM/yyyy" 
+   dateFormat="dd/MM/yyyy"
 
    className="custom-datepicker-input"
    customInput={<CustomInput />}
-   
-    />       
+
+    />
                       </DatePickerWrapper>
-    
-  
+
+
               </Grid>
               <Grid item xs={12} sm={2}>
-             
+
               <DatePickerWrapper sx={{ marginTop: 2 }}>
     <DatePicker
       label="Deadline"
       selected={task.deadline}
       onChange={(date) =>
         handleLevel1TaskChange(index, 'deadline', date)
-      } 
+      }
       showYearDropdown
       showMonthDropdown
-      
+
       minDate={start}
       maxDate={end}
       placeholderText="DD/MM/YYYY"
-      dateFormat="dd/MM/yyyy" 
+      dateFormat="dd/MM/yyyy"
             className="custom-datepicker-input"
       customInput={<CustomInput2 />}
     />
   </DatePickerWrapper>
 
-              
+
               </Grid>
               <Grid item xs={12} sm={12}>
               <TextField
@@ -655,36 +655,12 @@ function TaskForm({ onClose, discipline, progress, base, floor, Team, id, onAddT
                   onChange={(e) => handleLevel1TaskChange(index, 'description', e.target.value)}
                 />
               </Grid>
-              <Grid item xs={12} >
-             
-        <Button
-          variant="contained"
-          onClick={() => handleAddLevel2Task(index)}
-          startIcon={<AddIcon />}
-          disabled={task.name.trim() === ''}
+  {/* START of level 2 TASK */}
 
-        >
-          Add Level 2 Task
-        </Button>
-     
-                <Box display="flex" justifyContent="flex-end" mt={2}>
-
-                <Button
-                  variant="contained"
-                  startIcon={<AddIcon />}
-                  disabled={task.name.trim() === ''}
-                  onClick={() =>saveLevel1Tasks(index)}
-                >
-save       
-         </Button>
-
-</Box>
-
-              </Grid>
               {task.level2Tasks.map((level2Task, level2Index) => (
                 <Grid item xs={12} key={level2Index}>
                   <Accordion
-                    sx={{ backgroundColor: '#E9ECEF', mt: 2 }}
+                    sx={{backgroundColor: '#d0d0d0',mt: 2 }}
                     elevation={0}
                   >
                     <AccordionSummary
@@ -717,9 +693,9 @@ save
                             label="Title"
                             fullWidth
                             value={level2Task.name}
-                            required 
+                            required
                             error={task.name === ''}
-            helperText={task.name === '' ? 'Title is required' : ''} 
+            helperText={task.name === '' ? 'Title is required' : ''}
                             onChange={(e) =>
                               handleLevel2TaskChange(
                                 index,
@@ -743,7 +719,7 @@ save
                                 e.target.value
                               )
                             }
-                            InputProps={{ inputProps: { min: 0, max: 100 } }}                  
+                            InputProps={{ inputProps: { min: 0, max: 100 } }}
 
                           />
                         </Grid>
@@ -831,8 +807,8 @@ save
       customInput={<CustomInput />}
     />
   </DatePickerWrapper>
-                    
-                         
+
+
                         </Grid>
                         <Grid item xs={12} sm={2}>
                         <DatePickerWrapper sx={{ marginTop: 2 }}>
@@ -847,12 +823,12 @@ save
       minDate={task.startDate}
       maxDate={task.deadline}
       placeholderText="DD/MM/YYYY"
-      dateFormat="dd/MM/yyyy"     
+      dateFormat="dd/MM/yyyy"
         className="custom-datepicker-input"
       customInput={<CustomInput2 />}
     />
   </DatePickerWrapper>
-                       
+
                         </Grid>
                         <Grid item xs={12} sm={12}>
               <TextField
@@ -867,24 +843,13 @@ save
                     e.target.value)}
                 />
               </Grid>
-                        <Grid item xs={12}>
-                          <Button
-                            variant="contained"
-                            disabled={level2Task.name.trim() === ''}
 
-                            onClick={() =>
-                              handleAddLevel3Task(index, level2Index)
-                            }
-                            startIcon={<AddIcon />}
-                          >
-                            Add Level 3 Task
-                          </Button>
-                        </Grid>
-                        {level2Task.level3Tasks.map(
+        {/* Start of level 3 TASK*/}
+              {level2Task.level3Tasks.map(
                           (level3Task, level3Index) => (
                             <Grid item xs={12} key={level3Index}>
                               <Accordion
-                                sx={{ backgroundColor: '#DEE2E6', mt: 2 }}
+                                sx={{  backgroundColor:'#a0a0a0',mt: 2 }}
                                 elevation={0}
                               >
                                 <AccordionSummary
@@ -921,13 +886,13 @@ save
                                     <Grid item xs={12} sm={4}>
                                       <TextField
                                         label="Title"
-                                        
+
                                         fullWidth
                                         value={level3Task.name}
-                                        required 
-                           
+                                        required
+
                                         error={task.name === ''}
-                                        helperText={task.name === '' ? 'Title is required' : ''} 
+                                        helperText={task.name === '' ? 'Title is required' : ''}
                                         onChange={(e) =>
                                           handleLevel3TaskChange(
                                             index,
@@ -955,7 +920,7 @@ save
                                             e.target.value
                                           )
                                         }
-                                        InputProps={{ inputProps: { min: 0, max: 100 } }}                  
+                                        InputProps={{ inputProps: { min: 0, max: 100 } }}
 
                                       />
                                     </Grid>
@@ -1041,7 +1006,7 @@ save
                                                                     <Grid item xs={12} sm={2}>
 
 
-                                                                      
+
                                                                     <DatePickerWrapper sx={{ marginTop: 2 }}>
                                     <DatePicker
                                       label="Start Date"
@@ -1058,7 +1023,7 @@ save
                                       customInput={<CustomInput />}
                                     />
                                   </DatePickerWrapper>
-                                                                
+
                                                                     </Grid>
                                                                     <Grid item xs={12} sm={2}>
                                                                     <DatePickerWrapper sx={{ marginTop: 2 }}>
@@ -1077,8 +1042,8 @@ save
                                       customInput={<CustomInput2 />}
                                     />
                                   </DatePickerWrapper>
-                                                                  
-                                                                    
+
+
                                                                     </Grid>
                                                                     <Grid item xs={12} sm={12}>
                                               <TextField
@@ -1101,11 +1066,57 @@ save
                                                             </Grid>
                                                           )
                                                         )}
+        {/* END OF LEVEL 3 TASK*/}
+
+                        <Grid item xs={12}>
+                          <Button
+                            variant="contained"
+                            disabled={level2Task.name.trim() === ''}
+
+                            onClick={() =>
+                              handleAddLevel3Task(index, level2Index)
+                            }
+                            startIcon={<AddIcon />}
+                          >
+                            Add Level 3 Task
+                          </Button>
+                        </Grid>
+
                                                       </Grid>
                                                     </AccordionDetails>
                                                   </Accordion>
                                                 </Grid>
                                               ))}
+{/* END of level 2 TASK */}
+
+              <Grid item xs={12} >
+
+        <Button
+          variant="contained"
+          onClick={() => handleAddLevel2Task(index)}
+          startIcon={<AddIcon />}
+          disabled={task.name.trim() === ''}
+
+        >
+          Add Level 2 Task
+        </Button>
+{/*  SAVE BUTTON FOR SINGLE TASK*/}
+   {/*             <Box display="flex" justifyContent="flex-end" mt={2}>
+
+                <Button
+                  variant="contained"
+                  startIcon={<AddIcon />}
+                  disabled={task.name.trim() === ''}
+                  onClick={() =>saveLevel1Tasks(index)}
+                >
+Save
+         </Button>
+
+</Box>*/}
+{/*  SAVE BUTTON FOR SINGLE TASK*/}
+
+              </Grid>
+
                                             </Grid>
                                           </AccordionDetails>
                                         </Accordion>

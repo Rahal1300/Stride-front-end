@@ -78,7 +78,7 @@ function createSubsubtaskData(taskId,name, description, weight, floor, basement,
     status,
     memberName,
     documents,
-    
+
   };
 }
 function StatusChip({ status }) {
@@ -142,13 +142,13 @@ function Row(props) {
   const toggleLevel3Collapse = (subtaskIndex) => {
     const currentIndex = openLevel3Rows.indexOf(subtaskIndex);
     const newOpenRows = [...openLevel3Rows];
-  
+
     if (currentIndex === -1) {
       newOpenRows.push(subtaskIndex);
     } else {
       newOpenRows.splice(currentIndex, 1);
     }
-  
+
     setOpenLevel3Rows(newOpenRows);
   };
   const handleSnackbarClose = () => {
@@ -174,7 +174,7 @@ function Row(props) {
       }));
     }
   };
-  
+
   const handlePercentageChangesubtask = (event, subtaskId) => {
     const newPercentage = event.target.value;
     if (newPercentage >= 0 && newPercentage <= 100) {
@@ -188,7 +188,7 @@ function Row(props) {
       }));
     }
   };
-  
+
   const handlePercentageChangesubsubtask = (event, subsubtaskId) => {
     const newPercentage = event.target.value;
     if (newPercentage >= 0 && newPercentage <= 100) {
@@ -202,14 +202,14 @@ function Row(props) {
       }));
     }
   };
-  
+
   const handleConfirmPercentage = async (taskId) => {
     const percentage = percentages[taskId];
     setIsConfirmed((prevIsConfirmed) => ({
       ...prevIsConfirmed,
       [taskId]: true,
     }));
-    
+
     setIsConfirmed(true); // Set confirmation flag to true
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/tasks/${taskId}/progress?progress=${percentage}`, {
@@ -218,11 +218,11 @@ function Row(props) {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${userToken.payload.token}`,
         },
-     
+
       });
-  
+
       if (!response.ok) {
-        setSnackbarOpen(true);    
+        setSnackbarOpen(true);
 
         setSnackbarSeverity('error');
 
@@ -236,21 +236,21 @@ function Row(props) {
         responseData = await response.json();
       } else {
         responseData = {};
-        
+
       }
-  
+
       setSnackbarSeverity('success');
 
         setSnackbarMessage('Update successful!');
-        setSnackbarOpen(true);         
+        setSnackbarOpen(true);
         setTimeout(() => {
           onUpdate();
         }, 2000);
     } catch (error) {
       console.error('Error updating subtask:', error.message);
-      
+
     }
-  
+
   };
   const handleConfirmPercentagesubtask = async (subtaskId) => {
     const percentage = percentages[subtaskId];
@@ -258,7 +258,7 @@ function Row(props) {
       ...prevIsConfirmed,
       [subtaskId]: true,
     }));
-  
+
     setIsConfirmed(true); // Set confirmation flag to true
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/tasks/updateSubtaskProgress?subtaskId=${subtaskId}&newProgress=${percentage}`, {
@@ -267,13 +267,13 @@ function Row(props) {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${userToken.payload.token}`,
         },
-     
+
       });
-  
+
       if (!response.ok) {
         setSnackbarSeverity('error');
         setSnackbarMessage('Error: Failed to update SubTask progress');
-        setSnackbarOpen(true);    
+        setSnackbarOpen(true);
         throw new Error('Failed to update subtask progress');
 
       }
@@ -283,22 +283,22 @@ function Row(props) {
         responseData = await response.json();
       } else {
         responseData = {};
-        
+
       }
-  
+
       setSnackbarSeverity('success');
 
         setSnackbarMessage('Update successful!');
-        setSnackbarOpen(true);         
+        setSnackbarOpen(true);
         setTimeout(() => {
           onUpdate();
         }, 2000);
-  
+
     } catch (error) {
       console.error('Error updating subtask:', error.message);
-      
+
     }
-  
+
   };
   const handleConfirmPercentagesubsubtask = async (subsubtaskId) => {
     const percentage = percentages[subsubtaskId];
@@ -314,13 +314,13 @@ function Row(props) {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${userToken.payload.token}`,
         },
-     
+
       });
-  
+
       if (!response.ok) {
         setSnackbarSeverity('error');
         setSnackbarMessage('Error: Failed to update SubTask progress');
-        setSnackbarOpen(true);    
+        setSnackbarOpen(true);
         throw new Error('Failed to update subtask progress');
 
       }
@@ -330,30 +330,30 @@ function Row(props) {
         responseData = await response.json();
       } else {
         responseData = {};
-        
+
       }
-  
+
       setSnackbarSeverity('success');
 
         setSnackbarMessage('Update successful!');
-        setSnackbarOpen(true);         
+        setSnackbarOpen(true);
         setTimeout(() => {
           onUpdate();
-        }, 2000);  
+        }, 2000);
     } catch (error) {
       console.error('Error updating subtask:', error.message);
-      
+
     }
-  
+
   };
   const handleDownloadAll = () => {
     console.log('Percentage confirmed:');
   };
-  
+
     const handleDocumentSelect = (e) => {
       setSelectedDocumentIds(e.target.value);
     };
-  
+
     const uploadSelectedDocuments = async (taskId) => {
       try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/tasks/${taskId}/documents`, {
@@ -366,12 +366,12 @@ function Row(props) {
             documentIds: selectedDocumentIds,
           }),
         });
-     
+
 
         if (!response.ok) {
           throw new Error('Failed to upload documents');
         }
-  
+
         setSnackbarSeverity('success');
         setSnackbarMessage('Documents uploaded successfully');
         setSnackbarOpen(true);      } catch (error) {
@@ -383,13 +383,13 @@ function Row(props) {
     };
     const formatDate = (isoDate) => {
       if (!isoDate) return ''; // Handle case where date is null or undefined
-      
+
       const date = new Date(isoDate);
       if (isNaN(date.getTime())) {
         console.error(`Invalid date format: ${isoDate}`);
         return ''; // Return an empty string or handle the error as needed
       }
-      
+
       return date.toLocaleDateString(); // Adjust locale and options as needed
     };
   const renderPercentageInput = () => (
@@ -403,7 +403,7 @@ function Row(props) {
         onChange={(event) => handlePercentageChange(event, row.id)}
         size="small"
         style={{ width: 80, marginRight: 10 }}
-        
+
         placeholder={row.progress}
 
       />
@@ -416,7 +416,7 @@ function Row(props) {
             <CheckIcon style={{ color: 'green' }} />
           </IconButton>
         </Tooltip>
-      
+
       </div>):(
       <div >
         {row.progress}</div>
@@ -460,9 +460,10 @@ function Row(props) {
               <TableCell align="right" sx={{ fontSize: '12px' }}>
                 {formatDate(row.deadline) ?  formatDate(row.deadline) :'No Dead Line'}
               </TableCell>
-       
+
         <TableCell align="right">{row.assigneduser ?  row.assigneduser :'No memeber assigne'}</TableCell>
-        <TableCell align="right">
+        {/*THIS IS THE START OF DOCUMENTS SECTION*/}
+  {/*      <TableCell align="right">
   {row.documents && row.documents.length > 0 ? (
     <React.Fragment>
       {row.documents.map((file, index) => (
@@ -518,7 +519,8 @@ function Row(props) {
       </label>
     </React.Fragment>
   )}
-</TableCell>
+</TableCell>*/}
+{/*THIS IS THE END OF DOCUMENTS SECTION*/}
 <TableCell align="right">
           {renderPercentageInput()}
         </TableCell>
@@ -562,19 +564,19 @@ function Row(props) {
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={11} >
-          
+
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ margin: 1 }}>
               <Typography variant="h6" gutterBottom component="div">
 
 
-            
+
               </Typography>
               <Table size="small" aria-label="subtasks" sx={{marginLeft:'100px'}}>
-                
+
                 <TableHead>
                   <TableRow>
-                    
+
                     <TableCell sx={{ fontWeight: '600' }} >Name</TableCell>
                     <TableCell align="right" sx={{ fontWeight: '600' }}>Description</TableCell>
                     <TableCell align="right"sx={{ fontWeight: '600' }}>Weight</TableCell>
@@ -583,7 +585,7 @@ function Row(props) {
                     <TableCell align="right" sx={{ fontWeight: '600' }}>Start Date</TableCell>
                     <TableCell align="right" sx={{ fontWeight: '600' }}>Deadline</TableCell>
                     <TableCell align="right" sx={{ fontWeight: '600' }}>Member Name</TableCell>
-                    <TableCell align="right" sx={{ fontWeight: '600' }}>Upload/Download Files</TableCell>
+                   {/* <TableCell align="right" sx={{ fontWeight: '600' }}>Upload/Download Files</TableCell>*/}
                     <TableCell align="right" sx={{ fontWeight: '600' }}>Percentage</TableCell>
                     <TableCell align="right" sx={{ fontWeight: '600' }}>documents</TableCell>
                     <TableCell align="right" sx={{ fontWeight: '600' }}>Status</TableCell>
@@ -595,9 +597,9 @@ function Row(props) {
                 <TableBody>
                   {row.subtasks.map((subtask,subIndex) => (
                     <React.Fragment key={subtask.title}>
-                 
+
                       <TableRow>
-    
+
                         <TableCell component="th" scope="row">
                           {subtask.title}
                         </TableCell>
@@ -623,7 +625,7 @@ function Row(props) {
                 {formatDate(subtask.deadline) ?  formatDate(subtask.deadline) :'No Dead Line'}
 
               </TableCell>
-                       
+
                         <TableCell align="right">{subtask.assigneduser ?  subtask.assigneduser :'No memeber assigne'}</TableCell>
                         <TableCell align="right">
                                     {subtask.documents.length > 0 ? (
@@ -705,20 +707,20 @@ function Row(props) {
                       </Tooltip>
                       </div>):(<>{subtask.progress}</>)}
                     </TableCell>
-                    <TableCell> 
+                    <TableCell>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <TextField
         select
         label="Documents"
         name="documents"
         margin="normal"
-        onChange={(e) => handleDocumentSelect(e)} 
+        onChange={(e) => handleDocumentSelect(e)}
         SelectProps={{
           multiple: true,
           value: selectedDocumentIds,
         }}
-        size="small" 
-        sx={{ marginRight: '10px', width: '150px' }} 
+        size="small"
+        sx={{ marginRight: '10px', width: '150px' }}
       >
         {documents?.map((document, index) => (
           <MenuItem key={index} value={document.id}>
@@ -726,15 +728,15 @@ function Row(props) {
           </MenuItem>
         ))}
       </TextField>
-  
+
         <Button
           variant="contained"
-          size="small" 
-         
+          size="small"
+
         >
           ✔️
         </Button>
- 
+
     </Box></TableCell>
     <TableCell align="right">
                           <StatusChip status={subtask.status} />
@@ -743,7 +745,7 @@ function Row(props) {
                         <DeleteButton taskId={row.id} onUpdate={onUpdate} row={subtask } base={base}floor={floor}/>        </TableCell>
                       </TableRow>
                       <TableRow onClick={() => toggleLevel3Collapse(subtask.id)}>
-                        
+
                       <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={11}>
 
                         { subtask.subtasks &&  subtask.subtasks.length > 0 && (
@@ -757,7 +759,7 @@ function Row(props) {
           {openLevel3Rows.includes(subtask.id) ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
-        
+
                          <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={11}>
                            <Collapse in={openLevel3Rows.includes(subtask.id)} timeout="auto" unmountOnExit>
                             <Box sx={{ margin: 1 }}>
@@ -773,7 +775,7 @@ function Row(props) {
                                     <TableCell align="right" sx={{ fontWeight: '600' }}>Start Date</TableCell>
                                     <TableCell align="right" sx={{ fontWeight: '600' }}>Deadline</TableCell>
                                     <TableCell align="right" sx={{ fontWeight: '600' }}>Member Name</TableCell>
-                                    <TableCell align="right" sx={{ fontWeight: '600' }}>Upload/Download Files</TableCell>
+                                    {/*<TableCell align="right" sx={{ fontWeight: '600' }}>Upload/Download Files</TableCell>*/}
                                     <TableCell align="right" sx={{ fontWeight: '600' }}>Percentage</TableCell>
                                     <TableCell align="right" sx={{ fontWeight: '600' }}>documents</TableCell>
                                     <TableCell align="right" sx={{ fontWeight: '600' }}>Status</TableCell>
@@ -801,14 +803,14 @@ function Row(props) {
                                       <TableCell align="right"> {subsubtask.weight  ?  subsubtask.weight.toFixed(2) :'No weight'}</TableCell>
                                       <TableCell align="right"> {subsubtask.floor  ?  subsubtask.floor :'No floor'}</TableCell>
                                       <TableCell align="right">{subsubtask.basement  ?  subsubtask.basement :'No basement'}</TableCell>
-                                      <TableCell align="right">  
+                                      <TableCell align="right">
                                          {formatDate(subsubtask.startdate) ?  formatDate(subsubtask.startdate) :'No Start Date'}
                                         </TableCell>
-                                      <TableCell align="right">             
+                                      <TableCell align="right">
                                        {formatDate(subsubtask.deadline) ?  formatDate(subsubtask.deadline) :'No Dead line'}
 
                                       </TableCell>
-                                    
+
                                       <TableCell align="right">{subsubtask.memberName  ?  subsubtask.memberName :'No memberName'}</TableCell>
                                       <TableCell align="right">
   {subsubtask.documents && subsubtask.documents.length > 0 ? (
@@ -911,13 +913,13 @@ function Row(props) {
         label="Documents"
         name="documents"
         margin="normal"
-        onChange={(e) => handleDocumentSelect(e)} 
+        onChange={(e) => handleDocumentSelect(e)}
         SelectProps={{
           multiple: true,
           value: selectedDocumentIds,
         }}
-        size="small" 
-        sx={{ marginRight: '10px', width: '150px' }} 
+        size="small"
+        sx={{ marginRight: '10px', width: '150px' }}
       >
         {documents?.map((document, index) => (
           <MenuItem key={index} value={document.id}>
@@ -925,18 +927,18 @@ function Row(props) {
           </MenuItem>
         ))}
       </TextField>
-  
+
         <Button
           variant="contained"
-          size="small" 
-         
+          size="small"
+
         >
           ✔️
         </Button>
- 
+
     </Box></TableCell>  <TableCell align="right">
                                         <StatusChip status={subsubtask.status} />
-                                      </TableCell>   
+                                      </TableCell>
                                       <TableCell align="right">
         <DeleteButton taskId={row.id} onUpdate={onUpdate} row={subsubtask } base={base}floor={floor}/>        </TableCell>
                                     </TableRow>
@@ -948,7 +950,7 @@ function Row(props) {
     </TableCell>
   </TableRow>)}
                         </TableCell>
-                    
+
                       </TableRow>
                     </React.Fragment>
                   ))}
@@ -1050,7 +1052,7 @@ Row.propTypes = {
   const [loadingFetch, setLoadingFetch] = useState(false);
   const [rows, setRows] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
-  const [pageSize, setPageSize] = useState(5); 
+  const [pageSize, setPageSize] = useState(5);
   const [totalPages, setTotalPages] = useState(0);
   const [totalItems, setTotalItems] = useState(0);
 
@@ -1071,7 +1073,7 @@ Row.propTypes = {
       });
       const data = await response.json();
       console.log("tasks: ",data);
-      const newTotalItems = data.length; 
+      const newTotalItems = data.length;
       setTotalItems(newTotalItems);
       const newTotalPages = Math.ceil(newTotalItems / pageSize);
       setTotalPages(newTotalPages);
@@ -1092,7 +1094,7 @@ Row.propTypes = {
   const handleChangeRowsPerPage = (event) => {
     const newPageSize = parseInt(event.target.value, 10);
     setPageSize(newPageSize);
-    setCurrentPage(0); 
+    setCurrentPage(0);
   };
   return (
     <>
@@ -1110,7 +1112,7 @@ Row.propTypes = {
             <TableCell align="right" sx={{ fontWeight: '600' }}>Start Date</TableCell>
            <TableCell align="right" sx={{ fontWeight: '600' }}>Deadline</TableCell>
             <TableCell align="right" sx={{ fontWeight: '600' }}>Member Name</TableCell>
-            <TableCell align="right" sx={{ fontWeight: '600' }}>Upload/Download Files</TableCell>
+          {/*}  <TableCell align="right" sx={{ fontWeight: '600' }}>Upload/Download Files</TableCell>*/}
             <TableCell align="right" sx={{ fontWeight: '600' }}>Percentage</TableCell>
             <TableCell align="center" sx={{ fontWeight: '600' }}>documents</TableCell>
             <TableCell align="right" sx={{ fontWeight: '600' }}>Status</TableCell>
@@ -1124,7 +1126,7 @@ Row.propTypes = {
           ))}
         </TableBody>
       </Table>
-      
+
     </TableContainer>
     <TablePagination
         rowsPerPageOptions={[5, 10, 25]}
