@@ -327,6 +327,7 @@ Edit project      </Button>
       <Tab label="Tickets" sx={{ fontSize: '16px', fontWeight: '600', color: '#3A3541', fontFamily: 'Arial ' }} />
       <Tab label="Task" sx={{ fontSize: '16px', fontWeight: '600', color: '#3A3541', fontFamily: 'Arial ' }} />
       <Tab label="Revision" sx={{ fontSize: '16px', fontWeight: '600', color: '#3A3541', fontFamily: 'Arial ' }} />
+      <Tab label="Dashboard" sx={{ fontSize: '16px', fontWeight: '600', color: '#3A3541', fontFamily: 'Arial ' }} />
 
     </Tabs>
   </Box>
