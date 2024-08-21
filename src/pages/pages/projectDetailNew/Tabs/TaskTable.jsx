@@ -521,6 +521,7 @@ function Row(props) {
   )}
 </TableCell>*/}
 {/*THIS IS THE END OF DOCUMENTS SECTION*/}
+{/*
 <TableCell align="right">
           {renderPercentageInput()}
         </TableCell>
@@ -555,7 +556,7 @@ function Row(props) {
         </Button>
       </Box>
 </TableCell>
-
+*/}
 <TableCell align="right">
           <StatusChip status={row.status} />
         </TableCell>
@@ -587,7 +588,7 @@ function Row(props) {
                     <TableCell align="right" sx={{ fontWeight: '600' }}>Member Name</TableCell>
                    {/* <TableCell align="right" sx={{ fontWeight: '600' }}>Upload/Download Files</TableCell>*/}
                     <TableCell align="right" sx={{ fontWeight: '600' }}>Percentage</TableCell>
-                    <TableCell align="right" sx={{ fontWeight: '600' }}>documents</TableCell>
+                   {/* <TableCell align="right" sx={{ fontWeight: '600' }}>documents</TableCell>*/}
                     <TableCell align="right" sx={{ fontWeight: '600' }}>Status</TableCell>
                     <TableCell align="right" sx={{ fontWeight: '600' }}>Action</TableCell>
 
@@ -777,7 +778,7 @@ function Row(props) {
                                     <TableCell align="right" sx={{ fontWeight: '600' }}>Member Name</TableCell>
                                     {/*<TableCell align="right" sx={{ fontWeight: '600' }}>Upload/Download Files</TableCell>*/}
                                     <TableCell align="right" sx={{ fontWeight: '600' }}>Percentage</TableCell>
-                                    <TableCell align="right" sx={{ fontWeight: '600' }}>documents</TableCell>
+                                    {/*<TableCell align="right" sx={{ fontWeight: '600' }}>documents</TableCell>*/}
                                     <TableCell align="right" sx={{ fontWeight: '600' }}>Status</TableCell>
                                     <TableCell align="right" sx={{ fontWeight: '600' }}>Action</TableCell>
 
@@ -1114,7 +1115,7 @@ Row.propTypes = {
             <TableCell align="right" sx={{ fontWeight: '600' }}>Member Name</TableCell>
           {/*}  <TableCell align="right" sx={{ fontWeight: '600' }}>Upload/Download Files</TableCell>*/}
             <TableCell align="right" sx={{ fontWeight: '600' }}>Percentage</TableCell>
-            <TableCell align="center" sx={{ fontWeight: '600' }}>documents</TableCell>
+            {/*<TableCell align="center" sx={{ fontWeight: '600' }}>documents</TableCell>*/}
             <TableCell align="right" sx={{ fontWeight: '600' }}>Status</TableCell>
             <TableCell align="right" sx={{ fontWeight: '600' }}>Action</TableCell>
 
