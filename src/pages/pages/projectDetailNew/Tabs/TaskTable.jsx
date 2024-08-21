@@ -440,7 +440,7 @@ function Row(props) {
         <TableCell component="th" scope="row">
           {row.title}
         </TableCell>
-        <TableCell align="right">
+        <TableCell  >
           <Tooltip title={row.description ? row.description : 'No Description'}>
             <Typography
               variant="body2"
@@ -451,19 +451,19 @@ function Row(props) {
             </Typography>
           </Tooltip>
         </TableCell>
-        <TableCell align="right">{row.weight  ?   row.weight.toFixed(2):'No weight'}</TableCell>
-        <TableCell align="right">{row.floor ?  row.floor :'No Floor'}</TableCell>
-        <TableCell align="right">{row.basement  ?  row.basement :'No Basement'}</TableCell>
-        <TableCell align="right" sx={{ fontSize: '12px' }}>
+        <TableCell  >{row.weight  ?   row.weight.toFixed(2):'No weight'}</TableCell>
+        <TableCell  >{row.floor ?  row.floor :'No Floor'}</TableCell>
+        <TableCell  >{row.basement  ?  row.basement :'No Basement'}</TableCell>
+        <TableCell   sx={{ fontSize: '12px' }}>
                 {formatDate(row.startdate) ? formatDate(row.startdate) :'No Start Date'}
               </TableCell>
-              <TableCell align="right" sx={{ fontSize: '12px' }}>
+              <TableCell   sx={{ fontSize: '12px' }}>
                 {formatDate(row.deadline) ?  formatDate(row.deadline) :'No Dead Line'}
               </TableCell>
 
-        <TableCell align="right">{row.assigneduser ?  row.assigneduser :'No memeber assigne'}</TableCell>
+        <TableCell  >{row.assigneduser ?  row.assigneduser :'No memeber assigne'}</TableCell>
         {/*THIS IS THE START OF DOCUMENTS SECTION*/}
-  {/*      <TableCell align="right">
+  {/*      <TableCell  >
   {row.documents && row.documents.length > 0 ? (
     <React.Fragment>
       {row.documents.map((file, index) => (
@@ -521,11 +521,11 @@ function Row(props) {
   )}
 </TableCell>*/}
 {/*THIS IS THE END OF DOCUMENTS SECTION*/}
-{/*
-<TableCell align="right">
+
+<TableCell  >
           {renderPercentageInput()}
         </TableCell>
-        <TableCell align="right">
+  {/*      <TableCell  >
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <TextField
           select
@@ -557,10 +557,10 @@ function Row(props) {
       </Box>
 </TableCell>
 */}
-<TableCell align="right">
+<TableCell  >
           <StatusChip status={row.status} />
         </TableCell>
-        <TableCell align="right">
+        <TableCell  >
         <DeleteButton taskId={row.id} onUpdate={onUpdate} row={row } base={base}floor={floor}/>        </TableCell>
       </TableRow>
       <TableRow>
@@ -579,18 +579,18 @@ function Row(props) {
                   <TableRow>
 
                     <TableCell sx={{ fontWeight: '600' }} >Name</TableCell>
-                    <TableCell align="right" sx={{ fontWeight: '600' }}>Description</TableCell>
-                    <TableCell align="right"sx={{ fontWeight: '600' }}>Weight</TableCell>
-                    <TableCell align="right" sx={{ fontWeight: '600' }}>Floor</TableCell>
-                    <TableCell align="right" sx={{ fontWeight: '600' }}>Basement</TableCell>
-                    <TableCell align="right" sx={{ fontWeight: '600' }}>Start Date</TableCell>
-                    <TableCell align="right" sx={{ fontWeight: '600' }}>Deadline</TableCell>
-                    <TableCell align="right" sx={{ fontWeight: '600' }}>Member Name</TableCell>
-                   {/* <TableCell align="right" sx={{ fontWeight: '600' }}>Upload/Download Files</TableCell>*/}
-                    <TableCell align="right" sx={{ fontWeight: '600' }}>Percentage</TableCell>
-                   {/* <TableCell align="right" sx={{ fontWeight: '600' }}>documents</TableCell>*/}
-                    <TableCell align="right" sx={{ fontWeight: '600' }}>Status</TableCell>
-                    <TableCell align="right" sx={{ fontWeight: '600' }}>Action</TableCell>
+                    <TableCell   sx={{ fontWeight: '600' }}>Description</TableCell>
+                    <TableCell  sx={{ fontWeight: '600' }}>Weight</TableCell>
+                    <TableCell   sx={{ fontWeight: '600' }}>Floor</TableCell>
+                    <TableCell   sx={{ fontWeight: '600' }}>Basement</TableCell>
+                    <TableCell   sx={{ fontWeight: '600' }}>Start Date</TableCell>
+                    <TableCell   sx={{ fontWeight: '600' }}>Deadline</TableCell>
+                    <TableCell   sx={{ fontWeight: '600' }}>Member Name</TableCell>
+                   {/* <TableCell   sx={{ fontWeight: '600' }}>Upload/Download Files</TableCell>*/}
+                    <TableCell   sx={{ fontWeight: '600' }}>Percentage</TableCell>
+                   {/* <TableCell   sx={{ fontWeight: '600' }}>documents</TableCell>*/}
+                    <TableCell   sx={{ fontWeight: '600' }}>Status</TableCell>
+                    <TableCell   sx={{ fontWeight: '600' }}>Action</TableCell>
 
 
                   </TableRow>
@@ -604,7 +604,7 @@ function Row(props) {
                         <TableCell component="th" scope="row">
                           {subtask.title}
                         </TableCell>
-                        <TableCell align="right">
+                        <TableCell  >
                           <Tooltip title={subtask.description ? subtask.description : 'No Description'}>
                             <Typography
                               variant="body2"
@@ -615,20 +615,20 @@ function Row(props) {
                             </Typography>
                           </Tooltip>
                         </TableCell>
-                        <TableCell align="right">{subtask.weight ? subtask.weight.toFixed(2) :'No weight'}</TableCell>
-                        <TableCell align="right">{subtask.floor ? subtask.floor :'No Floor'}</TableCell>
-                        <TableCell align="right">{subtask.basement ? subtask.basement :'No Basement'}</TableCell>
-                        <TableCell align="right" sx={{ fontSize: '12px' }}>
+                        <TableCell  >{subtask.weight ? subtask.weight.toFixed(2) :'No weight'}</TableCell>
+                        <TableCell  >{subtask.floor ? subtask.floor :'No Floor'}</TableCell>
+                        <TableCell  >{subtask.basement ? subtask.basement :'No Basement'}</TableCell>
+                        <TableCell   sx={{ fontSize: '12px' }}>
                 {formatDate(subtask.startdate) ?  formatDate(subtask.startdate) :'No Start Date'}
 
               </TableCell>
-              <TableCell align="right" sx={{ fontSize: '12px' }}>
+              <TableCell   sx={{ fontSize: '12px' }}>
                 {formatDate(subtask.deadline) ?  formatDate(subtask.deadline) :'No Dead Line'}
 
               </TableCell>
 
-                        <TableCell align="right">{subtask.assigneduser ?  subtask.assigneduser :'No memeber assigne'}</TableCell>
-                        <TableCell align="right">
+                        <TableCell  >{subtask.assigneduser ?  subtask.assigneduser :'No memeber assigne'}</TableCell>
+                     {/*   <TableCell  >
                                     {subtask.documents.length > 0 ? (
                                       <React.Fragment>
                                         {subtask.documents.map((file, index) => (
@@ -683,8 +683,8 @@ function Row(props) {
                                         </label>
                                       </React.Fragment>
                                     )}
-                                  </TableCell>
-                                  <TableCell align="right">
+                                  </TableCell> */}
+                                  <TableCell  >
                                   {subtask.progress !== 100 ? (
                                   <div style={{ display: 'flex', alignItems: 'center' }}>
 
@@ -708,7 +708,7 @@ function Row(props) {
                       </Tooltip>
                       </div>):(<>{subtask.progress}</>)}
                     </TableCell>
-                    <TableCell>
+               {/*  <TableCell>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <TextField
         select
@@ -738,11 +738,11 @@ function Row(props) {
           ✔️
         </Button>
 
-    </Box></TableCell>
-    <TableCell align="right">
+    </Box></TableCell>*/}
+    <TableCell  >
                           <StatusChip status={subtask.status} />
                         </TableCell>
-                        <TableCell align="right">
+                        <TableCell  >
                         <DeleteButton taskId={row.id} onUpdate={onUpdate} row={subtask } base={base}floor={floor}/>        </TableCell>
                       </TableRow>
                       <TableRow onClick={() => toggleLevel3Collapse(subtask.id)}>
@@ -769,18 +769,18 @@ function Row(props) {
                                 <TableHead>
                                   <TableRow>
                                     <TableCell sx={{ fontWeight: '600' }}>Name</TableCell>
-                                    <TableCell align="right" sx={{ fontWeight: '600' }}>Description</TableCell>
-                                    <TableCell align="right" sx={{ fontWeight: '600' }}>Weight</TableCell>
-                                    <TableCell align="right" sx={{ fontWeight: '600' }}>Floor</TableCell>
-                                    <TableCell align="right" sx={{ fontWeight: '600' }}>Basement</TableCell>
-                                    <TableCell align="right" sx={{ fontWeight: '600' }}>Start Date</TableCell>
-                                    <TableCell align="right" sx={{ fontWeight: '600' }}>Deadline</TableCell>
-                                    <TableCell align="right" sx={{ fontWeight: '600' }}>Member Name</TableCell>
-                                    {/*<TableCell align="right" sx={{ fontWeight: '600' }}>Upload/Download Files</TableCell>*/}
-                                    <TableCell align="right" sx={{ fontWeight: '600' }}>Percentage</TableCell>
-                                    {/*<TableCell align="right" sx={{ fontWeight: '600' }}>documents</TableCell>*/}
-                                    <TableCell align="right" sx={{ fontWeight: '600' }}>Status</TableCell>
-                                    <TableCell align="right" sx={{ fontWeight: '600' }}>Action</TableCell>
+                                    <TableCell   sx={{ fontWeight: '600' }}>Description</TableCell>
+                                    <TableCell   sx={{ fontWeight: '600' }}>Weight</TableCell>
+                                    <TableCell   sx={{ fontWeight: '600' }}>Floor</TableCell>
+                                    <TableCell   sx={{ fontWeight: '600' }}>Basement</TableCell>
+                                    <TableCell   sx={{ fontWeight: '600' }}>Start Date</TableCell>
+                                    <TableCell   sx={{ fontWeight: '600' }}>Deadline</TableCell>
+                                    <TableCell   sx={{ fontWeight: '600' }}>Member Name</TableCell>
+                                    {/*<TableCell   sx={{ fontWeight: '600' }}>Upload/Download Files</TableCell>*/}
+                                    <TableCell   sx={{ fontWeight: '600' }}>Percentage</TableCell>
+                                    {/*<TableCell   sx={{ fontWeight: '600' }}>documents</TableCell>*/}
+                                    <TableCell   sx={{ fontWeight: '600' }}>Status</TableCell>
+                                    <TableCell   sx={{ fontWeight: '600' }}>Action</TableCell>
 
                                   </TableRow>
                                 </TableHead>
@@ -790,7 +790,7 @@ function Row(props) {
                                       <TableCell component="th" scope="row">
                                         {subsubtask.name}
                                       </TableCell>
-                                      <TableCell align="right">
+                                      <TableCell  >
                                         <Tooltip title={subsubtask.description ? subsubtask.description : 'No Description'}>
                                           <Typography
                                             variant="body2"
@@ -801,19 +801,19 @@ function Row(props) {
                                           </Typography>
                                         </Tooltip>
                                       </TableCell>
-                                      <TableCell align="right"> {subsubtask.weight  ?  subsubtask.weight.toFixed(2) :'No weight'}</TableCell>
-                                      <TableCell align="right"> {subsubtask.floor  ?  subsubtask.floor :'No floor'}</TableCell>
-                                      <TableCell align="right">{subsubtask.basement  ?  subsubtask.basement :'No basement'}</TableCell>
-                                      <TableCell align="right">
+                                      <TableCell  > {subsubtask.weight  ?  subsubtask.weight.toFixed(2) :'No weight'}</TableCell>
+                                      <TableCell  > {subsubtask.floor  ?  subsubtask.floor :'No floor'}</TableCell>
+                                      <TableCell  >{subsubtask.basement  ?  subsubtask.basement :'No basement'}</TableCell>
+                                      <TableCell  >
                                          {formatDate(subsubtask.startdate) ?  formatDate(subsubtask.startdate) :'No Start Date'}
                                         </TableCell>
-                                      <TableCell align="right">
+                                      <TableCell  >
                                        {formatDate(subsubtask.deadline) ?  formatDate(subsubtask.deadline) :'No Dead line'}
 
                                       </TableCell>
 
-                                      <TableCell align="right">{subsubtask.memberName  ?  subsubtask.memberName :'No memberName'}</TableCell>
-                                      <TableCell align="right">
+                                      <TableCell  >{subsubtask.memberName  ?  subsubtask.memberName :'No memberName'}</TableCell>
+                       {/*               <TableCell  >
   {subsubtask.documents && subsubtask.documents.length > 0 ? (
     <React.Fragment>
       {subsubtask.documents.length > 3 ? (
@@ -880,10 +880,10 @@ function Row(props) {
       </label>
     </React.Fragment>
   )}
-</TableCell>
+</TableCell>*/}
 
 
-<TableCell align="right">
+<TableCell  >
 <div style={{ display: 'flex', alignItems: 'center' }}>
 
 <TextField
@@ -907,7 +907,7 @@ function Row(props) {
                       </Tooltip>
                       </div>
                     </TableCell>
-                    <TableCell>
+                    {/*<TableCell>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <TextField
         select
@@ -937,10 +937,11 @@ function Row(props) {
           ✔️
         </Button>
 
-    </Box></TableCell>  <TableCell align="right">
+    </Box></TableCell>  */}
+    <TableCell  >
                                         <StatusChip status={subsubtask.status} />
                                       </TableCell>
-                                      <TableCell align="right">
+                                      <TableCell  >
         <DeleteButton taskId={row.id} onUpdate={onUpdate} row={subsubtask } base={base}floor={floor}/>        </TableCell>
                                     </TableRow>
                                   ))}
@@ -1106,18 +1107,18 @@ Row.propTypes = {
         <TableRow >
         <TableCell />
             <TableCell sx={{ fontWeight: '600' }}>Task Name</TableCell>
-            <TableCell align="right" sx={{ fontWeight: '600' }}>Description</TableCell>
-            <TableCell align="right" sx={{ fontWeight: '600' }}>Weight</TableCell>
-            <TableCell align="right" sx={{ fontWeight: '600' }}>Floor</TableCell>
-            <TableCell align="right" sx={{ fontWeight: '600' }}>Basement</TableCell>
-            <TableCell align="right" sx={{ fontWeight: '600' }}>Start Date</TableCell>
-           <TableCell align="right" sx={{ fontWeight: '600' }}>Deadline</TableCell>
-            <TableCell align="right" sx={{ fontWeight: '600' }}>Member Name</TableCell>
-          {/*}  <TableCell align="right" sx={{ fontWeight: '600' }}>Upload/Download Files</TableCell>*/}
-            <TableCell align="right" sx={{ fontWeight: '600' }}>Percentage</TableCell>
+            <TableCell   sx={{ fontWeight: '600' }}>Description</TableCell>
+            <TableCell   sx={{ fontWeight: '600' }}>Weight</TableCell>
+            <TableCell   sx={{ fontWeight: '600' }}>Floor</TableCell>
+            <TableCell   sx={{ fontWeight: '600' }}>Basement</TableCell>
+            <TableCell   sx={{ fontWeight: '600' }}>Start Date</TableCell>
+           <TableCell   sx={{ fontWeight: '600' }}>Deadline</TableCell>
+            <TableCell   sx={{ fontWeight: '600' }}>Member Name</TableCell>
+          {/*}  <TableCell   sx={{ fontWeight: '600' }}>Upload/Download Files</TableCell>*/}
+            <TableCell   sx={{ fontWeight: '600' }}>Percentage</TableCell>
             {/*<TableCell align="center" sx={{ fontWeight: '600' }}>documents</TableCell>*/}
-            <TableCell align="right" sx={{ fontWeight: '600' }}>Status</TableCell>
-            <TableCell align="right" sx={{ fontWeight: '600' }}>Action</TableCell>
+            <TableCell   sx={{ fontWeight: '600' }}>Status</TableCell>
+            <TableCell   sx={{ fontWeight: '600' }}>Action</TableCell>
 
           </TableRow>
         </TableHead>
