@@ -45,7 +45,7 @@ const Index = () => {
   const [selectedMembersmanager, setSelectedMembersManager] = useState(''); // State variable to hold selected users
 
 
-  
+
   const [selectedMembers, setSelectedMembers] = useState([]); // State variable to hold selected users
   const [teamCapacity, setTeamCapacity] = useState('');
   const [description, setDescription] = useState('');
@@ -83,7 +83,7 @@ const Index = () => {
         setLoading(false);
       }
     };
-    const fetchDataTeamMemebers = async () => {
+    /*const fetchDataTeamMemebers = async () => {
       setLoading(true);
       try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/TeamManagersFromCompany`, {
@@ -109,8 +109,8 @@ const Index = () => {
         setError(error.message);
         setLoading(false);
       }
-    };
-    fetchDataTeamMemebers();
+    };*/
+    //fetchDataTeamMemebers();
     fetchData();
   }, [usertoken]);
 
@@ -126,7 +126,7 @@ const Index = () => {
       setSnackbarOpen(true);
       return;
     }
-  
+
     const teamManagerValue = isUserRoleTeamManager ? teamManager : null;
      const formData = new FormData();
     console.log('Selected Members:', selectedMembers.map(id => membersList.find(member => member.id === id)?.first_name));
@@ -162,7 +162,7 @@ console.log('IDs of Selected Members (Excluding Team Lead):', selectedMembersExc
        });
        if (!response.ok) {
          // Handle server errors
-     
+
          setSnackbarMessage('Something went wrong !!');
          setSnackbarOpen(true);
        }
@@ -178,14 +178,14 @@ console.log('IDs of Selected Members (Excluding Team Lead):', selectedMembersExc
        setSnackbarOpen(true);
      }
   };
-  
 
-  
-  
+
+
+
   const handleCloseSnackbar = () => {
     setSnackbarOpen(false);
   };
- 
+
   const base64Url =  usertoken.payload.token.split('.')[1];
   const base64 = base64Url.replace('-', '+').replace('_', '/');
   const decodedToken = JSON.parse(window.atob(base64));
@@ -193,19 +193,19 @@ console.log('IDs of Selected Members (Excluding Team Lead):', selectedMembersExc
   const Role=decodedToken.role;
 
   const cr=decodedToken.cr;
-  
+
   const isUserRoleTeamManager = Role === 'User' &&  cr === 'TeamManager';
 
   const handleMembersChange = (event) => {
     const selectedMembers = event.target.value;
     setSelectedMembers(selectedMembers);
-    
+
     // Filter managers list based on selected members
     const selectedMembersDetails = membersList.filter(member => selectedMembers.includes(member.id));
     setManagersList(selectedMembersDetails);
 
   };
-  
+
 
   return (
     <ThemeProvider theme={theme}>
@@ -223,7 +223,7 @@ console.log('IDs of Selected Members (Excluding Team Lead):', selectedMembersExc
           ) : (
             <>
       <Typography variant="h3" component="h1" sx={{ fontFamily: 'Arial', fontWeight: 700, fontSize: '32px', color: '#202224', marginBottom: '20px' }}>
-        Team 
+        Team
       </Typography>
 
       <Card sx={{ padding: 10 }}>
@@ -231,11 +231,11 @@ console.log('IDs of Selected Members (Excluding Team Lead):', selectedMembersExc
           <Button variant="contained" color="primary" onClick={goBack} sx={{ background: '#6226EF' }}>Back</Button>
         </Box>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          
+
          <Box sx={{ marginRight: '20px' }}>
          <Typography variant="body1" gutterBottom>Team description</Typography>
             <TextField fullWidth multiline rows={9} sx={{ backgroundColor: '#F5F6FA', border: 'none', width: '223px' }} value={description} onChange={(e) => setDescription(e.target.value)} />
-          
+
           {/*    <Image
               src={'/images/icons/Photo.png'}
               alt="Selected Image"
@@ -269,7 +269,7 @@ console.log('IDs of Selected Members (Excluding Team Lead):', selectedMembersExc
                         </MenuItem>
                       ))}
                     </Select>
-                    
+
                     <Typography variant="body1" gutterBottom>Team Lead</Typography>
                     <Select fullWidth value={teamLead} onChange={(e) => {
                       setTeamLead(e.target.value);
