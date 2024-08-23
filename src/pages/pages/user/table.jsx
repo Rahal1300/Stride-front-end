@@ -99,6 +99,35 @@ const TableUser = ({ Company }) => {
       setAnchorEl(null);
     }
   };
+  const suspendUser = async (id) => {
+    setLoading(true);
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/Invitations/suspend`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${usertoken.payload.token}`,
+        },
+      });
+
+      if (!response.ok) {
+        setLoading(false);
+        setSnackbarMessage('Failed to Suspend');
+        setSnackbarOpen(true);
+        setAnchorEl(null);
+      } else {
+        setLoading(false);
+        setSnackbarMessage('User Suspended Successfully');
+        setSnackbarOpen(true);
+        setAnchorEl(null);
+      }
+    } catch (error) {
+      setError(error.message);
+      setLoading(false);
+      setSnackbarMessage('Error');
+      setSnackbarOpen(true);
+      setAnchorEl(null);
+    }
+  };
 
   const Updaterolelead = async (id) => {
     setLoading(true);
@@ -272,7 +301,7 @@ const TableUser = ({ Company }) => {
               <Divider sx={{ borderWidth: '1px', borderColor: '#979797' }} />
               <MenuItem onClick={handleClose} disabled>Add to a team</MenuItem>
               <Divider sx={{ borderWidth: '1px', borderColor: '#979797' }} />
-              <MenuItem onClick={handleClose} disabled>Suspend</MenuItem>
+              <MenuItem onClick={() =>suspendUser(selectedUserId)}disabled={!(cr === 'Owner' || cr === 'TeamManager')}>Suspend</MenuItem>
             </Menu>
           </>
         ):(null)}

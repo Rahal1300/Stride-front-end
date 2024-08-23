@@ -22,7 +22,7 @@ const TeamView = () => {
   const SendAdduser = () => {
     router.push('/pages/CreateTeam') ;  };
 
-    const { id } = router.query;
+    const { id,teamName } = router.query;
 
     useEffect(() => {
       const fetchTeams = async () => {
@@ -63,7 +63,7 @@ const TeamView = () => {
   <Grid container alignItems="center" justifyContent="space-between" spacing={2}>
     <Grid item xs={12} sm={6}>
       <Typography variant="h3" component="div" sx={{ fontWeight: 700 }}>
-      Teams 
+      Team {teamName}
       </Typography>
     </Grid>
     <Grid item xs={12} sm={6} container alignItems="center" spacing={2}>

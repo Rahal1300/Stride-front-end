@@ -110,6 +110,7 @@ const Profile = ({ loading, user, onLoaded }) => {
   {user.last_name && <Typography>Last Name: {user.last_name}</Typography>}
   {user.email && <Typography>Email: {user.email}</Typography>}
   {user.company && <Typography>Status: {user.company}</Typography>}
+  
  
        
           <Button variant="contained" style={{ marginLeft: '25px', marginTop: '25px' }}>

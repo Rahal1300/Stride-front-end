@@ -62,7 +62,10 @@ const TeamCard = ({ team }) => {
   };
 
   const handleView = () => {
-    router.push(`/pages/TeamView?id=${team.id}`);
+    router.push({
+      pathname: `/pages/TeamView`,
+      query: { id: team.id, teamName: team.teamName },
+    });
   };
 
 
