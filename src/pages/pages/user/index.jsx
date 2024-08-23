@@ -154,7 +154,11 @@ const Index = () => {
     };
 
     const SendAdduser = () => {
-      router.push('/pages/CreateTeam') ;  };
+      router.push('/pages/Adduser') ;  };
+
+      const CreateTeam =() => {
+        router.push('/pages/CreateTeam') ; };
+
 
       const handleCloseSnackbar = () => {
         setSnackbarOpen(false);
@@ -379,7 +383,7 @@ const Index = () => {
                   },
                   width: '100%',
                 }}
-                onClick={SendAdduser}
+                onClick={CreateTeam}
               >
                 Create a team
               </Button>    ) : null}
