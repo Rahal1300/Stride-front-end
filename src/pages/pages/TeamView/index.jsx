@@ -35,6 +35,7 @@ const TeamView = () => {
       
           const data = await response.json();
           setTeams(data);
+          console.log(data);
           setLoading(false);
         } catch (error) {
           console.error('Error fetching teams:', error);
@@ -62,7 +63,7 @@ const TeamView = () => {
   <Grid container alignItems="center" justifyContent="space-between" spacing={2}>
     <Grid item xs={12} sm={6}>
       <Typography variant="h3" component="div" sx={{ fontWeight: 700 }}>
-      Teams
+      Teams 
       </Typography>
     </Grid>
     <Grid item xs={12} sm={6} container alignItems="center" spacing={2}>

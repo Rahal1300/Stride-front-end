@@ -6,6 +6,7 @@ import {
 } from '@stripe/react-stripe-js';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
+import { InputLabel,Select,MenuItem } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
@@ -31,6 +32,11 @@ const PaymentForm = () => {
   const [loading, setLoading] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [errorSnackbarOpen, setErrorSnackbarOpen] = useState(false);
+  const [subscriptionTypedesired, setSubscriptionType] = useState('');
+
+  const handleChangeSubscription = (event) => {
+    setSubscriptionType(event.target.value);
+  };
 
   const usertoken = useSelector(loginSuccess);
   const { title, price } = router.query;
@@ -99,7 +105,8 @@ const PaymentForm = () => {
                 country: e.target.Country.value ,
                 state: e.target.State.value,
                 phoneNumber: e.target.phone.value,
-                address: e.target.Adresse.value}),
+                address: e.target.Adresse.value,
+                subscriptionTypedesired:subscriptionTypedesired}),
             }
 
           );         
@@ -293,6 +300,17 @@ const PaymentForm = () => {
                 margin="normal"
                 required
               />
+                 <InputLabel>Subscription Type</InputLabel>
+        <Select
+          value={subscriptionTypedesired}
+          onChange={handleChangeSubscription}
+          label="Subscription Type"
+        >
+          <MenuItem value="FREE">Free</MenuItem>
+          <MenuItem value="BASIC">Basic</MenuItem>
+          <MenuItem value="STANDARD">Standard</MenuItem>
+          <MenuItem value="CUSTOM">Custom</MenuItem>
+        </Select>
                       <TextField
                 label="State"
                 name="State"
