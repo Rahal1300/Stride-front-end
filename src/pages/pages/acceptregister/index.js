@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import { useState, Fragment } from 'react'
 import Link from 'next/link'
 import axios from 'axios';
@@ -43,10 +44,9 @@ const FormControlLabel = styled(MuiFormControlLabel)(({ theme }) => ({
 }))
 
 const acceptregisterPage = () => {
-  
+
   const [formData, setFormData] = useState({
     first_name: '',
-    email: '',
     password: '',
   });
   const [submitted, setSubmitted] = useState(false);
@@ -68,8 +68,8 @@ const acceptregisterPage = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   };
-  
 
+const { code } = router.query;
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -82,15 +82,15 @@ const acceptregisterPage = () => {
       setLoading(false);
       return;
     }
-    if (formData.first_name && formData.password && formData.email) {
+    if (formData.first_name && formData.password) {
       const config = { headers: { "Content-Type": "application/json" } };
-      axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/auth/register`, formData, config)
-      
+      axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/Invitations/accept?uniquecode=${code}`, formData, config)
+
         .then((response) => {
           setRegistrationSuccess(true);
           setFormData({
             first_name: '',
-            email: '',
+
             password: '',
           });
         })
@@ -106,7 +106,7 @@ const acceptregisterPage = () => {
       setLoading(false);
     }
   };
-  
+
 
   return (
     <Box className='content-center' sx={{
@@ -144,28 +144,6 @@ const acceptregisterPage = () => {
 
 
           <form noValidate autoComplete='off' onSubmit={handleSubmit}>
-          <div style={{ marginBottom: '1rem' }}>
-              <Typography htmlFor="email" style={{ display: 'block', marginBottom: '0.5rem', color:'gray' }}>
-                Email address :
-              </Typography>
-              <input
-                id="email"
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="esteban_schiller@gmail.com"
-                style={{
-                  width: '100%',
-                  padding: '0.5rem',
-                  borderRadius: '0.3rem',
-                  border: '1px solid #ccc',
-                  fontSize: '18px', 
-                  background:'#F1F4F9',
-                  color:'#A6A6A6',
-                }}
-              />
-            </div>
             <div style={{ marginBottom: '1rem' }}>
               <Typography htmlFor="username" style={{ display: 'block', marginBottom: '0.5rem', color:'gray' }}>
                 Username :
@@ -182,14 +160,14 @@ const acceptregisterPage = () => {
                   padding: '0.5rem',
                   borderRadius: '0.3rem',
                   border: '1px solid #ccc',
-                  fontSize: '18px', 
+                  fontSize: '18px',
                   background:'#F1F4F9',
                   color:'#A6A6A6',
                 }}
               />
             </div>
 
-         
+
 
             <div style={{ marginBottom: '1rem' }}>
               <Typography htmlFor="password" style={{ display: 'block', marginBottom: '0.5rem', color:'gray' }}>
@@ -207,7 +185,7 @@ const acceptregisterPage = () => {
                   padding: '0.5rem',
                   borderRadius: '0.3rem',
                   border: '1px solid #ccc',
-                  fontSize: '20px', 
+                  fontSize: '20px',
                   background:'#F1F4F9',
                   color:'#A6A6A6',
                 }}
@@ -219,11 +197,11 @@ const acceptregisterPage = () => {
                 onChange={handleCheckboxChange}
                 inputProps={{ 'aria-label': 'Accept terms and conditions' }}
                 sx={{
-                  color: 'gray', 
+                  color: 'gray',
                   '&.Mui-checked': {
-                    color: 'gray', 
+                    color: 'gray',
                   },'&:hover': {
-                    background: 'none', 
+                    background: 'none',
                   },
                 }}                />
               <Typography variant='body2' sx={{ color: '#202224' }}>
@@ -239,7 +217,7 @@ const acceptregisterPage = () => {
     color: 'white',
     background: '#4880FF',
     '&:hover': {
-      background: '#4880FF', 
+      background: '#4880FF',
     },
   }}
 >
@@ -248,7 +226,7 @@ const acceptregisterPage = () => {
 
             <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
               <Typography variant='body2' sx={{ marginRight: 2 }}>
-              Already have an account?   
+              Already have an account?
               </Typography>
               <Typography variant='body2'>
                 <Link passHref href='/pages/login'>
