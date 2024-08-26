@@ -31,9 +31,12 @@ function Team({ Team }) {
 
   const userrole = useSelector(state => state.Role);
   const cr = useSelector(state => state.Cr);
-  const Owner = userrole === 'Subscriber' && cr === 'Owner';
-  const TeamManagerandOwner = userrole === 'Subscriber' && cr === 'TeamManager';
-  const Manager = userrole === 'User' && cr === 'TeamManager';
+
+  // Define roles that should hide the delete button
+  const rolesThatCannotDelete = ['Employee', 'Free', 'Viewer'];
+
+  // Check if the current user role and cr are such that they cannot delete
+  const canDeleteUser = userrole !== 'Subscriber' || !rolesThatCannotDelete.includes(cr);
 
   // Custom theme for MUI components
   const customTheme = createTheme({
@@ -143,9 +146,7 @@ function Team({ Team }) {
                     }}
                   />
                 </TableCell>
-                
-                {row.id !== currentUserId && (Owner || Manager || TeamManagerandOwner )
-                 (
+                {(row.id !== currentUserId && canDeleteUser) && (
                   <TableCell align='center'>
                     <Button
                       variant="contained"
