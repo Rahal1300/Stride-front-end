@@ -9,27 +9,31 @@ function Team({ Team }) {
   const router = useRouter();
   const userToken = useSelector(loginSuccess);
   const base64Url = userToken?.payload?.token?.split('.')[1];
+
   let isAdmin = false;
   let isTeamManager = false;
+  let currentUserId = null;
+
   if (base64Url) {
     try {
       const base64 = base64Url.replace('-', '+').replace('_', '/');
       const decodedToken = JSON.parse(window.atob(base64));
 
       isAdmin = decodedToken.role === 'Admin';
-      isTeamManager =   isTeamManager = decodedToken.cr === 'TeamManager';
+      isTeamManager = decodedToken.cr === 'TeamManager';
+      currentUserId = decodedToken.userId; // Assigning userId here
     } catch (error) {
       console.error('Error decoding token:', error.message);
     }
   }
+
   const shouldShowModifyIcon = isAdmin || isTeamManager;
 
   const userrole = useSelector(state => state.Role);
-  const  cr  = useSelector(state => state.Cr);
+  const cr = useSelector(state => state.Cr);
   const Owner = userrole === 'Subscriber' && cr === 'Owner';
-  const TeamManagerandOwner = userrole === 'Subscriber' &&  cr === 'TeamManager';
-  const Manager= userrole === 'User' &&  cr === 'TeamManager';
-  const currentUserId=decodedToken.userId; // Assuming you have userId in token payload
+  const TeamManagerandOwner = userrole === 'Subscriber' && cr === 'TeamManager';
+  const Manager = userrole === 'User' && cr === 'TeamManager';
 
   // Custom theme for MUI components
   const customTheme = createTheme({
