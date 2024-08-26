@@ -179,6 +179,12 @@ function Tickets() {
                   <Typography variant="body2">
                     {post.content}
                   </Typography>
+                  <Typography variant="body2">
+                    {post.creator_image}
+                  </Typography>
+                  <Typography variant="body2">
+                    {post.creatorName}
+                  </Typography>
                 </CardContent>
                 <CardActions sx={{ justifyContent: 'space-between', padding: '8px' }}>
                   <StyledButton size="small" onClick={() => handleOpenCommentModal(post.id)}>Add Comment</StyledButton>

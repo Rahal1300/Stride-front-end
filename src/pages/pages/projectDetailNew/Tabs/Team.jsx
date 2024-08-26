@@ -8,10 +8,27 @@ import { loginSuccess } from 'src/features/reducers/authReducer'; // Adjust the 
 function Team({ Team }) {
   const router = useRouter();
   const userToken = useSelector(loginSuccess);
-  const base64Url =  userToken.payload.token.split('.')[1];
-  const base64 = base64Url.replace('-', '+').replace('_', '/');
-  const decodedToken = JSON.parse(window.atob(base64));
+  const base64Url = usertoken?.payload?.token?.split('.')[1];
+  let isAdmin = false;
+  let isTeamManager = false;
+  if (base64Url) {
+    try {
+      const base64 = base64Url.replace('-', '+').replace('_', '/');
+      const decodedToken = JSON.parse(window.atob(base64));
 
+      isAdmin = decodedToken.role === 'Admin';
+      isTeamManager =   isTeamManager = decodedToken.cr === 'TeamManager';
+    } catch (error) {
+      console.error('Error decoding token:', error.message);
+    }
+  }
+  const shouldShowModifyIcon = isAdmin || isTeamManager;
+
+  const userrole = useSelector(state => state.Role);
+  const  cr  = useSelector(state => state.Cr);
+  const Owner = userrole === 'Subscriber' && cr === 'Owner';
+  const TeamManagerandOwner = userrole === 'Subscriber' &&  cr === 'TeamManager';
+  const Manager= userrole === 'User' &&  cr === 'TeamManager';
   const currentUserId=decodedToken.userId; // Assuming you have userId in token payload
 
   // Custom theme for MUI components
@@ -59,7 +76,7 @@ function Team({ Team }) {
           Authorization: `Bearer ${userToken.payload.token}`, // Adjust token extraction as needed
         }
       });
-      console.log(response.data); // Handle success response
+      // Handle success response
     } catch (error) {
       console.error('Error deleting user:', error); // Handle error response
     }
@@ -122,7 +139,9 @@ function Team({ Team }) {
                     }}
                   />
                 </TableCell>
-                {row.id !== currentUserId && (
+                
+                {row.id !== currentUserId && (Owner || Manager || TeamManagerandOwner )
+                 (
                   <TableCell align='center'>
                     <Button
                       variant="contained"
