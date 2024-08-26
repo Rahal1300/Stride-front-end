@@ -78,7 +78,7 @@ const { uniquecode } = router.query;
 
     if (formData.userName && formData.password) {
       const config = { headers: { "Content-Type": "application/json" } };
-      axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/Invitations/accept?uniquecode=${uniquecode}`, formData, config)
+      axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/Invitations/acceptleadmanager?uniquecode=${uniquecode}`, formData, config)
 
         .then((response) => {
           setRegistrationSuccess(true);

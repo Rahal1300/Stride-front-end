@@ -58,7 +58,7 @@ function Tickets() {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/posts`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/posts/project/${id}`, {
           headers: {
             Authorization: `Bearer ${usertoken.payload.token}`,
           },

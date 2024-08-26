@@ -23,6 +23,7 @@ import Meets from'./Tabs/Meets';
 import Files from'./Tabs/Files';
 import Tickets from'./Tabs/Tickets';
 import withAuth from '../../../features/reducers/withAuth';
+import Dashboard from 'src/pages';
 const theme = createTheme({
   breakpoints: {
     values: {
@@ -321,31 +322,33 @@ Edit project      </Button>
         <Box sx={{ width: '100%', marginTop: '50px' }}>
   <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
     <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" centered sx={{ background: 'white' }}  >
+    <Tab label="Dashboard" sx={{ fontSize: '16px', fontWeight: '600', color: '#3A3541', fontFamily: 'Arial ' }} />
       <Tab label="Team" sx={{ fontSize: '16px', fontWeight: '600', color: '#3A3541', fontFamily: 'Arial ' }} />
       {(Owner || Manager || TeamManagerandOwner) ? <Tab label="Files" sx={{ fontSize: '16px', fontWeight: '600', color: '#3A3541', fontFamily: 'Arial ' }} />:(null)}
       <Tab label="Meets" sx={{ fontSize: '16px', fontWeight: '600', color: '#3A3541', fontFamily: 'Arial ' }} />
       <Tab label="Tickets" sx={{ fontSize: '16px', fontWeight: '600', color: '#3A3541', fontFamily: 'Arial ' }} />
       <Tab label="Task" sx={{ fontSize: '16px', fontWeight: '600', color: '#3A3541', fontFamily: 'Arial ' }} />
       <Tab label="Revision" sx={{ fontSize: '16px', fontWeight: '600', color: '#3A3541', fontFamily: 'Arial ' }} />
-      <Tab label="Dashboard" sx={{ fontSize: '16px', fontWeight: '600', color: '#3A3541', fontFamily: 'Arial ' }} />
 
     </Tabs>
   </Box>
-  <CustomTabPanel value={value} index={0}>
+   <CustomTabPanel value={value} index={0}>
+  </CustomTabPanel>
+  <CustomTabPanel value={value} index={1}>
     <Team Team={project.projectUsersAndRoles} />
   </CustomTabPanel>
   {Owner || Manager || TeamManagerandOwner ? (
-    <CustomTabPanel value={value} index={1}>
+    <CustomTabPanel value={value} index={2}>
       <Files id={id} />
     </CustomTabPanel>
   ):(null)}
-  <CustomTabPanel value={value} index={Owner || Manager || TeamManagerandOwner ? 2 : 1}>
+  <CustomTabPanel value={value} index={Owner || Manager || TeamManagerandOwner ? 3 : 2}>
     <Meets id={id} />
   </CustomTabPanel>
-  <CustomTabPanel value={value} index={Owner || Manager || TeamManagerandOwner ? 3 : 2}>
+  <CustomTabPanel value={value} index={Owner || Manager || TeamManagerandOwner ? 4 : 3}>
     <Tickets />
   </CustomTabPanel>
-  <CustomTabPanel value={value} index={Owner || Manager || TeamManagerandOwner ? 4 : 3}>
+  <CustomTabPanel value={value} index={Owner || Manager || TeamManagerandOwner ? 5 : 4}>
     <Task descipline={project.descipline} progress={project.progress} base={project.base} floornb={project.floor} Team={project.projectUsersAndRoles} id={id} documents={project.documents} remain={project.remainProgress}  start={project.startDate} end={project.enddate} 
     
     onUpdate={fetchData}
