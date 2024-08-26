@@ -13,6 +13,7 @@ import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Task from'./Tabs/Task';
+import Revision from './Tabs/Revision';
 import RevisionTable from'./Tabs/RevisionTable';
 
 
@@ -24,6 +25,7 @@ import Files from'./Tabs/Files';
 import Tickets from'./Tabs/Tickets';
 import withAuth from '../../../features/reducers/withAuth';
 import Dashboard from 'src/pages';
+import Revisions from './Tabs/Revision';
 const theme = createTheme({
   breakpoints: {
     values: {
@@ -37,7 +39,7 @@ const theme = createTheme({
 });
 
 const CustomTabPanel = ({ children, value, index, ...other }) => (
-  
+
   <div
     role="tabpanel"
     hidden={value !== index}
@@ -101,7 +103,7 @@ const Index = () => {
   const handleOpen = () => {
     router.push(`/pages/Editproject?id=${id}`);
   };
-  
+
   const base64Url = usertoken?.payload?.token?.split('.')[1];
   let isAdmin = false;
   let isTeamManager = false;
@@ -118,8 +120,8 @@ const Index = () => {
   }
   const shouldShowModifyIcon = isAdmin || isTeamManager;
 
-  const userrole = useSelector(state => state.Role); 
-  const  cr  = useSelector(state => state.Cr); 
+  const userrole = useSelector(state => state.Role);
+  const  cr  = useSelector(state => state.Cr);
   const Owner = userrole === 'Subscriber' && cr === 'Owner';
   const TeamManagerandOwner = userrole === 'Subscriber' &&  cr === 'TeamManager';
   const Manager= userrole === 'User' &&  cr === 'TeamManager';
@@ -135,7 +137,7 @@ const Index = () => {
   <CustomizedProgressBars />
 ) : project ? (
   <>
-        
+
         <Box sx={{ display: 'flex', justifyContent: 'right', alignItems: 'right' }}>
         <Button
         variant="contained"
@@ -156,7 +158,7 @@ Back to projects      </Button>
       <Button
         variant="contained"
         onClick={handleOpen}
-        disabled={userrole === 'User'} 
+        disabled={userrole === 'User'}
         sx={{
           backgroundColor: '#6226EF',
           color: 'white',
@@ -196,10 +198,10 @@ Edit project      </Button>
               </Grid>
               <Grid item xs={12} md={6}>
               <Typography variant="h5" component="h1" sx={{ fontFamily: 'Arial ', fontWeight: 700, fontSize: '32px', color: '#202224', marginBottom: '10px' }}>
-        Project Details  
+        Project Details
     </Typography>
     <Typography variant="body2"  sx={{ fontFamily: 'Arial ', color: '#202224' }}>
-    Project Description :  
+    Project Description :
     </Typography>
     <Typography variant="body2"  sx={{ fontFamily: 'Arial ', color: '#202224', marginBottom: '30px' }}>
  {project.description ? (
@@ -208,12 +210,12 @@ Edit project      </Button>
     "Description not available"
   )}    </Typography>
               <Grid container spacing={12} justifyContent="center" >
-          
+
               <Grid item xs={12} md={6} >
 
- 
+
               <Typography variant="body2" component="h1" sx={{ fontFamily: 'Arial ', fontWeight: 200, fontSize: '14px', color: '#646464',display: 'inline', marginBottom: '8px' }}>
-        Owner: 
+        Owner:
         {project.owner ? (
     project.owner
   ) : (
@@ -221,7 +223,7 @@ Edit project      </Button>
   )}
     </Typography>
     <Typography variant="body2" component="h1" sx={{ fontFamily: 'Arial ', fontWeight: 200, fontSize: '14px', color: '#646464', marginBottom: '8px', marginTop: '8px' }}>
-        Start Date: 
+        Start Date:
         {project.startDate ? (
     project.startDate
   ) : (
@@ -229,7 +231,7 @@ Edit project      </Button>
   )}
     </Typography>
     <Typography variant="body2" component="h1" sx={{ fontFamily: 'Arial ', fontWeight: 200, fontSize: '14px', color: '#646464', marginBottom: '8px', marginTop: '8px' }}>
-    Estimated Time: 
+    Estimated Time:
     {project.estimatedDuration ? (
     project.estimatedDuration
   ) : (
@@ -237,7 +239,7 @@ Edit project      </Button>
   )}
     </Typography>
     <Typography variant="body2" component="h1" sx={{ fontFamily: 'Arial ', fontWeight: 200, fontSize: '14px', color: '#646464', marginBottom: '8px', marginTop: '8px' }}>
-    Decipline: 
+    Decipline:
     {project.descipline ? (
     project.descipline
   ) : (
@@ -253,7 +255,7 @@ Edit project      </Button>
 </Typography>
 
     <Typography variant="body2" component="h1" sx={{ fontFamily: 'Arial ', fontWeight: 200, fontSize: '14px', color: '#646464', marginBottom: '8px', marginTop: '8px' }}>
-    Country: 
+    Country:
     {project.country ? (
     project.country
   ) : (
@@ -263,7 +265,7 @@ Edit project      </Button>
 
     <Typography variant="body2" component="h1" sx={{ fontFamily: 'Arial ', fontWeight: 200, fontSize: '14px', color: '#646464', marginBottom: '8px', marginTop: '8px' }}>
     Assigned Team: not available
-    
+
     </Typography>
     <Typography variant="body2" component="h1" sx={{ fontFamily: 'Arial ', fontWeight: 200, fontSize: '14px', color: '#646464', marginBottom: '8px', marginTop: '8px' }}>
     Project Manager: not available
@@ -271,7 +273,7 @@ Edit project      </Button>
     </Grid>
     <Grid item xs={12} md={6}>
     <Typography variant="body2" component="h1" sx={{ fontFamily: 'Arial ', fontWeight: 200, fontSize: '14px', color: '#646464', marginBottom: '8px'}}>
-    Company: 
+    Company:
     {project.company ? (
     project.company
   ) : (
@@ -287,14 +289,14 @@ Edit project      </Button>
   )}
     </Typography>
     <Typography variant="body2" component="h1" sx={{ fontFamily: 'Arial ', fontWeight: 200, fontSize: '14px', color: '#646464', marginBottom: '8px', marginTop: '8px' }}>
-    Language: 
+    Language:
     {project.lang ? (
     project.lang
   ) : (
     " not available"
   )}
     </Typography>
-   
+
     <Typography variant="body2" component="h1" sx={{ fontFamily: 'Arial ', fontWeight: 200, fontSize: '14px', color: '#646464',display: 'inline', marginBottom: '8px', marginTop: '8px' }}>
     Project Status:
     {project.status ? (
@@ -303,22 +305,22 @@ Edit project      </Button>
     " not available"
   )}
     </Typography>
- 
+
     <Typography variant="body2" component="h1" sx={{ fontFamily: 'Arial ', fontWeight: 200, fontSize: '14px', color: '#646464' , marginBottom: '8px', marginTop: '8px'}}>
     Meets: not available
     </Typography>
     <Typography variant="body2" component="h1" sx={{ fontFamily: 'Arial ', fontWeight: 200, fontSize: '14px', color: '#646464', marginBottom: '8px', marginTop: '8px' }}>
     Tickets issued: not available
     </Typography>
-  
-    </Grid>  
+
+    </Grid>
       </Grid>
     </Grid>
 
             </Grid>
           </Grid>
         </Grid>
-  
+
         <Box sx={{ width: '100%', marginTop: '50px' }}>
   <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
     <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" centered sx={{ background: 'white' }}  >
@@ -349,18 +351,20 @@ Edit project      </Button>
     <Tickets />
   </CustomTabPanel>
   <CustomTabPanel value={value} index={Owner || Manager || TeamManagerandOwner ? 5 : 4}>
-    <Task descipline={project.descipline} progress={project.progress} base={project.base} floornb={project.floor} Team={project.projectUsersAndRoles} id={id} documents={project.documents} remain={project.remainProgress}  start={project.startDate} end={project.enddate} 
-    
+    <Task descipline={project.descipline} progress={project.progress} base={project.base} floornb={project.floor} Team={project.projectUsersAndRoles} id={id} documents={project.documents} remain={project.remainProgress}  start={project.startDate} end={project.enddate}
+
     onUpdate={fetchData}
     />
   </CustomTabPanel>
-  <CustomTabPanel value={value} index={Owner || Manager || TeamManagerandOwner ? 5 : 4}>
-    <RevisionTable />
-  </CustomTabPanel>
+  <CustomTabPanel value={value} index={Owner || Manager || TeamManagerandOwner ? 6 : 5}>
+  <Revision descipline={project.descipline} progress={project.progress} base={project.base} floornb={project.floor} Team={project.projectUsersAndRoles} id={id} documents={project.documents} remain={project.remainProgress}  start={project.startDate} end={project.enddate}
+    onUpdate={fetchData}
+    />
+    </CustomTabPanel>
 </Box>
 
-    
-    
+
+
     </>
       ) : null}
     </div>
