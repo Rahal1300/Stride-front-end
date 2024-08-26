@@ -1,9 +1,18 @@
 import React from 'react';
 import { Box, Button, AvatarGroup, Avatar, ThemeProvider, createTheme, Paper, Table, TableRow, TableHead, TableBody, TableCell, TableContainer, Chip } from '@mui/material';
 import { useRouter } from 'next/router'; 
+import { useSelector } from 'react-redux';
+import axios from 'axios';
+import { loginSuccess } from 'src/features/reducers/authReducer'; // Adjust the import path as needed
 
 function Team({ Team }) {
   const router = useRouter();
+  const userToken = useSelector(loginSuccess);
+  const base64Url =  userToken.payload.token.split('.')[1];
+  const base64 = base64Url.replace('-', '+').replace('_', '/');
+  const decodedToken = JSON.parse(window.atob(base64));
+
+  const currentUserId=decodedToken.userId; // Assuming you have userId in token payload
 
   // Custom theme for MUI components
   const customTheme = createTheme({
@@ -11,7 +20,7 @@ function Team({ Team }) {
       MuiAvatar: {
         styleOverrides: {
           root: {
-            border: '2px solid #6226EF',
+            border: '2px solid #6226EF', 
           },
           colorDefault: {
             color: '#6226EF',
@@ -26,37 +35,53 @@ function Team({ Team }) {
   });
 
   // Function to get the background color for different statuses
-  function getStatusStyles(companyStatus) {
-    switch (companyStatus) {
+  function getStatusStyles(status) {
+    switch (status) {
       case 'Active':
         return { backgroundColor: 'rgba(0, 182, 155, 0.2)', color: '#00B69B' };
       case 'Inactive':
         return { backgroundColor: 'rgba(239, 56, 38, 0.2)', color: '#EF3826' };
       default:
-        return {};
+        return { backgroundColor: '#FFFFFF', color: '#000000' };
     }
   }
+
+  // Function to handle delete user
+  const handleDeleteUser = async (userId) => {
+    if (userId === currentUserId) {
+      alert("You cannot delete yourself.");
+      return;
+    }
+    try {
+      const response = await axios.delete(`/projects/delete/${id}/users/${userId}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${userToken.payload.token}`, // Adjust token extraction as needed
+        }
+      });
+      console.log(response.data); // Handle success response
+    } catch (error) {
+      console.error('Error deleting user:', error); // Handle error response
+    }
+  };
 
   // Handle view team button click
   const handleViewTeam = () => {
     router.push('/pages/Team/');
   };
 
-  // Main return block for rendering the component
   return (
     <ThemeProvider theme={customTheme}>
       {/* Team display with Avatars and View Team button */}
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mb: 3 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           Team
-          <AvatarGroup max={4} sx={{ margin: '0 15px' }}>
+          <AvatarGroup max={4} sx={{ margin: '20px 20px', marginLeft: '15px' }}>
             {Team?.map(member => (
-              <Avatar key={member.id} src={`data:image/png;base64,${member.image}`} />
+              <Avatar key={member.id} src={`data:image/png;base64,${member.image}`} /> 
             ))}
           </AvatarGroup>
-          <Button sx={{ backgroundColor: '#E2EAF8', width: '126px', height: '38px', color: '#202224', fontWeight: 550 }} onClick={handleViewTeam}>
-            View Team
-          </Button>
+          <Button sx={{ backgroundColor: '#E2EAF8', width: '126px', height: '38px', color: '#202224', fontWeight: '550' }} onClick={handleViewTeam}>View Team</Button>
         </Box>
       </Box>
 
@@ -70,12 +95,15 @@ function Team({ Team }) {
               <TableCell align='center' sx={{ fontFamily: 'Arial', fontWeight: 600, fontSize: '16px', color: '#202224' }}>Email</TableCell>
               <TableCell align='center' sx={{ fontFamily: 'Arial', fontWeight: 600, fontSize: '16px', color: '#202224' }}>Phone Number</TableCell>
               <TableCell align='center' sx={{ fontFamily: 'Arial', fontWeight: 600, fontSize: '16px', color: '#202224' }}>Status</TableCell>
+              {userToken.payload.userId !== undefined && <TableCell align='center' sx={{ fontFamily: 'Arial', fontWeight: 600, fontSize: '16px', color: '#202224' }}>Actions</TableCell>}
             </TableRow>
           </TableHead>
           <TableBody>
             {Team?.map(row => (
               <TableRow key={row.email}>
-                <TableCell component='th' scope='row'>{row.projectRole === 'TeamManager' ? 'Team Manager' : row.projectRole}</TableCell>
+                <TableCell component='th' scope='row'>
+                  {row.projectRole === 'TeamManager' ? 'Team Manager' : row.projectRole}
+                </TableCell>
                 <TableCell align='center'>{row.first_name || 'Empty'}</TableCell>
                 <TableCell align='center'>{row.email}</TableCell>
                 <TableCell align='center'>{row.phone_number || 'Empty'}</TableCell>
@@ -94,6 +122,18 @@ function Team({ Team }) {
                     }}
                   />
                 </TableCell>
+                {row.id !== currentUserId && (
+                  <TableCell align='center'>
+                    <Button
+                      variant="contained"
+                      color="error"
+                      onClick={() => handleDeleteUser(row.id)}
+                      sx={{ ml: 1 }}
+                    >
+                      Delete
+                    </Button>
+                  </TableCell>
+                )}
               </TableRow>
             ))}
           </TableBody>
