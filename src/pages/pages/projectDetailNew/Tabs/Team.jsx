@@ -8,7 +8,7 @@ import { loginSuccess } from 'src/features/reducers/authReducer'; // Adjust the 
 function Team({ Team }) {
   const router = useRouter();
   const userToken = useSelector(loginSuccess);
-  const base64Url = usertoken?.payload?.token?.split('.')[1];
+  const base64Url = userToken?.payload?.token?.split('.')[1];
   let isAdmin = false;
   let isTeamManager = false;
   if (base64Url) {
