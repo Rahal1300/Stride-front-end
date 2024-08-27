@@ -2,13 +2,17 @@ import React from 'react';
 import { Box, Button, AvatarGroup, Avatar, ThemeProvider, createTheme, Paper, Table, TableRow, TableHead, TableBody, TableCell, TableContainer, Chip } from '@mui/material';
 import { useRouter } from 'next/router'; 
 import { useSelector } from 'react-redux';
-import axios from 'axios';
 import { loginSuccess } from 'src/features/reducers/authReducer'; // Adjust the import path as needed
 
 function Team({ Team }) {
   const router = useRouter();
   const userToken = useSelector(loginSuccess);
   const base64Url = userToken?.payload?.token?.split('.')[1];
+  const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
+
+
+  const { id } = router.query; 
 
   let isAdmin = false;
   let isTeamManager = false;
@@ -77,15 +81,29 @@ function Team({ Team }) {
       return;
     }
     try {
-      const response = await axios.delete(`/projects/delete/${id}/users/${userId}`, {
+      
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/projects/delete/${id}/users/${userId}`, {
+        method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${userToken.payload.token}`, // Adjust token extraction as needed
-        }
+        },
       });
-      // Handle success response
+
+      if (!response.ok) {
+        throw new Error('Failed to delete user');
+      }
+
+      const data = await response.json();
+      setMessage(data.message); // Set the success message
+      setError(''); // Clear any existing error message
+
+     
+
     } catch (error) {
-      console.error('Error deleting user:', error); // Handle error response
+     
+      setError('An error occurred while deleting the user.');
+      setMessage(''); 
     }
   };
 
@@ -96,6 +114,8 @@ function Team({ Team }) {
 
   return (
     <ThemeProvider theme={customTheme}>
+      {message && <p style={{ color: 'green' }}>{message}</p>}
+      {error && <p style={{ color: 'red' }}>{error}</p>}
       {/* Team display with Avatars and View Team button */}
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -151,7 +171,7 @@ function Team({ Team }) {
                     <Button
                       variant="contained"
                       color="error"
-                      onClick={() => handleDeleteUser(row.id)}
+                      onClick={() =>handleDeleteUser(row.id)}
                       sx={{ ml: 1 }}
                     >
                       Delete
