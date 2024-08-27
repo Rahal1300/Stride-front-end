@@ -26,11 +26,11 @@ const navigation = () => {
   const usertoken = useSelector(loginSuccess);
   const [userData, setUserData] = useState(null);
 
-  
+
  useEffect(() => {
     const checkAuthentication = async () => {
 
-  
+
       const fetchData = async () => {
         try {
           const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/profil`, {
@@ -44,14 +44,14 @@ const navigation = () => {
           console.error('Error fetching user data:', error);
         }
       };
-  
+
       fetchData();
     };
     checkAuthentication();
   }, []);
-  const userrole = useSelector(state => state.Role); 
-  const  cr  = useSelector(state => state.Cr); 
- 
+  const userrole = useSelector(state => state.Role);
+  const  cr  = useSelector(state => state.Cr);
+
   const base64Url =  usertoken.payload.token.split('.')[1];
   const base64 = base64Url.replace('-', '+').replace('_', '/');
   const decodedToken = JSON.parse(window.atob(base64));
@@ -69,7 +69,7 @@ const navigation = () => {
 
 ////////////////////////////////////////////////
 
-  
+
   const TeamManagerandOwner = userrole === 'Subscriber' &&  cr === 'TeamManager';
   const LeadsManagerandOwner = userrole === 'Subscriber' &&  cr === 'LeadsManager';
 
@@ -88,16 +88,16 @@ const navigation = () => {
 
   const Free= userrole === 'User' &&  cr === 'Free';
   return [
-   
+
     {
       title: t('Dashboard') ,
       path: '/pages/DashboardLead',
-   
 
-      
+
+
       ...(Free && { hidden: true}),
 
-      
+
       ...(HasSubscriberNewcomer && { hidden: true }),
       ...(Owner && { hidden: true}),
 
@@ -110,11 +110,11 @@ const navigation = () => {
       ...(TeamManagerUser && { hidden: true}),
       ...(Employee && { hidden: true}),
 
-      
-      
-      
+
+
+
     },
-    
+
     {
       title: t('Dashboard') ,
       path: '/pages/userinterface',
@@ -202,23 +202,23 @@ const navigation = () => {
     {
       title: t('File Manager'),
       path: '/under_construction',
- 
+
       ...(LeadsUser && { hidden: true}),
 
       ...(Free && { hidden: true}),
-      ...(TeamManagerUser && { hidden: true}),
+      ...(TeamManagerUser && { hidden: false}),
 
       ...(HasSubscriberNewcomer && { hidden: true }),
       ...(Owner && { hidden: false}),
       ...(Leader && { hidden: false}),
-      ...(Manager && { hidden: true}),
+      ...(Manager && { hidden: false}),
       ...(TeamManagerandOwner && { hidden: false}),
       ...(LeadsManagerandOwner && { hidden: true}),
 
-      ...(Employee && { hidden: true}),
+      ...(Employee && { hidden: false}),
 
     },
- 
+
 
    /* {
       title: t('Team'),
@@ -283,8 +283,8 @@ const navigation = () => {
 
 
     }*/,
- 
-  
+
+
     {
       sectionTitle: t('Pages'),
       ...(TeamManagerUser && { hidden: false}),
@@ -326,7 +326,7 @@ const navigation = () => {
     {
       title: t('Notifications'),
       path: '/pages/notification',
-  
+
       ...(TeamManagerUser && { hidden: false}),
 
       ...(LeadsManagerandOwner && { hidden: false}),
@@ -391,7 +391,7 @@ const navigation = () => {
     },
     ].filter(item => !item.hidden);
 
-  
+
 }
 
 export default navigation
