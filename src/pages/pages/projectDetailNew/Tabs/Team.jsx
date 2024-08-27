@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { Box, Button, AvatarGroup, Avatar, ThemeProvider, createTheme, Paper, Table, TableRow, TableHead, TableBody, TableCell, TableContainer, Chip } from '@mui/material';
-import { useRouter } from 'next/router'; 
+import React, { useState } from 'react';
+import { Box, Button, AvatarGroup, Avatar, ThemeProvider, createTheme, Paper, Table, TableRow, TableHead, TableBody, TableCell, TableContainer, Chip, Modal } from '@mui/material';
+import { useRouter } from 'next/router';
 import { useSelector } from 'react-redux';
+import axios from 'axios';
 import { loginSuccess } from 'src/features/reducers/authReducer'; // Adjust the import path as needed
-
+import AddUserTable from './AddUserTable';
 
 function Team({ Team }) {
   const router = useRouter();
@@ -12,6 +13,9 @@ function Team({ Team }) {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const { id } = router.query; 
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+  const [open, setOpen] = useState(false);
   let isAdmin = false;
   let isTeamManager = false;
   let currentUserId = null;
@@ -21,7 +25,7 @@ function Team({ Team }) {
       const decodedToken = JSON.parse(window.atob(base64));
       isAdmin = decodedToken.role === 'Admin';
       isTeamManager = decodedToken.cr === 'TeamManager';
-      currentUserId = decodedToken.userId; // Assigning userId here
+      currentUserId = decodedToken.userId;
     } catch (error) {
       //console.error('Error decoding token:', error.message);
     }
@@ -44,7 +48,7 @@ function Team({ Team }) {
       MuiAvatar: {
         styleOverrides: {
           root: {
-            border: '2px solid #6226EF', 
+            border: '2px solid #6226EF',
           },
           colorDefault: {
             color: '#6226EF',
@@ -77,29 +81,15 @@ function Team({ Team }) {
       return;
     }
     try {
-      
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/projects/delete/${id}/users/${userId}`, {
-        method: 'DELETE',
+      const response = await axios.delete(`/projects/delete/${id}/users/${userId}`, {
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${userToken.payload.token}`, // Adjust token extraction as needed
-        },
+          Authorization: `Bearer ${userToken.payload.token}`,
+        }
       });
-
-      if (!response.ok) {
-        throw new Error('Failed to delete user');
-      }
-
-      const data = await response.json();
-      setMessage(data.message); // Set the success message
-      setError(''); // Clear any existing error message
-
-     
-
+      // Handle success response
     } catch (error) {
-     
-      setError('An error occurred while deleting the user.');
-      setMessage(''); 
+      console.error('Error deleting user:', error);
     }
   };
 
@@ -110,22 +100,40 @@ function Team({ Team }) {
 
   return (
     <ThemeProvider theme={customTheme}>
-      {message && <p style={{ color: 'green' }}>{message}</p>}
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      {/* Team display with Avatars and View Team button */}
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           Team
           <AvatarGroup max={4} sx={{ margin: '20px 20px', marginLeft: '15px' }}>
             {Team?.map(member => (
-              <Avatar key={member.id} src={`data:image/png;base64,${member.image}`} /> 
+              <Avatar key={member.id} src={`data:image/png;base64,${member.image}`} />
             ))}
           </AvatarGroup>
           <Button sx={{ backgroundColor: '#E2EAF8', width: '126px', height: '38px', color: '#202224', fontWeight: '550' }} onClick={handleViewTeam}>View Team</Button>
         </Box>
       </Box>
-
-      {/* Team details table */}
+      <Button sx={{ backgroundColor: '#E2EAF8', width: '126px', height: '38px', color: '#202224', fontWeight: '550', marginLeft: '90.7%' }} onClick={handleOpen}>Add User</Button>
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="Add User"
+        aria-describedby="Add User to Project"
+      >
+        <Box sx={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: { xs: '90%', sm: '80%', md: '60%', lg: '50%' }, // Adjusting width for different screen sizes
+          bgcolor: 'background.paper',
+          boxShadow: 24,
+          p: 4,
+          borderRadius: 2,
+          maxHeight: '90vh', // Ensure the modal doesn't exceed the screen height
+          overflowY: 'auto', // Add scroll if content exceeds modal height
+        }}>
+          <AddUserTable />
+        </Box>
+      </Modal>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label='team details table'>
           <TableHead>
@@ -167,7 +175,7 @@ function Team({ Team }) {
                     <Button
                       variant="contained"
                       color="error"
-                      onClick={() =>handleDeleteUser(row.id)}
+                      onClick={() => handleDeleteUser(row.id)}
                       sx={{ ml: 1 }}
                     >
                       Delete
