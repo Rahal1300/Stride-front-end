@@ -11,24 +11,19 @@ function Team({ Team }) {
   const base64Url = userToken?.payload?.token?.split('.')[1];
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
-
-
   const { id } = router.query; 
-
   let isAdmin = false;
   let isTeamManager = false;
   let currentUserId = null;
-
   if (base64Url) {
     try {
       const base64 = base64Url.replace('-', '+').replace('_', '/');
       const decodedToken = JSON.parse(window.atob(base64));
-
       isAdmin = decodedToken.role === 'Admin';
       isTeamManager = decodedToken.cr === 'TeamManager';
       currentUserId = decodedToken.userId; // Assigning userId here
     } catch (error) {
-      console.error('Error decoding token:', error.message);
+      //console.error('Error decoding token:', error.message);
     }
   }
 
