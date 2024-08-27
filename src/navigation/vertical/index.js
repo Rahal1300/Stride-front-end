@@ -201,7 +201,7 @@ const navigation = () => {
 
     {
       title: t('File Manager'),
-      path: '/pages/filemanager',
+      path: '/pages/FileManager',
  
       ...(LeadsUser && { hidden: true}),
 

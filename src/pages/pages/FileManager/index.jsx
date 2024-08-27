@@ -2,11 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { Box, Button, Typography, Paper, CircularProgress } from '@mui/material';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import { useSelector } from 'react-redux';
+import { loginSuccess } from '../../../features/reducers/authReducer';
 
 const FileManager = () => {
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [loadingFetch, setLoadingFetch] = useState(true);
   const [loadingUpload, setLoadingUpload] = useState(false);
+  const usertoken = useSelector(loginSuccess);
 
   useEffect(() => {
     fetchDocuments();
@@ -14,9 +17,15 @@ const FileManager = () => {
 
   const fetchDocuments = async () => {
     try {
-      const response = await fetch('http://192.168.30.200:8087/projects/getdocuments');
+      const response = await fetch('http://192.168.30.200:8087/projects/getdocuments', {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${usertoken.payload.token}`, // Include the token in the Authorization header
+        },
+      });
       const data = await response.json();
       setUploadedFiles(data);
+      console.log(data);
     } catch (error) {
       console.error('Error fetching documents:', error);
     } finally {
@@ -29,27 +38,12 @@ const FileManager = () => {
   };
 
   const handleDownload = (file) => {
-    try {
-      // Decode the Base64 content
-      const byteCharacters = atob(file.content);
-      const byteNumbers = new Array(byteCharacters.length);
-      for (let i = 0; i < byteCharacters.length; i++) {
-        byteNumbers[i] = byteCharacters.charCodeAt(i);
-      }
-      const byteArray = new Uint8Array(byteNumbers);
-
-      // Create a Blob from the binary data
-      const blob = new Blob([byteArray], { type: file.type });
-      const downloadLink = document.createElement('a');
-      downloadLink.href = window.URL.createObjectURL(blob);
-      downloadLink.setAttribute('download', file.documentName);
-      document.body.appendChild(downloadLink);
-      downloadLink.click();
-      document.body.removeChild(downloadLink);
-    } catch (error) {
-      console.error('Something went wrong while downloading the file:', error);
-    }
+    const link = document.createElement('a');
+    link.href = `data:${file.type};base64,${file.content}`;
+    link.download = file.documentName;
+    link.click();
   };
+
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       {/* Upload section */}
