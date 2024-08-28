@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState ,useEffect} from 'react';
 import { Box, Button, AvatarGroup, Avatar, ThemeProvider, createTheme, Paper, Table, TableRow, TableHead, TableBody, TableCell, TableContainer, Chip, Modal } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useSelector } from 'react-redux';
@@ -81,14 +81,27 @@ function Team({ Team }) {
       return;
     }
     try {
-      const response = await axios.delete(`/projects/delete/${id}/users/${userId}`, {
-        headers: {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/projects/delete/${id}/users/${userId}`, {
+        method: 'DELETE',
+                headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${userToken.payload.token}`,
         }
       });
+      if (!response.ok) {
+        throw new Error('Failed to delete user');
+      }
+
+      const data = await response.json();
+      setMessage(data.message); // Set the success message
+      setError(''); // Clear any existing error message
+
+
+      
       // Handle success response
     } catch (error) {
+      setError('An error occurred while deleting the user.');
+      setMessage(''); 
       console.error('Error deleting user:', error);
     }
   };
@@ -100,6 +113,9 @@ function Team({ Team }) {
 
   return (
     <ThemeProvider theme={customTheme}>
+        {message && <p style={{ color: 'green' }}>{message}</p>}
+      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {/* Team display with Avatars and View Team button */}
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           Team

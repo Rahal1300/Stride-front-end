@@ -124,7 +124,7 @@ const Create = () => {
       mandatory: isMandatoryString, 
       description:description,
       label:selectedLabels,
-      Idproject: projects ? projects.id : null,
+      idProject: projects ? projects.id : null,
       meeting_type:meetingType,
     };
     setLoading(true);
