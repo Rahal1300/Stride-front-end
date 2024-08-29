@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { IconButton, Snackbar, Alert, Box, Modal, TextField, Button, Accordion, AccordionSummary, AccordionDetails, Typography, MenuItem, FormControl, InputLabel, Select } from '@mui/material';
+import { IconButton,Icon,Fingerprint, Snackbar, Alert, Box, Modal, TextField, Button, Accordion, AccordionSummary, AccordionDetails, Typography, MenuItem, FormControl, InputLabel, Select } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import AddToPhotosIcon from '@mui/icons-material/AddToPhotos';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useSelector } from 'react-redux';
 import DatePicker from 'react-datepicker';
@@ -230,6 +231,11 @@ const DeleteButton = ({ taskId, onUpdate, row, base, floor }) => {
         <IconButton color="error" onClick={handleClick}>
           <DeleteIcon />
         </IconButton>
+      <IconButton>
+      <AddToPhotosIcon/>
+      </IconButton>
+
+  
       </Box>
       <Snackbar
         open={snackbarOpen}

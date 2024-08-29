@@ -744,7 +744,7 @@ function Row(props) {
                           <StatusChip status={subtask.status} />
                         </TableCell>
                         <TableCell  >
-                        <DeleteButton taskId={row.id} onUpdate={onUpdate} row={subtask } base={base}floor={floor}/>        </TableCell>
+                        <DeleteButton taskId={row.id} onUpdate={onUpdate} row={subtask } base={base}floor={floor}/>       </TableCell>
                       </TableRow>
                       <TableRow onClick={() => toggleLevel3Collapse(subtask.id)}>
 
