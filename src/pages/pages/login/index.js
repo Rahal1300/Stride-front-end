@@ -82,7 +82,7 @@ const LoginPage = () => {
     const sanitizedValue = DOMPurify.sanitize(event.target.value);
     setValues({ ...values, [prop]: sanitizedValue });
   };
-  
+
 
   const handleClickShowPassword = () => {
     setValues({ ...values, showPassword: !values.showPassword });
@@ -91,7 +91,7 @@ const LoginPage = () => {
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
-  
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -102,9 +102,9 @@ const LoginPage = () => {
 
 const handleSubmit = async (e) => {
 
-  e.preventDefault(); 
+  e.preventDefault();
   try {
-  setIsLoading(true); 
+  setIsLoading(true);
 
   const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/auth/authenticate`, {
     method: 'POST',
@@ -126,14 +126,14 @@ const handleSubmit = async (e) => {
     dispatch(loginSuccess(data.token));
 
 
-    
+
     const base64Url = data.token.split('.')[1];
     const base64 = base64Url.replace('-', '+').replace('_', '/');
     const decodedToken = JSON.parse(window.atob(base64));
     dispatch(SetRole(decodedToken.role));
     dispatch(Cr(decodedToken.cr));
 
-  
+
      if (decodedToken.cr === 'LeadsManager') {
        router.push('/pages/DashboardLead');
     } else {
@@ -161,7 +161,7 @@ const MaskImg = styled('img')(() => ({
   position: 'absolute'
 }))
    return (
-    
+
     <Box
     className="content-center"
    sx={{
@@ -171,9 +171,9 @@ const MaskImg = styled('img')(() => ({
       `,
       backgroundSize: 'cover, contain',
       backgroundPosition: 'center',
-      
+
    }}
-    
+
   >
   <Image src={bg} layout="fill" objectFit="cover" objectPosition="center" />
 
@@ -185,10 +185,14 @@ const MaskImg = styled('img')(() => ({
     <FooterIllustrationsV1 />
     <Card sx={{ zIndex: 1 ,borderRadius:'20px'}}>
       <CardContent sx={{ padding: (theme) => `${theme.spacing(12, 9, 7)} !important` }}>
-        <Typography variant="h6" sx={{ textAlign: 'center', mb: 8, fontWeight: 600, textTransform: 'uppercase' }}>
+        <Box sx={{ textAlign: 'center', mb: 8 ,ml:27}}>
+        <img src={`/images/Stride.png`} alt="Logo" width='200px' height='55px'/>
+</Box>
+        <Typography variant="h6" sx={{ textAlign: 'center', mb: 8,mt:-5 ,fontWeight: 600, textTransform: 'uppercase' }}>
+
           Login to Account
         </Typography>
-        <Box sx={{ mb: 6, textAlign: 'center' }}>
+        <Box sx={{ mb: 6, textAlign: 'center', marginTop: '-8px' }}>
           {error ? (
             <Typography variant="body2" sx={{ textAlign: 'center', mb: 2, color: 'error.main' }}>
               {error}
@@ -223,7 +227,7 @@ const MaskImg = styled('img')(() => ({
                 color:'Black'
               }}
             />
-          </div>     <Box sx={{ position: 'absolute', top: '52%', right: '42%', transform: 'translateY(-50%)' }}>
+          </div>     <Box sx={{ position: 'absolute', top: '53%', right: '42%', transform: 'translateY(-50%)' }}>
   <Link passHref href="/">
     <LinkStyled onClick={(e) => e.preventDefault()}  sx={{color:'gray'}}>Forgot Password?</LinkStyled>
   </Link>
@@ -243,7 +247,7 @@ const MaskImg = styled('img')(() => ({
       padding: '0.5rem',
       borderRadius: '0.3rem',
       border: '1px solid #ccc',
-      fontSize: '20px', 
+      fontSize: '20px',
       background:'#F1F4F9',
       color:'#A6A6A6'
 
@@ -276,7 +280,7 @@ const MaskImg = styled('img')(() => ({
               flexDirection: { xs: 'column', sm: 'row' },
             }}
           >
-      
+
           </Box>
           <Button
   fullWidth
@@ -313,7 +317,7 @@ const MaskImg = styled('img')(() => ({
 
 );
 };
- 
+
 
 LoginPage.getLayout = (page) => <BlankLayout>{page}</BlankLayout>;
 

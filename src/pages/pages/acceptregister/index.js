@@ -49,7 +49,10 @@ const acceptregisterPage = () => {
   const [formData, setFormData] = useState({
     userName: '',
     password: '',
+    termsAccepted:false,
+
   });
+  const [checkboxError, setCheckboxError] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [valid, setValid] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -75,6 +78,12 @@ const { uniquecode } = router.query;
     setRegistrationError(null);
     setRegistrationSuccess(false);
     setLoading(true);
+    if (!formData.termsAccepted) {
+      setCheckboxError(true); // Set error if the checkbox is not checked
+      setLoading(false);
+      return;
+    }
+    setCheckboxError(false);
 
     if (formData.userName && formData.password) {
       const config = { headers: { "Content-Type": "application/json" } };
@@ -88,8 +97,8 @@ const { uniquecode } = router.query;
           });
           const timer = setTimeout(() => {
             router.push('/pages/login');
-          }, 1800); 
-      
+          }, 1800);
+
           // Cleanup the timer if the component unmounts before the timer finishes
           return () => clearTimeout(timer);
         }, [router])
@@ -121,8 +130,10 @@ console.log(formData);
 <Image src={bg2} layout="fill" objectFit="container" objectPosition="center" />
       <Card sx={{ zIndex: 1,borderRadius:'20px' }}>
         <CardContent sx={{ padding: theme => `${theme.spacing(12, 9, 7)} !important` }}>
-        <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-  <Typography
+        <Box sx={{ textAlign: 'center', mb: 8 ,ml:27}}>
+        <img src={`/images/Stride.png`} alt="Logo" width='200px' height='50px'/>
+</Box>
+        <Box sx={{ mb: 2,mt:-5, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>  <Typography
     variant='h6'
     sx={{
       ml: 3,
@@ -190,7 +201,7 @@ console.log(formData);
                 }}
               />
             </div>
-            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center',mb:checkboxError ? 2 : 4 }}>
               <Checkbox
                 checked={formData.termsAccepted}
                 onChange={handleCheckboxChange}
@@ -207,6 +218,11 @@ console.log(formData);
                 I accept the <LinkStyled sx={{ color: '#202224' }}>terms and conditions</LinkStyled>.
               </Typography>
             </Box>
+            {checkboxError && (
+  <Typography variant='body2' color='error' sx={{ textAlign: 'center', mb: 2 }}>
+    You must accept the terms and conditions to proceed.
+  </Typography>
+)}
             <Button
   fullWidth
   size='large'
@@ -233,13 +249,11 @@ console.log(formData);
                 </Link>
               </Typography>
             </Box>
-
-            {loading && <CircularProgress sx={{ display: 'block', mx: 'auto', my: 3, color:'#5A8CFF' }} />}
-
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            {loading && <CircularProgress sx={{ display: 'block', mx: 'auto', my: 3, color:'#5A8CFF' }} />}
             {registrationSuccess && (
               <Typography variant='body2'  sx={{ textAlign: 'center', my: 2,color:'#5A8CFF' }}>
-                Registration successful!
+                Registration successful! Verification email has been sent.
               </Typography>
             )}
 

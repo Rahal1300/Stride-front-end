@@ -43,12 +43,14 @@ const FormControlLabel = styled(MuiFormControlLabel)(({ theme }) => ({
 }))
 
 const RegisterPage = () => {
-  
+
   const [formData, setFormData] = useState({
     first_name: '',
     email: '',
     password: '',
+    termsAccepted:false,
   });
+  const [checkboxError, setCheckboxError] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [valid, setValid] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -68,7 +70,7 @@ const RegisterPage = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   };
-  
+
 
 
   const handleSubmit = (e) => {
@@ -77,6 +79,13 @@ const RegisterPage = () => {
     setRegistrationError(null);
     setRegistrationSuccess(false);
     setLoading(true);
+    if (!formData.termsAccepted) {
+      setCheckboxError(true); // Set error if the checkbox is not checked
+      setLoading(false);
+      return;
+    }
+    setCheckboxError(false);
+
     if (!isValidEmail(formData.email)) {
       setRegistrationError('Please enter a valid email address.');
       setLoading(false);
@@ -85,7 +94,7 @@ const RegisterPage = () => {
     if (formData.first_name && formData.password && formData.email) {
       const config = { headers: { "Content-Type": "application/json" } };
       axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/auth/register`, formData, config)
-      
+
         .then((response) => {
           setRegistrationSuccess(true);
           setFormData({
@@ -106,7 +115,7 @@ const RegisterPage = () => {
       setLoading(false);
     }
   };
-  
+
 
   return (
     <Box className='content-center' sx={{
@@ -122,7 +131,10 @@ const RegisterPage = () => {
 <Image src={bg2} layout="fill" objectFit="container" objectPosition="center" />
       <Card sx={{ zIndex: 1,borderRadius:'20px' }}>
         <CardContent sx={{ padding: theme => `${theme.spacing(12, 9, 7)} !important` }}>
-        <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <Box sx={{ textAlign: 'center', mb: 8 ,ml:27}}>
+        <img src={`/images/Stride.png`} alt="Logo" width='200px' height='50px'/>
+</Box>
+        <Box sx={{ mb: 2,mt:-5, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
   <Typography
     variant='h6'
     sx={{
@@ -160,7 +172,7 @@ const RegisterPage = () => {
                   padding: '0.5rem',
                   borderRadius: '0.3rem',
                   border: '1px solid #ccc',
-                  fontSize: '18px', 
+                  fontSize: '18px',
                   background:'#F1F4F9',
                   color:'#A6A6A6',
                 }}
@@ -182,14 +194,14 @@ const RegisterPage = () => {
                   padding: '0.5rem',
                   borderRadius: '0.3rem',
                   border: '1px solid #ccc',
-                  fontSize: '18px', 
+                  fontSize: '18px',
                   background:'#F1F4F9',
                   color:'#A6A6A6',
                 }}
               />
             </div>
 
-         
+
 
             <div style={{ marginBottom: '1rem' }}>
               <Typography htmlFor="password" style={{ display: 'block', marginBottom: '0.5rem', color:'gray' }}>
@@ -207,29 +219,34 @@ const RegisterPage = () => {
                   padding: '0.5rem',
                   borderRadius: '0.3rem',
                   border: '1px solid #ccc',
-                  fontSize: '20px', 
+                  fontSize: '20px',
                   background:'#F1F4F9',
                   color:'#A6A6A6',
                 }}
               />
             </div>
-            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center',mb:checkboxError ? 2 : 4 }}>
               <Checkbox
                 checked={formData.termsAccepted}
                 onChange={handleCheckboxChange}
                 inputProps={{ 'aria-label': 'Accept terms and conditions' }}
                 sx={{
-                  color: 'gray', 
+                  color: 'gray',
                   '&.Mui-checked': {
-                    color: 'gray', 
+                    color: 'gray',
                   },'&:hover': {
-                    background: 'none', 
+                    background: 'none',
                   },
                 }}                />
               <Typography variant='body2' sx={{ color: '#202224' }}>
                 I accept the <LinkStyled sx={{ color: '#202224' }}>terms and conditions</LinkStyled>.
               </Typography>
             </Box>
+            {checkboxError && (
+  <Typography variant='body2' color='error' sx={{ textAlign: 'center', mb: 2 }}>
+    You must accept the terms and conditions to proceed.
+  </Typography>
+)}
             <Button
   fullWidth
   size='large'
@@ -239,7 +256,7 @@ const RegisterPage = () => {
     color: 'white',
     background: '#4880FF',
     '&:hover': {
-      background: '#4880FF', 
+      background: '#4880FF',
     },
   }}
 >
@@ -248,7 +265,7 @@ const RegisterPage = () => {
 
             <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
               <Typography variant='body2' sx={{ marginRight: 2 }}>
-              Already have an account?   
+              Already have an account?
               </Typography>
               <Typography variant='body2'>
                 <Link passHref href='/pages/login'>
