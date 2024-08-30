@@ -231,13 +231,14 @@ const MaskImg = styled('img')(() => ({
                 color:'Black'
               }}
             />
-          </div>     <Box sx={{ position: 'absolute', top: '53%', right: '42%', transform: 'translateY(-50%)' }}>
-          <LinkStyled onClick={handleForgotPasswordClick} sx={{ color: 'gray' }}>
-      Forgot Password?
-    </LinkStyled>
-</Box>
+          </div> 
+             <Box sx={{ position: 'absolute', top: '69%', right: '20%', transform: 'translateY(-50%)' }}>
+                    <LinkStyled onClick={handleForgotPasswordClick} sx={{ color: 'gray' }}>
+                          Forgot Password?
+                    </LinkStyled>
+           </Box>
           <div style={{ marginBottom: '1rem', position: 'relative' }}>
-  <Typography htmlFor="password"                 sx={{color:'gray'}}
+        <Typography htmlFor="password"                 sx={{color:'gray'}}
 >
     Password :
   </Typography>
@@ -254,7 +255,6 @@ const MaskImg = styled('img')(() => ({
       fontSize: '20px',
       background:'#F1F4F9',
       color:'#A6A6A6'
-
     }}
   />
   <IconButton
