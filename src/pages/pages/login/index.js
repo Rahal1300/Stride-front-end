@@ -99,6 +99,10 @@ const LoginPage = () => {
    dispatch(logout());
    dispatch(logoutGoogle());
  }, []);
+ const handleForgotPasswordClick = (e) => {
+  e.preventDefault();
+  router.push('/pages/password-reset'); // Adjust the path if your page is located elsewhere
+};
 
 const handleSubmit = async (e) => {
 
@@ -228,9 +232,9 @@ const MaskImg = styled('img')(() => ({
               }}
             />
           </div>     <Box sx={{ position: 'absolute', top: '53%', right: '42%', transform: 'translateY(-50%)' }}>
-  <Link passHref href="/">
-    <LinkStyled onClick={(e) => e.preventDefault()}  sx={{color:'gray'}}>Forgot Password?</LinkStyled>
-  </Link>
+          <LinkStyled onClick={handleForgotPasswordClick} sx={{ color: 'gray' }}>
+      Forgot Password?
+    </LinkStyled>
 </Box>
           <div style={{ marginBottom: '1rem', position: 'relative' }}>
   <Typography htmlFor="password"                 sx={{color:'gray'}}
