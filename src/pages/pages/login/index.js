@@ -232,7 +232,7 @@ const MaskImg = styled('img')(() => ({
               }}
             />
           </div> 
-             <Box sx={{ position: 'absolute', top: '69%', right: '20%', transform: 'translateY(-50%)' }}>
+             <Box sx={{ position: 'absolute', top: '67%', right: '38%', transform: 'translateY(-50%)' }}>
                     <LinkStyled onClick={handleForgotPasswordClick} sx={{ color: 'gray' }}>
                           Forgot Password?
                     </LinkStyled>
