@@ -3,16 +3,19 @@ import { Box, Button, TextField, MenuItem, Typography, Snackbar, Alert, Modal, P
 import axios from 'axios';
 
 function AddUserTable({ onClose }) {
-  const [username, setUsername] = useState('');
-  const [role, setRole] = useState('');
+  const router = useRouter();
+  const [recipientEmail, setUsername] = useState('');
+  const [roleinproject, setRole] = useState('');
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState('success');
 
+  const { id} = router.query;
+
   const handleAddUser = async () => {
     try {
       // Your logic for adding the user (e.g., API call)
-      const response = await axios.post('/api/add-user', { username, role });
+      const response = await axios.post(`http://192.168.30.200:8087/Invitations/send/${id}`, { recipientEmail, roleinproject});
 
       if (response.status === 200) {
         setSnackbarMessage('User added successfully!');
@@ -50,22 +53,22 @@ function AddUserTable({ onClose }) {
       </Typography>
       <TextField
         label="Username"
-        value={username}
+        value={recipientEmail}
         onChange={(e) => setUsername(e.target.value)}
         fullWidth
         sx={{ mb: 2 }}
       />
       <TextField
         label="Role"
-        value={role}
+        value={roleinproject}
         onChange={(e) => setRole(e.target.value)}
         fullWidth
         select
         sx={{ mb: 2 }}
       >
-        <MenuItem value="Admin">Admin</MenuItem>
-        <MenuItem value="TeamManager">Team Manager</MenuItem>
-        <MenuItem value="Employee">Employee</MenuItem>
+        <MenuItem value="Admin"> Guest</MenuItem>
+        <MenuItem value="TeamManager">Collaborator</MenuItem>
+        <MenuItem value="Employee">TeamLeader</MenuItem>
       </TextField>
       <Button variant="contained" onClick={handleAddUser} fullWidth sx={{ mt: 2 }}>
         Add User

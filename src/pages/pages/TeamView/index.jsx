@@ -46,9 +46,9 @@ const TeamView = () => {
   
       fetchTeams();
     }, [id,refreshData]);
+
     const handleRefreshData = () => {
-      setRefreshData(true);
-      fetchTeams();
+    setRefreshData(prev => !prev);
     };
 
 

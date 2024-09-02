@@ -127,7 +127,7 @@ function Team({ Team }) {
           <Button sx={{ backgroundColor: '#E2EAF8', width: '126px', height: '38px', color: '#202224', fontWeight: '550' }} onClick={handleViewTeam}>View Team</Button>
         </Box>
       </Box>
-      <Button sx={{ backgroundColor: '#E2EAF8', width: '126px', height: '38px', color: '#202224', fontWeight: '550', marginLeft: '90.7%' }} onClick={handleOpen}>Add User</Button>
+      <Button sx={{ backgroundColor: '#E2EAF8', width: '126px', height: '38px', color: '#202224', fontWeight: '550', marginLeft: '90.7%' }} onClick={handleOpen}>Add Users</Button>
       <Modal
         open={open}
         onClose={handleClose}
