@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Box, Button, TextField, MenuItem, Typography, Snackbar, Alert, Modal, Paper } from '@mui/material';
 import axios from 'axios';
+import { useRouter } from 'next/router';
 
 function AddUserTable({ onClose }) {
   const router = useRouter();
