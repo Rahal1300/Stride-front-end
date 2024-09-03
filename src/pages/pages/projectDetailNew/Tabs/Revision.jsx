@@ -30,7 +30,7 @@ import Stack from '@mui/material/Stack';
 import { loginSuccess } from '../../../../features/reducers/authReducer';
 import { useSelector } from 'react-redux';
 import Tooltip from '@mui/material/Tooltip';
-import TaskTable from './TaskTable';
+import TaskTable from './RevisionTable';
 function getStatusColor(status) {
     switch (status) {
       case 'Active':

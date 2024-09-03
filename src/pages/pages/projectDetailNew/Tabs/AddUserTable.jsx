@@ -67,9 +67,9 @@ function AddUserTable({ onClose }) {
         select
         sx={{ mb: 2 }}
       >
-        <MenuItem value="Admin"> Guest</MenuItem>
-        <MenuItem value="TeamManager">Collaborator</MenuItem>
-        <MenuItem value="Employee">TeamLeader</MenuItem>
+        <MenuItem value="Guest"> Guest</MenuItem>
+        <MenuItem value="Collaborator">Collaborator</MenuItem>
+        <MenuItem value="TeamLeader">TeamLeader</MenuItem>
       </TextField>
       <Button variant="contained" onClick={handleAddUser} fullWidth sx={{ mt: 2 }}>
         Add User

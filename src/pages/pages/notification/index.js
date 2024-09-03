@@ -35,7 +35,8 @@ const Notification = () => {
 
   const [notification, setNotification] = useState([]);
   const [notification2, setnotification2] = useState([]);
-  const combinedNotifications = [...notification, ...notification2];
+  const [notification3, setnotification3] = useState([]);
+  const combinedNotifications = [...notification, ...notification2,...notification3];
   const { t } = useTranslation(); 
 
   const [refresh, setRefresh] = useState(false);
@@ -82,6 +83,28 @@ const Notification = () => {
       setLoading(false);
 
     };
+    const fetchData3 = async () => {
+  
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/notifications/projectsinvites`, {
+          method: 'GET',
+  
+          headers: {
+            Authorization: `Bearer ${usertoken.payload.token}`,
+          },
+        });
+        const data = await response.json();
+        setnotification3(data);
+
+      } catch (error) {
+
+        console.error('Error fetching notifications:', error);
+      }
+      setLoading(false);
+
+    };
+    
+
 
     if (!usertoken.payload.token && !isAuthenticated) {
       router.push('/pages/login');
@@ -89,6 +112,7 @@ const Notification = () => {
       setLoading(true);
       fetchData();
       fetchData2();
+      fetchData3();
     }
   }, [usertoken.payload.token, refresh, isAuthenticated, router]);
   const handleRefresh = () => {
@@ -127,6 +151,28 @@ const Notification = () => {
       console.error('Error:', error);
     }
  
+};
+
+const confirmInvitationPROJECT = async (Id, type) => {
+  try {
+    const requestOptions = {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${usertoken.payload.token}`,
+      },
+    };
+
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/Accept-projectinvitation/${Id}`, requestOptions);
+    const responseText = await response.json();
+
+    if (response.ok) {
+      setAcceptedInvitations((prevAcceptedInvitations) => [...prevAcceptedInvitations, Id]);
+    } else {
+      console.log(responseText || 'Unknown error');
+    }
+  } catch (error) {
+    console.error('Error:', error);
+  }
 };
 if (!isAuthenticated && usertoken.payload.token === null) {
     
@@ -193,7 +239,13 @@ if (!isAuthenticated && usertoken.payload.token === null) {
           <Button
             size='small'
             sx={{ bgcolor: '#6226EF', color: 'white',margin:2 }}            variant='contained'
-            onClick={() => confirmInvitation(notif.id)}
+            onClick={() => {
+              if (notif.type === 'PROJECT') {
+                confirmInvitationPROJECT(notif.id); // Call function for project notifications
+              } else {
+                confirmInvitation(notif.id); // Call function for other types of notifications
+              }
+            }}
             disabled={acceptedInvitations.includes(notif.id)}
 
           >

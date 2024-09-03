@@ -427,7 +427,7 @@ function Row(props) {
       <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
 
         <TableCell>
-        {row.subtasks.length > 0 && (
+        {row.subRevisions.length > 0 && (
 
           <IconButton
             aria-label="expand row"
@@ -596,7 +596,7 @@ function Row(props) {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {row.subtasks.map((subtask,subIndex) => (
+                  {row.subRevisions.map((subtask,subIndex) => (
                     <React.Fragment key={subtask.title}>
 
                       <TableRow>
@@ -1069,7 +1069,7 @@ Row.propTypes = {
     setLoadingFetch(true);
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/tasks/project/${id}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/revisions/project/${id}`, {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${userToken.payload.token}`,

@@ -101,7 +101,7 @@ const LoginPage = () => {
  }, []);
  const handleForgotPasswordClick = (e) => {
   e.preventDefault();
-  router.push('/pages/password-reset'); // Adjust the path if your page is located elsewhere
+  router.push('/pages/forgot-password'); // Adjust the path if your page is located elsewhere
 };
 
 const handleSubmit = async (e) => {
@@ -232,11 +232,7 @@ const MaskImg = styled('img')(() => ({
               }}
             />
           </div> 
-             <Box sx={{ position: 'absolute', top: '67%', right: '38%', transform: 'translateY(-50%)' }}>
-                    <LinkStyled onClick={handleForgotPasswordClick} sx={{ color: 'gray' }}>
-                          Forgot Password?
-                    </LinkStyled>
-           </Box>
+          
           <div style={{ marginBottom: '1rem', position: 'relative' }}>
         <Typography htmlFor="password"                 sx={{color:'gray'}}
 >
@@ -286,6 +282,23 @@ const MaskImg = styled('img')(() => ({
           >
 
           </Box>
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: -5, mb: 4 }}>
+<LinkStyled
+onClick={handleForgotPasswordClick}
+sx={{
+color: 'gray',
+cursor: 'pointer',
+'&:hover': {
+color: '#4880FF', // Color on hover
+textDecoration: 'underline', // Highlight effect
+},
+'&:active': {
+color: '#004080', // Color on click
+},
+}}>
+                          Forgot Password?
+                    </LinkStyled>
+           </Box>
           <Button
   fullWidth
   size="large"
