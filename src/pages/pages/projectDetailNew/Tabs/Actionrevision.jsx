@@ -255,15 +255,15 @@ const DeleteButton = ({ taskId, onUpdate, row, base, floor }) => {
   return (
     <>
       <Box display="flex" alignItems="center">
-        <IconButton color="primary" onClick={handleEditClick}>
+        {/* <IconButton color="primary" onClick={handleEditClick}>
           <EditIcon />
-        </IconButton>
+        </IconButton> */}
         <IconButton color="error" onClick={handleClick}>
           <DeleteIcon />
         </IconButton>
-      <IconButton>
+      {/* <IconButton>
       <AddToPhotosIcon onClick={handleRevisionClick}/>
-      </IconButton>
+      </IconButton> */}
 
 
       </Box>

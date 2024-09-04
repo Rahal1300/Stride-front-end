@@ -699,7 +699,7 @@ function Row(props) {
       />
                       <Tooltip title="Confirm">
                         <IconButton
-                        
+
                           aria-label="confirm percentage"
                           size="small"
                           onClick={() => handleConfirmPercentagesubtask(subtask.id)}
@@ -941,7 +941,7 @@ function Row(props) {
     </Box></TableCell>  */}
     <TableCell  >
                                         <StatusChip status={subsubtask.status} />
-                                        
+
                                       </TableCell>
                                       <TableCell  >
         <DeleteButton taskId={row.id} onUpdate={onUpdate} row={subsubtask } base={base}floor={floor}/>        </TableCell>
