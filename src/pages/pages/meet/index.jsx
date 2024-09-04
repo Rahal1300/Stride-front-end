@@ -15,8 +15,8 @@ const Meeting = () => {
   const router = useRouter();
   const isAuthenticated = useSelector((state) => state.isAuthenticated);
   const usertoken = useSelector(loginSuccess);
-  
-  const [meetings, setSeetings] = useState([]); 
+
+  const [meetings, setSeetings] = useState([]);
   const [decodedToken, setDecodedToken] = useState(null);
 
   useEffect(() => {
@@ -28,7 +28,7 @@ const Meeting = () => {
 
     }
     const fetchData = async () => {
-      setLoading(true);  
+      setLoading(true);
       try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/user/visits`, {
           headers: {
@@ -49,17 +49,17 @@ const Meeting = () => {
         setLoading(false);
       }
     };
-  
+
     fetchData();
   }, [ usertoken]);
   const isAdmin = decodedToken && decodedToken.role === 'Admin';
   const isTeamManager = decodedToken && decodedToken.cr === 'TeamManager';
-  
+
   const shouldShowModifyIcon = isAdmin || (isTeamManager);
   const CreateMeeting = () => {
     router.push('/pages/CreateMeeting') ;  };
-    const userrole = useSelector(state => state.Role); 
-    const  cr  = useSelector(state => state.Cr); 
+    const userrole = useSelector(state => state.Role);
+    const  cr  = useSelector(state => state.Cr);
     const Owner = userrole === 'Subscriber' && cr === 'Owner';
     const TeamManagerandOwner = userrole === 'Subscriber' &&  cr === 'TeamManager';
     const Manager= userrole === 'User' &&  cr === 'TeamManager';
@@ -74,8 +74,10 @@ const Meeting = () => {
       <Box sx={{ marginTop: 2 }}>
         <Grid container alignItems="center" justifyContent="space-between" spacing={2}>
           <Grid item xs={12} sm={6}>
-          <Typography variant="h3" component="h1">
-          Meeting Details
+          <Typography variant="h3" component="div" sx={{ fontFamily: 'Arial',fontSize: '48px'
+, '&::first-letter': {
+                  color: 'primary.main',
+                }}}>          Meetings
         </Typography>
           </Grid>
           <Grid item xs={12} sm={6} container alignItems="center" spacing={2}>

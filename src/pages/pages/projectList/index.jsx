@@ -78,23 +78,23 @@ const FilterCard = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
-    const [projectsPerPage] = useState(6); 
+    const [projectsPerPage] = useState(6);
     const usertoken = useSelector(loginSuccess);
-    const [showTable, setShowTable] = useState(false); 
+    const [showTable, setShowTable] = useState(false);
     const [selectedStatus, setSelectedStatus] = useState(null);
     const [filters, setFilters] = useState({
       id:null,
       status: null,
-      progress: null,   
-    date: null, 
+      progress: null,
+    date: null,
     });
     const [decodedToken, setDecodedToken] = useState(null);
 
     const [progressAnchorEl, setProgressAnchorEl] = useState(null);
     const [selectedProgress, setSelectedProgress] = useState(null);
 
-    const userrole = useSelector(state => state.Role); 
-  const  cr  = useSelector(state => state.Cr); 
+    const userrole = useSelector(state => state.Role);
+  const  cr  = useSelector(state => state.Cr);
     useEffect(() => {
       const fetchData = async () => {
         try {
@@ -117,10 +117,10 @@ const FilterCard = () => {
           setLoading(false);
         }
       };
-    
 
-      
-     
+
+
+
       fetchData();
     }, [usertoken]);
     const Owner = userrole === 'Subscriber' && cr === 'Owner';
@@ -130,46 +130,46 @@ const FilterCard = () => {
     const handleClickIcon1 = () => {
       setIcon1Path("/images/icons/orderlistC.png");
       setIcon2Color("#979797");
-      setShowTable(true); 
+      setShowTable(true);
     };
-  
+
     const handleClickIcon2 = () => {
       setIcon1Path("/images/icons/orderlist.png");
-   
+
       setIcon2Color("#6226EF");
       setShowTable(false);
     };
-  
+
     const handleDateOpen = (event) => {
       setDateAnchorEl(event.currentTarget);
     };
-  
+
     const handleDateClose = () => {
       setDateAnchorEl(null);
     };
-  
+
 
     const handleProgressOpen = (event) => {
       setProgressAnchorEl(event.currentTarget);
     };
-  
+
     const handleProgressClose = () => {
       setProgressAnchorEl(null);
     };
     const handleDateSelect = (dateOption) => {
       let dateFilterStart, dateFilterEnd;
       const currentDate = new Date();
-      const today = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate()); 
+      const today = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
 
       switch (dateOption) {
-        
+
         case 'This Year':
           const currentYear = today.getFullYear();
-          dateFilterStart = `${currentYear}-01-01`; 
-          dateFilterEnd = `${currentYear}-12-31`; 
+          dateFilterStart = `${currentYear}-01-01`;
+          dateFilterEnd = `${currentYear}-12-31`;
 
           break;
-        
+
         case 'This Week':
           const firstDayOfWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() - today.getDay());
           dateFilterStart = firstDayOfWeek.toISOString().split('T')[0];
@@ -185,25 +185,25 @@ const FilterCard = () => {
           dateFilterStart = null;
           dateFilterEnd = null;
       }
-    
+
     setFilters({
         ...filters,
-        status: null, 
-        progress: null, 
+        status: null,
+        progress: null,
         date: { start: dateFilterStart, end: dateFilterEnd }
       });
 
-      setDateAnchorEl(null); 
+      setDateAnchorEl(null);
     };
-    
+
     const handleProgressSelect = (progress) => {
-  
+
       setSelectedProgress(progress);
       setProgressAnchorEl(null);
-    
+
       // Define the progress ranges
       let minProgress, maxProgress;
-    
+
       switch (progress) {
         case '0-25%':
           minProgress = 0;
@@ -225,7 +225,7 @@ const FilterCard = () => {
           minProgress = 0;
           maxProgress = 100;
       }
-    
+
       setFilters({
         ...filters,
         status: null,
@@ -234,14 +234,14 @@ const FilterCard = () => {
         progress: { min: minProgress, max: maxProgress }
       });
     };
-    
-    
 
-    
+
+
+
     const handleStatusOpen = (event) => {
       setStatusAnchorEl(event.currentTarget);
     };
-  
+
     const handleStatusClose = () => {
       setStatusAnchorEl(null);
     };
@@ -254,11 +254,11 @@ const FilterCard = () => {
 
       });
     };
-  
+
     const handleView = () => {
       router.push('/pages/CreateProject');
     };
-    
+
     const handleStatusSelect = (status) => {
       setFilters({
         ...filters,
@@ -266,30 +266,33 @@ const FilterCard = () => {
         date: null,
         status
       });
- 
-      setStatusAnchorEl(null); 
+
+      setStatusAnchorEl(null);
     };
-  
+
     const filteredProjects = selectedStatus ? projects.filter(project => project.status === selectedStatus) : projects;
     const indexOfLastProject = currentPage * projectsPerPage;
     const indexOfFirstProject = indexOfLastProject - projectsPerPage;
     const currentProjects = projects.slice(indexOfFirstProject, indexOfLastProject);
-  
+
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-    
+
     return (
       <div>
   <Box sx={{ marginTop: 2 }}>
     <Grid container alignItems="center" justifyContent="space-between" spacing={2}>
       <Grid item xs={12} sm={6}>
-        <Typography variant="h3" component="div" sx={{ fontWeight: 700 }}>
-          Projects 
+        <Typography variant="h3" component="div" sx={{ fontFamily: 'Arial',fontSize: '48px'
+, '&::first-letter': {
+                  color: 'primary.main',
+                }}}>
+          Projects
         </Typography>
       </Grid>
       <Grid item xs={12} sm={6} container spacing={2} alignItems="center">
         <Grid item xs={12} sm={7}>
-    
+
         </Grid>
         <Grid item xs={6} sm={2}>
           <Box
@@ -301,7 +304,7 @@ const FilterCard = () => {
             padding="2px 9px"
             justifyContent="space-between"
           >
-          
+
             <Image src={icon1Path} width={24} height={24} alt="Icon 1" onClick={handleClickIcon1} />
             <GridViewRoundedIcon onClick={handleClickIcon2} width={24} height={24} style={{ color: icon2Color }} />
           </Box>
@@ -329,8 +332,8 @@ const FilterCard = () => {
       </Grid>
     </Grid>
   </Box>
-  
-  
+
+
   <TableContainer style={{ borderRadius: 10, border: '0.6px solid #D5D5D5', width: '89.2%', marginTop: 100, marginLeft:70 }}>
   <Table size="small" aria-label="filter options" style={{ borderCollapse: 'collapse', backgroundColor: '#FFFFFF', width: '100%', borderRadius: 10, border: '0.6px solid #D5D5D5' }}>
     <TableBody>
@@ -387,7 +390,7 @@ const FilterCard = () => {
 
         <Box sx={{margin :10}}>
           {error && <p>Error: {error}</p>}
-      
+
           {!loading && !error && (
             <Box sx={{ margin: 10 }}>
           {projects.length === 0 ? (
@@ -424,5 +427,5 @@ const FilterCard = () => {
       </div>
     );
   };
-  
+
   export default withAuth(FilterCard);
