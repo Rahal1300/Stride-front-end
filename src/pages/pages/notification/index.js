@@ -215,6 +215,8 @@ if (!isAuthenticated && usertoken.payload.token === null) {
 
     {combinedNotifications.length > 0 ? (
   [...combinedNotifications].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).map((notif, index) => (
+   
+
     <Box key={index} sx={{ display: 'flex', alignItems: 'center', padding: 1}}>
           <Card sx={{ width: '100%' }}>
             <Box sx={{ display: 'flex', alignItems: 'center', padding: 2 }}>
@@ -223,10 +225,11 @@ if (!isAuthenticated && usertoken.payload.token === null) {
                 src={`data:image/png;base64, ${notif.senderImageUrl}`}
                 sx={{ width: 50, height: 50, marginRight: 2 }}
               />
+              
               <Box sx={{ flex: '1 1', display: 'flex', flexDirection: 'column' }}>
               <Typography                 sx={{ color:'black' }} >
               <strong>{notif.senderName}</strong>      {t('has_invited_you')}
-
+             
                 </Typography>
                 <Typography variant="body1">{notif.message}</Typography>
                 <Typography variant="caption" color="textSecondary">
