@@ -28,6 +28,7 @@ const SubscriptionDetails = () => {
         }
 
         const data = await response.json();
+       
         setSubscription(data);
       } catch (error) {
         console.error('Error fetching subscription data:', error.message);
@@ -64,7 +65,7 @@ const SubscriptionDetails = () => {
                   <strong>End Date:</strong> {new Date(subscription.endDate).toLocaleDateString()}
                 </Typography>
                 <Typography variant="body2" gutterBottom>
-                  <strong>Active:</strong> {subscription.isActive ? 'Yes' : 'No'}
+                  <strong>Active:</strong> {subscription.active? 'Yes' : 'No'}
                 </Typography>
               </>
             )}

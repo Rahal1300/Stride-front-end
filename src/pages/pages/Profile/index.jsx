@@ -128,14 +128,19 @@ const Index = () => {
     <ThemeProvider theme={theme}>
  {isLoading ? <CustomizedProgressBars /> : (
           <>
-      <Box sx={{ padding: 2 }}>
+      <Box sx={{ padding: 1 ,mt:-2}}>
         <Grid container spacing={2} justifyContent="center">
           <Grid item xs={12} sm={8}>
-            <Typography variant="h3" component="div" sx={{ fontWeight: 700, fontSize: 32 }}>
+          <Typography variant="h3" component="div" sx={{ fontWeight: 700,fontFamily: 'Arial',fontSize: '32px'
+, '&::first-letter': {
+                  color: 'secondary.main',
+                }}}>
+            
               Profile
             </Typography>
           </Grid>
-          <Grid item xs={12} sm={4}>
+          <Grid item xs={12} sm={4} 
+          sx={{display:'flex',justifyContent:'flex-end'}}>
             <Button
               variant="contained"
               onClick={handleEditProfile}
@@ -145,10 +150,11 @@ const Index = () => {
 Customize Profile            </Button>
           </Grid>
         </Grid>
+        <SubscriptionDetails />
 
-        <Card sx={{ padding: 2, marginTop: 5 }}>
-          <Grid container spacing={2} sx={{ padding: 2, marginTop: 5 }}>
-          <Grid item xs={12} sm={4} sx={{ padding: 2, marginTop: 5 }}>
+        <Card sx={{ padding: 2, marginTop: 2 }}>
+          <Grid container spacing={2} sx={{ padding: 2, marginTop: 2 }}>
+          <Grid item xs={12} sm={4} sx={{ padding: 2, marginTop: 2 }}>
   <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
     {imagePreviewUrl || profileInfo?.image ? (
       <div style={{ borderRadius: '50%', overflow: 'hidden', marginBottom: '1rem' }}>
@@ -302,7 +308,7 @@ Customize Profile            </Button>
             </Grid>
           </Grid>
         </Card>
-        <SubscriptionDetails />
+     
         <Box sx={{ display: 'flex', justifyContent: 'right', mt: 2 }}>
           <Button
             variant="contained"
