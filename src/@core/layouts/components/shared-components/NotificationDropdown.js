@@ -181,6 +181,27 @@ const NotificationDropdown = () => {
       console.error('Error fetching notifications:', error);
     }
   };
+  const confirmInvitationPROJECT = async (Id, type) => {
+    try {
+      const requestOptions = {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${usertoken.payload.token}`,
+        },
+      };
+  
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/Accept-projectinvitation/${Id}`, requestOptions);
+      const responseText = await response.json();
+  
+      if (response.ok) {
+        setAcceptedInvitations((prevAcceptedInvitations) => [...prevAcceptedInvitations, Id]);
+      } else {
+        console.log(responseText || 'Unknown error');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
 
 
   useEffect(() => {
@@ -370,11 +391,18 @@ const NotificationDropdown = () => {
             size='small'
             sx={{ margin: 2 }}
             variant='contained'
-            onClick={() => confirmInvitation(notif.id)}
+            onClick={() => {
+              if (notif.type === 'PROJECT') {
+                confirmInvitationPROJECT(notif.id); // Call function for project notifications
+              } else {
+                confirmInvitation(notif.id); // Call function for other types of notifications
+              }
+            }}
             disabled={acceptedInvitations.includes(notif.id)}
           >
             Accept
           </Button>
+          <p>{notif.type}</p>
 
           <Button
             size='small'
