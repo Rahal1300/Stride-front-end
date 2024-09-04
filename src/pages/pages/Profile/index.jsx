@@ -12,6 +12,7 @@ import withAuth from '../../../features/reducers/withAuth';
 import { useSelector } from 'react-redux';
 import { loginSuccess } from '../../../features/reducers/authReducer';
 import CustomizedProgressBars from './loading'
+import SubscriptionDetails from './SubscriptionDetails';
 const theme = createTheme({
   breakpoints: {
     values: {
@@ -301,6 +302,7 @@ Customize Profile            </Button>
             </Grid>
           </Grid>
         </Card>
+        <SubscriptionDetails />
         <Box sx={{ display: 'flex', justifyContent: 'right', mt: 2 }}>
           <Button
             variant="contained"
