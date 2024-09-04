@@ -41,10 +41,10 @@ const BadgeContentSpan = styled('span')(({ theme }) => ({
 const UserDropdown = ({sendDataToParent}) => {
   const { t } = useTranslation(); // Hook to access translations
 
-  const  user  = useSelector(loginSuccess);  
-  const userrole = useSelector(state => state.Role); 
-   const  cr  = useSelector(state => state.Cr);  
-const [isChecked, setIsChecked] = useState('');  
+  const  user  = useSelector(loginSuccess);
+  const userrole = useSelector(state => state.Role);
+   const  cr  = useSelector(state => state.Cr);
+const [isChecked, setIsChecked] = useState('');
 const [anchorEl, setAnchorEl] = useState(null)
   const [userData, setUserData] = useState(null);
   const dispatch = useDispatch();
@@ -103,14 +103,14 @@ useEffect(() => {
   if (cr === 'TeamManager') {
     setIsChecked(false);
   }
-}, [user.payload.token,cr]); 
+}, [user.payload.token,cr]);
 
   const handleLogout = () => {
-  
+
     router.push("/pages/login")
   };
 
-  
+
   const handleBackToOwner = () => {
     dispatch(Cr('Owner'))
     router.push('/pages/userinterface')
@@ -119,7 +119,7 @@ useEffect(() => {
     const newIsChecked = !isChecked;
     setIsChecked(newIsChecked);
     sendDataToParent(newIsChecked);
-    
+
     if (newIsChecked) {
       dispatch(SetRole('Subscriber'));
       dispatch(Cr('LeadsManager'));
@@ -150,7 +150,7 @@ useEffect(() => {
     />
   </Badge>
 </Box>
-<Box sx={{ display: 'flex', alignItems: 'center', flexDirection: 'column', marginRight: 2 }} onClick={handleDropdownOpen}>
+<Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginRight: 2,ml:2 }} onClick={handleDropdownOpen}>
   <Typography variant='body2' sx={{
     fontSize: '14px',
     lineHeight: '19.1px',
@@ -162,32 +162,32 @@ useEffect(() => {
     whiteSpace: 'nowrap',
     textOverflow: 'ellipsis',
     marginBottom: 1,
-    marginRight: 5 
   }} onClick={handleDropdownOpen}>
     {userData?.first_name} {userData?.last_name}
   </Typography>
-  <Typography variant='body2' sx={{
-    fontSize: '12px',
-    lineHeight: '16.37px',
-    color: '#565656',
-    fontFamily: 'Arial',
-    fontWeight: 600,
-    width: '61px',
-    height: '16px',
-    whiteSpace: 'nowrap',
-    textOverflow: 'ellipsis'
-  }} onClick={handleDropdownOpen}>
-                  {userrole} 
 
-
-  </Typography>
+  <Box sx={{ display: 'flex', alignItems: 'center' }}>
+    <Typography variant='body2' sx={{
+      fontSize: '12px',
+      lineHeight: '16.37px',
+      color: '#565656',
+      fontFamily: 'Arial',
+      fontWeight: 600,
+      width: '61px',
+      height: '16px',
+      whiteSpace: 'nowrap',
+      textOverflow: 'ellipsis',
+      marginRight: 15, // Add some space between text and icon
+    }} onClick={handleDropdownOpen}>
+      {cr} ({userrole})
+    </Typography>
+    <ArrowDropDownCircleOutlinedIcon style={{ color: 'gray' }} onClick={handleDropdownOpen} />
+  </Box>
 </Box>
 
 
 
 
-<ArrowDropDownCircleOutlinedIcon style={{ color: 'gray', marginRight: 5 }}  onClick={handleDropdownOpen}   
-/>
 
       <Menu
         anchorEl={anchorEl}
@@ -197,6 +197,8 @@ useEffect(() => {
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
+
+
         {/* <Box sx={{ pt: 2, pb: 3, px: 4 }}>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <Badge
@@ -226,13 +228,13 @@ useEffect(() => {
 
         <MenuItem sx={{ p: 0 }} onClick={() => handleDropdownClose('/pages/pricing')} key="pricing">
           <Box sx={styles}>
-            <img src="/images/icons/plan.png"style={{ marginRight: 5 }}/>         
+            <img src="/images/icons/plan.png"style={{ marginRight: 5 }}/>
                                       {t('My Plan')}
                                       <Divider />
 
           </Box>
         </MenuItem>
-      
+
         <Divider />
         <MenuItem sx={{ p: 0 }} onClick={() => handleDropdownClose('/pages/help')} key="help">
           <Box sx={styles}>
@@ -264,10 +266,10 @@ useEffect(() => {
             </>
           )}
         </>
-  
+
         <Divider />
         <MenuItem sx={{ py: 2 }} onClick={() => handleLogout()} key="Logout">
-          <img src="/images/icons/logout.png" style={{ marginRight: 5 }}/>        
+          <img src="/images/icons/logout.png" style={{ marginRight: 5 }}/>
                                   {t('Log out')}
 
         </MenuItem>
