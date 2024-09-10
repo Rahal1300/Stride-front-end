@@ -28,6 +28,7 @@ import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import {TablePagination} from '@mui/material';
 import DeleteButton from './Actiontask'
+import DoneAllIcon from '@mui/icons-material/DoneAll';
 
 import DeleteIcon from '@mui/icons-material/Delete';
 function createTaskData(taskId,parentTaskName, description, parentTaskWeight, parentTaskFloor, parentTaskBasement, parentTaskStartDate, parentTaskDeadline, status, memberName, documents, subtasks) {
@@ -203,6 +204,55 @@ function Row(props) {
     }
   };
 
+  const handleValidatePercentage = async (taskId) => {
+    const percentage = percentages[taskId];
+    setIsConfirmed((prevIsConfirmed) => ({
+      ...prevIsConfirmed,
+      [taskId]: true,
+    }));
+
+    setIsConfirmed(true); // Set confirmation flag to true
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/tasks/${taskId}/validate-progress`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${userToken.payload.token}`,
+        },
+
+      });
+
+      if (!response.ok) {
+        setSnackbarOpen(true);
+
+        setSnackbarSeverity('error');
+
+        setSnackbarMessage('Error: Failed to validate Task progress');
+        throw new Error('Failed to validate subtask progress');
+
+      }
+      const contentType = response.headers.get("content-type");
+      let responseData;
+      if (contentType && contentType.includes("application/json")) {
+        responseData = await response.json();
+      } else {
+        responseData = {};
+
+      }
+
+      setSnackbarSeverity('success');
+
+        setSnackbarMessage('Successful Validation !');
+        setSnackbarOpen(true);
+        setTimeout(() => {
+          onUpdate();
+        }, 2000);
+    } catch (error) {
+      console.error('Error validating subtask:', error.message);
+
+    }
+
+  };
   const handleConfirmPercentage = async (taskId) => {
     const percentage = percentages[taskId];
     setIsConfirmed((prevIsConfirmed) => ({
@@ -416,10 +466,28 @@ function Row(props) {
             <CheckIcon style={{ color: 'green' }} />
           </IconButton>
         </Tooltip>
+        <Tooltip title="Validate">
+        <IconButton
+            aria-label="confirm percentage"
+            size="small"
+            onClick={() => handleValidatePercentage(row.id)}
+            >
+            <DoneAllIcon style={{ color: 'red' }} />
+          </IconButton>        </Tooltip>
 
       </div>):(
       <div >
-        {row.progress}</div>
+        {row.progress}
+        <Tooltip title="Validate">
+        <IconButton
+            aria-label="confirm percentage"
+            size="small"
+            onClick={() => handleValidatePercentage(row.id)}
+            >
+            <DoneAllIcon style={{ color: 'red' }} />
+          </IconButton>        </Tooltip>
+        </div>
+        
       )}</>
   );
   return (
