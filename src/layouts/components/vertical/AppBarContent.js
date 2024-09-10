@@ -1,52 +1,53 @@
-// ** MUI Imports
-import Box from '@mui/material/Box'
-import TextField from '@mui/material/TextField'
-import IconButton from '@mui/material/IconButton'
-import useMediaQuery from '@mui/material/useMediaQuery'
-import InputAdornment from '@mui/material/InputAdornment'
 import React, { useState, useEffect } from 'react'
-import Typography from '@mui/material/Typography'
-import Snackbar from '@mui/material/Snackbar'
 import { useSelector } from 'react-redux'
 import { useRouter } from 'next/router'
 
-// ** Icons Imports
-import Menu from 'mdi-material-ui/Menu'
-import Magnify from 'mdi-material-ui/Magnify'
-import CloseIcon from 'mdi-material-ui/Close'
-
-// ** Components
-import ModeToggler from 'src/@core/layouts/components/shared-components/ModeToggler'
-import UserDropdown from 'src/@core/layouts/components/shared-components/UserDropdown'
-import NotificationDropdown from 'src/@core/layouts/components/shared-components/NotificationDropdown'
-import LanguageDropdown  from 'src/@core/layouts/components/shared-components/Lang'
+// MUI Imports
+import Box from '@mui/material/Box'
+import IconButton from '@mui/material/IconButton'
+import Snackbar from '@mui/material/Snackbar'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
+import CloseIcon from 'mdi-material-ui/Close'
+import Menu from 'mdi-material-ui/Menu'
+import { useMediaQuery } from '@mui/system'
+
+// Components
+import NotificationDropdown from 'src/@core/layouts/components/shared-components/NotificationDropdown'
+import LanguageDropdown from 'src/@core/layouts/components/shared-components/Lang'
+import UserDropdown from 'src/@core/layouts/components/shared-components/UserDropdown'
 
 const AppBarContent = props => {
   // ** Props
-  const { hidden, settings, saveSettings, toggleNavVisibility, sendDataToParent } = props
+  const { hidden, toggleNavVisibility, sendDataToParent } = props
 
   const hiddenSm = useMediaQuery(theme => theme.breakpoints.down('sm'))
-  const [dataFromChild, setDataFromChild] = useState('');
   const [snackbarOpen, setSnackbarOpen] = useState(false)
   const router = useRouter()
 
   const userRole = useSelector(state => state.Role)
   const cr = useSelector(state => state.Cr)
-const notyours=  userRole === 'Subscriber' && cr === 'Newcomer'
+  const notyours = userRole === 'Subscriber' && cr === 'Newcomer'
 
-  // Effect to show Snackbar whenever sendDataToParent changes
+  // Define allowed paths for showing Snackbar
+  const allowedPaths = ['/pages/userinterface']
+
+  // Effect to show Snackbar only once when logged in
   useEffect(() => {
-    if (sendDataToParent ) {
+    const isSnackbarShown = sessionStorage.getItem('snackbarShown')
+
+    if (sendDataToParent && allowedPaths.includes(router.pathname) && !isSnackbarShown) {
       setSnackbarOpen(true)
+      sessionStorage.setItem('snackbarShown', 'true') // Set flag so it doesn't show again
     }
-  }, [sendDataToParent, userRole])
+  }, [sendDataToParent, userRole, router.pathname])
+
   const handleSnackbarClose = (event, reason) => {
     if (reason === 'clickaway') {
       return
     }
     setSnackbarOpen(false)
   }
+
   const getDisplayRole = () => {
     switch (cr) {
       case 'TeamManager':
@@ -57,6 +58,7 @@ const notyours=  userRole === 'Subscriber' && cr === 'Newcomer'
         return cr // fallback to the actual cr value if not specified
     }
   }
+
   const theme = createTheme({
     components: {
       MuiSnackbarContent: {
@@ -71,31 +73,33 @@ const notyours=  userRole === 'Subscriber' && cr === 'Newcomer'
 
   const handleLogout = () => {
     localStorage.removeItem('token') // Adjust this key to match the token storage key
-    router.push("/pages/login");// Adjust this route to match your login page route
+    sessionStorage.removeItem('snackbarShown') // Clear flag when logging out
+    router.push("/pages/login") // Adjust this route to match your login page route
   }
+
   return (
     <Box sx={{ width: '100%', display: 'flex', alignItems: 'right', justifyContent: 'space-between' }}>
       <Box className='actions-left' sx={{ mr: 2, display: 'flex', alignItems: 'center' }}>
-      <ThemeProvider theme={theme}>
-       {!notyours ? ( <>
-      <Snackbar
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-        open={snackbarOpen && userRole === 'Subscriber'}
-        autoHideDuration={6000}
-      
-        onClose={handleSnackbarClose}
-        message={`You are a subscriber but currently acting as ${getDisplayRole()}.`}
+        <ThemeProvider theme={theme}>
+          {!notyours && (
+            <>
+              <Snackbar
+                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+                open={snackbarOpen && userRole === 'Subscriber'}
+                autoHideDuration={6000}
+                onClose={handleSnackbarClose}
+                message={`You are a subscriber but currently acting as ${getDisplayRole()}.`}
                 action={
-          <IconButton size="small" aria-label="close" color="inherit" onClick={handleSnackbarClose}>
-            <CloseIcon fontSize="small" />
-          </IconButton>
-        }
-      /> </> )  : (null)}
-      
-      
-      </ThemeProvider>
+                  <IconButton size="small" aria-label="close" color="inherit" onClick={handleSnackbarClose}>
+                    <CloseIcon fontSize="small" />
+                  </IconButton>
+                }
+              />
+            </>
+          )}
+        </ThemeProvider>
 
-            {hidden ? (
+        {hidden ? (
           <IconButton
             color='inherit'
             onClick={toggleNavVisibility}
@@ -104,30 +108,12 @@ const notyours=  userRole === 'Subscriber' && cr === 'Newcomer'
             <Menu />
           </IconButton>
         ) : null}
-        {/* <TextField
-          size='small'
-          sx={{ '& .MuiOutlinedInput-root': { borderRadius: 4 } }}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position='start'>
-                <Magnify fontSize='small' />
-              </InputAdornment>
-            )
-          }}
-        /> */}
       </Box>
+
       <Box className='actions-right' sx={{ display: 'flex', alignItems: 'center' }}>
-
-        {/* <ModeToggler settings={settings} saveSettings={saveSettings} /> */}
         <NotificationDropdown />
-        <LanguageDropdown/>
-
+        <LanguageDropdown />
         <UserDropdown sendDataToParent={sendDataToParent} />
-       {/* <IconButton onClick={handleLogout} color="inherit">
-          <Typography variant="body2">Logout</Typography>
-          <p>a</p>
-        </IconButton>*/}
-      
       </Box>
     </Box>
   )

@@ -750,7 +750,7 @@ function Row(props) {
 
                       <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={11}>
 
-                        { subtask.subtasks &&  subtask.subtasks.length > 0 && (
+                        { subtask.subRevisions &&  subtask.subRevisions.length > 0 && (
                          <TableRow >
                               <TableCell>
           <IconButton
@@ -786,10 +786,10 @@ function Row(props) {
                                   </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                  { subtask.subtasks && subtask.subtasks.map((subsubtask) => (
-                                    <TableRow key={subsubtask.name}>
+                                  { subtask.subRevisions && subtask.subRevisions.map((subsubtask) => (
+                                    <TableRow key={subsubtask.title}>
                                       <TableCell component="th" scope="row">
-                                        {subsubtask.name}
+                                        {subsubtask.title}
                                       </TableCell>
                                       <TableCell  >
                                         <Tooltip title={subsubtask.description ? subsubtask.description : 'No Description'}>

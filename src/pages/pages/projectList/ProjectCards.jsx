@@ -42,7 +42,7 @@ const ProjectCard = ({ project }) => {
 </Typography>
 
           </div>
-          <CircleProgress progress={project.progress} />
+          <CircleProgress progress={Math.trunc(project.progress)} />
         </Box>
         <Box sx={{ display: 'flex', alignItems: 'center'}}>
         {project.projectUsersAndRoles && project.projectUsersAndRoles.length > 0 ? (
@@ -61,7 +61,7 @@ const ProjectCard = ({ project }) => {
             variant="contained"
             sx={{
               backgroundColor: "#E2EAF8",
-              marginLeft: '15px',
+              marginLeft: '40px',
               color: "#202224",
               border: "none",
               "&:hover": {

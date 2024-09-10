@@ -478,6 +478,7 @@ function Row(props) {
       </div>):(
       <div >
         {row.progress}
+
         <Tooltip title="Validate">
         <IconButton
             aria-label="confirm percentage"
@@ -855,9 +856,9 @@ function Row(props) {
                                 </TableHead>
                                 <TableBody>
                                   { subtask.subtasks && subtask.subtasks.map((subsubtask) => (
-                                    <TableRow key={subsubtask.name}>
+                                    <TableRow key={subsubtask.title}>
                                       <TableCell component="th" scope="row">
-                                        {subsubtask.name}
+                                        {subsubtask.title}
                                       </TableCell>
                                       <TableCell  >
                                         <Tooltip title={subsubtask.description ? subsubtask.description : 'No Description'}>
