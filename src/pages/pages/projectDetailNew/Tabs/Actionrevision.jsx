@@ -24,11 +24,11 @@ const DeleteButton = ({ taskId, onUpdate, row, base, floor }) => {
     if (window.confirm('Are you sure you want to delete this task?')) {
       handleDelete(taskId);
     }
-  };
+   };
 
   const handleDelete = async (taskId) => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/tasks/${taskId}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/revisions/delete/${taskId}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -58,7 +58,7 @@ const DeleteButton = ({ taskId, onUpdate, row, base, floor }) => {
   };
 
   const formData = new FormData();
-  formData.append('taskId', taskId);
+  formData.append('revisionId', taskId);
 
   const handleRevisionClick = async () => {
     try {
