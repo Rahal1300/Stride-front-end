@@ -24,7 +24,7 @@ const DeleteButton = ({ taskId, onUpdate, row, base, floor }) => {
     if (window.confirm('Are you sure you want to delete this task?')) {
       handleDelete(taskId);
     }
-  };
+   };
 
   const handleDelete = async (taskId) => {
     try {
