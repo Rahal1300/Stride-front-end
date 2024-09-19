@@ -2,22 +2,22 @@ import React, { useState, useEffect } from 'react';
 import { Box, Button, Typography, Paper, CircularProgress, TextField } from '@mui/material';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import FolderIcon from '@mui/icons-material/Folder';
 import { useSelector } from 'react-redux';
 import { loginSuccess } from '../../../features/reducers/authReducer';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 const FileManager = () => {
   const [uploadedFiles, setUploadedFiles] = useState([]);
-  const [fetchedFiles, setFetcheddFiles] = useState([]);
-  const [folders, setFolders] = useState([]);
+  const [fetchedFolders, setFetchedFolders] = useState([]);
   const [loadingFetch, setLoadingFetch] = useState(true);
   const [loadingUpload, setLoadingUpload] = useState(false);
   const [newFolderName, setNewFolderName] = useState('');
+  const [draggingFile, setDraggingFile] = useState(null);
   const usertoken = useSelector(loginSuccess);
 
   useEffect(() => {
     fetchDocuments();
-    fetchDFolders();
+    fetchFolders();
   }, []);
 
   const fetchDocuments = async () => {
@@ -32,11 +32,10 @@ const FileManager = () => {
       setUploadedFiles(data);
     } catch (error) {
       console.error('Error fetching documents:', error);
-    } finally {
-      setLoadingFetch(false);
     }
   };
-  const fetchDFolders = async () => {
+
+  const fetchFolders = async () => {
     try {
       const response = await fetch('http://192.168.30.200:8087/folders/all', {
         headers: {
@@ -45,7 +44,7 @@ const FileManager = () => {
         },
       });
       const data = await response.json();
-      setFetcheddFiles(data);
+      setFetchedFolders(data);
     } catch (error) {
       console.error('Error fetching folders:', error);
     } finally {
@@ -53,15 +52,28 @@ const FileManager = () => {
     }
   };
 
-  const handleFileChange = (event) => {
-    // Handle file upload logic here
-  };
+  const handleFileChange = async (event) => {
+    setLoadingUpload(true);
+    const files = Array.from(event.target.files);
 
-  const handleDownload = (file) => {
-    const link = document.createElement('a');
-    link.href = `data:${file.type};base64,${file.content}`;
-    link.download = file.documentName;
-    link.click();
+    for (const file of files) {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      try {
+        await fetch('http://192.168.30.200:8087/projects/upload', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${usertoken.payload.token}`,
+          },
+          body: formData,
+        });
+        await fetchDocuments();
+      } catch (error) {
+        console.error('Error uploading file:', error);
+      }
+    }
+    setLoadingUpload(false);
   };
 
   const handleCreateFolder = async () => {
@@ -73,15 +85,13 @@ const FileManager = () => {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${usertoken.payload.token}`,
           },
-          body: JSON.stringify( newFolderName ),
+          body: JSON.stringify({ name: newFolderName }),
         });
 
         if (response.ok) {
           const newFolder = await response.json();
-          setFolders([...folders, { ...newFolder, files: [] }]);  // Initialize files array
-          
+          setFetchedFolders((prev) => [...prev, { ...newFolder, files: [] }]);
           setNewFolderName('');
-          fetchFolders();
         } else {
           console.error('Error creating folder');
         }
@@ -91,50 +101,73 @@ const FileManager = () => {
     }
   };
 
+  const moveFile = async (fileId, folderId) => {
+    try {
+      const response = await fetch(`http://192.168.30.200:8087/folders/files/move?fileId=${fileId}&folderId=${folderId}`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${usertoken.payload.token}`,
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to move file');
+      }
+  
+      const updatedFile = await response.json();
+      console.log('File moved successfully:', updatedFile);
+    } catch (error) {
+      console.error('Error moving file:', error);
+    }
+  };
+  
 
-  const handleDragEnd = (result) => {
-    const { source, destination } = result;
-    if (!destination) return;
+  const handleDragStart = (file) => {
+    setDraggingFile(file);
+  };
 
-    // Reordering documents within a folder
-    if (source.droppableId === destination.droppableId) {
-      const folderId = source.droppableId;
-      const folder = folders.find((f) => f.id === folderId);
-      const newDocuments = Array.from(folder.documents);
-      const [removed] = newDocuments.splice(source.index, 1);
-      newDocuments.splice(destination.index, 0, removed);
-
-      const updatedFolders = folders.map((f) =>
-        f.id === folderId ? { ...f, documents: newDocuments } : f
-      );
-      setFolders(updatedFolders);
-    } else {
-      // Moving document to another folder
-      const sourceFolder = folders.find((f) => f.id === source.droppableId);
-      const destinationFolder = folders.find((f) => f.id === destination.droppableId);
-      const [removed] = sourceFolder.documents.splice(source.index, 1);
-      destinationFolder.documents.splice(destination.index, 0, removed);
-
-      const updatedFolders = folders.map((f) => {
-        if (f.id === source.droppableId) return { ...f, documents: sourceFolder.documents };
-        if (f.id === destination.droppableId) return { ...f, documents: destinationFolder.documents };
+  const handleDrop = async (folder) => {
+    if (draggingFile) {
+      const updatedFolders = fetchedFolders.map((f) => {
+        if (f.id === folder.id) {
+          return { ...f, files: [...f.files, draggingFile] };
+        }
+        if (f.files.includes(draggingFile)) {
+          return { ...f, files: f.files.filter((file) => file !== draggingFile) };
+        }
         return f;
       });
 
-      setFolders(updatedFolders);
+      setFetchedFolders(updatedFolders);
+
+      // Call the API to move the file
+      await moveFile(draggingFile.id, folder.id);
+
+      setDraggingFile(null);
     }
   };
 
+  const handleDragOver = (event) => {
+    event.preventDefault();
+  };
+
+  const handleDownload = (file) => {
+    const link = document.createElement('a');
+    link.href = `data:${file.type};base64,${file.content}`;
+    link.download = file.documentName;
+    link.click();
+  };
+
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-      {/* Upload section */}
+    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', p: 2 }}>
+      {/* Upload Section */}
       <Box
         sx={{
           position: 'relative',
           display: 'flex',
-          flexDirection: 'row',
-          alignItems: 'flex-start',
-          marginBottom: '16px',
+          flexDirection: 'column',
+          alignItems: 'center',
+          mb: 4,
           width: '100%',
           maxWidth: '800px',
         }}
@@ -143,14 +176,13 @@ const FileManager = () => {
           sx={{
             border: '2px dashed #ccc',
             padding: '22px 26px',
-            marginBottom: '16px',
             width: '100%',
             maxWidth: '800px',
             borderRadius: '6px',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            marginRight: '16px',
+            position: 'relative',
           }}
         >
           {loadingUpload && (
@@ -170,12 +202,11 @@ const FileManager = () => {
               <CircularProgress color="primary" />
             </Box>
           )}
-
-          <Typography variant="body1" gutterBottom sx={{ textAlign: 'center', mt: { xs: 2, sm: 0 } }}>
+          <Typography variant="body1" gutterBottom sx={{ textAlign: 'center' }}>
             Upload a file or drag and drop
           </Typography>
-          <Typography variant="body2" color="text.secondary" gutterBottom sx={{ textAlign: 'center', mt: { xs: 1, sm: 0 } }}>
-            Upload any file type with a maximum size of 200Mb
+          <Typography variant="body2" color="text.secondary" gutterBottom sx={{ textAlign: 'center' }}>
+            Upload any file type with a maximum size of 200MB
           </Typography>
           <label htmlFor="file-input">
             <Button
@@ -183,7 +214,7 @@ const FileManager = () => {
               variant="contained"
               color="primary"
               startIcon={<CloudUploadIcon />}
-              sx={{ marginTop: { xs: '16px', sm: 0 } }}
+              sx={{ mt: 2 }}
             >
               Upload File
             </Button>
@@ -200,129 +231,115 @@ const FileManager = () => {
       </Box>
 
       {/* Folder Creation */}
-      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '16px' }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mb: 4 }}>
         <TextField
           label="New Folder Name"
           variant="outlined"
           value={newFolderName}
           onChange={(e) => setNewFolderName(e.target.value)}
-          sx={{ marginBottom: '16px' }}
+          sx={{ mb: 2 }}
         />
         <Button variant="contained" color="primary" onClick={handleCreateFolder}>
           Create Folder
         </Button>
       </Box>
 
-      {/* File and Folder Display */}
-      <DragDropContext onDragEnd={handleDragEnd}>
-        <Droppable droppableId="all-documents">
-          {(provided) => (
+      {/* Files and Folders */}
+      {loadingFetch ? (
+        <CircularProgress color="primary" />
+      ) : (
+        <Box sx={{ width: '100%', maxWidth: '800px' }}>
+          {fetchedFolders.map((folder) => (
             <Box
-              ref={provided.innerRef}
-              {...provided.droppableProps}
-              sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'flex-start' }}
+              key={folder.id}
+              sx={{
+                mb: 4,
+                width: '100%',
+                border: '1px solid #ddd',
+                borderRadius: '4px',
+                padding: '16px',
+                backgroundColor: '#fafafa',
+              }}
+              onDragOver={handleDragOver}
+              onDrop={() => handleDrop(folder)}
             >
-              {/* Render documents separately */}
-              {uploadedFiles.slice(0, 2).map((file, index) => (
-                <Paper key={index} elevation={3} sx={{ padding: '10px', marginBottom: '10px', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginRight: '16px', width: '240px' }}>
-                  <InsertDriveFileIcon />
-                  <Typography variant="body1" sx={{ marginLeft: '10px' }}>
+              <Typography
+                variant="h6"
+                gutterBottom
+                sx={{ display: 'flex', alignItems: 'center' }}
+              >
+                <FolderIcon sx={{ mr: 1 }} />
+                {folder.name}
+              </Typography>
+              <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                {folder.files.map((file) => (
+                  <Box
+                    key={file.id}
+                    sx={{
+                      padding: '8px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      border: '1px solid #ddd',
+                      borderRadius: '4px',
+                      mb: 1,
+                      backgroundColor: draggingFile === file ? '#e0e0e0' : 'transparent',
+                    }}
+                    draggable
+                    onDragStart={() => handleDragStart(file)}
+                  >
+                    <InsertDriveFileIcon sx={{ mr: 1 }} />
+                    <Typography variant="body1" sx={{ flexGrow: 1 }}>
+                      {file.documentName}
+                    </Typography>
+                    <Button onClick={() => handleDownload(file)} variant="contained" color="primary">
+                      Download
+                    </Button>
+                  </Box>
+                ))}
+              </Box>
+            </Box>
+          ))}
+          {/* Display files not in any folder */}
+          <Box
+            sx={{
+              mb: 4,
+              width: '100%',
+              border: '1px solid #ddd',
+              borderRadius: '4px',
+              padding: '16px',
+              backgroundColor: '#fafafa',
+            }}
+          >
+            <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center' }}>
+              <InsertDriveFileIcon sx={{ mr: 1 }} />
+              Files
+            </Typography>
+            <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+              {uploadedFiles.map((file) => (
+                <Box
+                  key={file.id}
+                  sx={{
+                    padding: '8px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    border: '1px solid #ddd',
+                    borderRadius: '4px',
+                    mb: 1,
+                  }}
+                >
+                  <InsertDriveFileIcon sx={{ mr: 1 }} />
+                  <Typography variant="body1" sx={{ flexGrow: 1 }}>
                     {file.documentName}
                   </Typography>
-                  <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'flex-end' }}>
-                    <Typography color="text.secondary" gutterBottom sx={{ fontSize: 12 }}>
-                      {/* Size: {formatFileSize(file.size)} */}
-                    </Typography>
-                  </Box>
-                  <Button
-                    variant="outlined"
-                    color="primary"
-                    size="small"
-                    onClick={() => handleDownload(file)}
-                    sx={{ marginTop: '10px' }}
-                  >
+                  <Button onClick={() => handleDownload(file)} variant="contained" color="primary">
                     Download
                   </Button>
-                </Paper>
-              ))}
-              {provided.placeholder}
-            </Box>
-          )}
-        </Droppable>
-     
-
-        {fetchedFiles.map((folder) => (
-  <Droppable key={folder.id} droppableId={String(folder.id)} type="droppableDocument">
-    {(provided) => (
-      <Box
-        ref={provided.innerRef}
-        {...provided.droppableProps}
-        sx={{
-          border: '1px solid #ccc',
-          borderRadius: '6px',
-          padding: '10px',
-          marginBottom: '16px',
-          width: '300px',
-          minHeight: '200px',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-        }}
-      >
-        <Typography variant="h6" gutterBottom>
-          {folder.name}
-        </Typography>
-        {/* Show 'No documents' message if the folder is empty */}
-        {folder.files && folder.files.length === 0 && (
-          <Typography variant="body2" color="text.secondary">
-            No documents
-          </Typography>
-        )}
-        {folder.files && folder.files.map((file, index) => (
-          <Draggable key={file.id} draggableId={file.id} index={index}>
-            {(provided) => (
-              <Paper
-                ref={provided.innerRef}
-                {...provided.draggableProps}
-                {...provided.dragHandleProps}
-                sx={{
-                  padding: '10px',
-                  marginBottom: '10px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'flex-start',
-                  width: '100%',
-                }}
-              >
-                <InsertDriveFileIcon />
-                <Typography variant="body1" sx={{ marginLeft: '10px' }}>
-                  {file.documentName}
-                </Typography>
-                <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'flex-end' }}>
-                  <Typography color="text.secondary" gutterBottom sx={{ fontSize: 12 }}>
-                    {/* Size: {formatFileSize(file.size)} */}
-                  </Typography>
                 </Box>
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  size="small"
-                  onClick={() => handleDownload(file)}
-                  sx={{ marginTop: '10px' }}
-                >
-                  Download
-                </Button>
-              </Paper>
-            )}
-          </Draggable>
-        ))}
-        {provided.placeholder}
-      </Box>
-    )}
-  </Droppable>
-))}
-
-      </DragDropContext>
+              ))}
+            </Box>
+          </Box>
+        </Box>
+      )}
     </Box>
   );
 };
