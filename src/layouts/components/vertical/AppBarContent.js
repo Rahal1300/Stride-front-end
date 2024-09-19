@@ -19,15 +19,12 @@ import UserDropdown from 'src/@core/layouts/components/shared-components/UserDro
 const AppBarContent = props => {
   // ** Props
   const { hidden, toggleNavVisibility, sendDataToParent } = props
-
   const hiddenSm = useMediaQuery(theme => theme.breakpoints.down('sm'))
   const [snackbarOpen, setSnackbarOpen] = useState(false)
   const router = useRouter()
-
   const userRole = useSelector(state => state.Role)
   const cr = useSelector(state => state.Cr)
   const notyours = userRole === 'Subscriber' && cr === 'Newcomer'
-
   // Define allowed paths for showing Snackbar
   const allowedPaths = ['/pages/userinterface']
 

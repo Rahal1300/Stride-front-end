@@ -28,7 +28,7 @@ const DeleteButton = ({ taskId, onUpdate, row, base, floor }) => {
 
   const handleDelete = async (taskId) => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/tasks/${taskId}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/revisions/delete/${taskId}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -58,7 +58,7 @@ const DeleteButton = ({ taskId, onUpdate, row, base, floor }) => {
   };
 
   const formData = new FormData();
-  formData.append('taskId', taskId);
+  formData.append('revisionId', taskId);
 
   const handleRevisionClick = async () => {
     try {

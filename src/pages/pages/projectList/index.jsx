@@ -358,7 +358,7 @@ const FilterCard = () => {
           </Menu>
 
           <Button onClick={handleProgressOpen} style={{ backgroundColor: '#FFFFFF', color: '#202224', textTransform: 'none', fontSize: '14px' }}>
-            Progress AAAAAA
+            Progress 
           </Button>
           <Image src="/images/icons/path.png" width={12} height={7} alt="Filter Icon" />
           <Menu anchorEl={progressAnchorEl} open={Boolean(progressAnchorEl)} onClose={handleProgressClose}>

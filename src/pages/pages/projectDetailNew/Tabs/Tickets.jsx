@@ -16,43 +16,39 @@ import axios from 'axios';
 import CommentModal from './Commentmodal';
 import { styled } from '@mui/material';
 
+// Responsive wrapper for the posts grid
 const BoxWrapper = styled(Box)(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
     width: '90vw',
   },
+  marginBottom: theme.spacing(4),
 }));
 
-const Img = styled('img')(({ theme }) => ({
-  marginBottom: theme.spacing(10),
-  [theme.breakpoints.down('lg')]: {
-    height: 450,
-    marginTop: theme.spacing(10),
-  },
-  [theme.breakpoints.down('md')]: {
-    height: 400,
-  },
-  [theme.breakpoints.up('lg')]: {
-    marginTop: theme.spacing(13),
-  },
-}));
-
+// Custom styled card to enhance layout
 const StyledCard = styled(Card)(({ theme }) => ({
-  width: 400,
-  height: 400,
-  p: 2,
+  width: '100%', // Make card width responsive
+  height: '100%', // Full height of grid cell
+  padding: theme.spacing(2),
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'space-between',
+  boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', // Subtle shadow for modern look
+  transition: 'box-shadow 0.3s ease',
+  '&:hover': {
+    boxShadow: '0 8px 16px rgba(0, 0, 0, 0.2)', // Elevation on hover
+  },
 }));
 
+// Styled button for consistent spacing and appearance
 const StyledButton = styled(Button)(({ theme }) => ({
-  alignSelf: 'flex-start', // Align button to the lower-left corner
-  marginTop: 'auto',
+  marginTop: theme.spacing(2),
+  alignSelf: 'flex-end', // Align button to the lower-right corner
 }));
 
+// Comment container for a modern, clean look
 const CommentBox = styled(Box)(({ theme }) => ({
   marginTop: theme.spacing(2),
-  padding: theme.spacing(1),
+  padding: theme.spacing(1.5),
   backgroundColor: theme.palette.background.paper,
   borderRadius: theme.shape.borderRadius,
   boxShadow: theme.shadows[1],
@@ -68,34 +64,48 @@ function Tickets() {
   const [newPostContent, setNewPostContent] = useState('');
   const [description, setNewPostDescription] = useState('');
   const usertoken = useSelector(loginSuccess);
+  const [selectedImage, setSelectedImage] = useState(null);
   const router = useRouter();
   const { id } = router.query;
 
   const handleOpen = () => setOpen(true);
-
   const handleClose = () => setOpen(false);
 
   const handleCreatePost = async () => {
     try {
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/posts/create`, {
-        projectId: id,
-        description: description,
-        content: newPostContent,
-      }, {
-        headers: {
-          Authorization: `Bearer ${usertoken.payload.token}`,
-        },
-      });
-
+      // Create FormData object to handle both text and file data
+      const formData = new FormData();
+      formData.append('projectId', id);
+      formData.append('description', description);
+      formData.append('content', newPostContent);
+  
+      // Assuming you have an image state holding the selected image
+      if (selectedImage) {
+        formData.append('image', selectedImage); // Append the image file to the form data
+      }
+  
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/posts/create`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${usertoken.payload.token}`,
+            // Set the content type to handle file uploads
+          },
+        }
+      );
+  
+      // Clear form and close modal after successful post creation
       setNewPostTitle('');
       setNewPostContent('');
+      setSelectedImage(null); // Clear the selected image
       setOpen(false);
       fetchData(); // Refetch data to include the new post
     } catch (error) {
       console.error('Error creating post:', error);
     }
   };
-
+  
   const fetchData = async () => {
     setLoading(true);
     try {
@@ -126,6 +136,10 @@ function Tickets() {
   const handleCloseCommentModal = () => {
     setCommentModalOpen(false);
     setSelectedPostId(null);
+  };
+
+  const handleFileChange = (e) => {
+    setSelectedImage(e.target.files[0]); // Set the selected file
   };
 
   return (
@@ -160,6 +174,7 @@ function Tickets() {
             value={newPostContent}
             onChange={(e) => setNewPostContent(e.target.value)}
           />
+          <input type="file" onChange={handleFileChange} />
           <Button onClick={handleCreatePost} variant="contained" color="primary" sx={{ mt: 2 }}>Submit</Button>
         </Box>
       </Modal>
@@ -168,40 +183,55 @@ function Tickets() {
 
       <BoxWrapper>
         <Typography variant="h1">Posts</Typography>
-        <Grid container spacing={2} sx={{ mt: 2 }}>
+        <Grid
+          container
+          spacing={3} // Space between grid items (cards)
+          justifyContent="center"
+        >
           {data.map((post) => (
-            <Grid item xs={12} sm={6} md={4} key={post.id}>
+            <Grid
+              item
+              xs={12}  // Full width on small screens
+              sm={6}   // 2 cards per row on medium screens
+              md={4}   // 3 cards per row on larger screens
+              key={post.id}
+            >
               <StyledCard>
                 <CardContent>
-                  <Typography variant="h5" component="div" align="center">
+                  <Typography variant="h5" component="div" align="center" gutterBottom>
                     {post.title}
                   </Typography>
-                  <Typography variant="body2">
+                  <Typography variant="body2" gutterBottom>
                     {post.content}
                   </Typography>
-                  <Typography variant="body2">
-                    {post.creator_image}
-                  </Typography>
-                  <Typography variant="body2">
+                  <Typography variant="body2" color="text.secondary" gutterBottom>
                     {post.creatorName}
                   </Typography>
                 </CardContent>
-                <CardActions sx={{ justifyContent: 'space-between', padding: '8px' }}>
-                  <StyledButton size="small" onClick={() => handleOpenCommentModal(post.id)}>Add Comment</StyledButton>
+
+                <CardActions sx={{ justifyContent: 'space-between' }}>
                   {post.comments && post.comments.length > 0 && (
-                    <Box>
-                      <Typography variant="body2" color="text.secondary">
-                        Comments:
+                    <Box sx={{ width: '100%' }}>
+                      <Typography variant="h6" color="text.secondary" gutterBottom>
+                        Comments
                       </Typography>
+
                       {post.comments.map((comment) => (
                         <CommentBox key={comment.id}>
-                          <Typography variant="body2" color="text.primary">
-                            <strong>{comment.author}</strong>: {comment.content}
+                          <Typography variant="body1" color="text.primary" sx={{ fontWeight: 500 }}>
+                            {comment.author}
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            {comment.content}
                           </Typography>
                         </CommentBox>
                       ))}
                     </Box>
                   )}
+
+                  <StyledButton size="small" variant="contained" onClick={() => handleOpenCommentModal(post.id)}>
+                    Add Comment
+                  </StyledButton>
                 </CardActions>
               </StyledCard>
             </Grid>
