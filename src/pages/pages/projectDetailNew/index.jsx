@@ -262,14 +262,6 @@ Edit project      </Button>
     " not available"
   )}
     </Typography>
-
-    <Typography variant="body2" component="h1" sx={{ fontFamily: 'Arial ', fontWeight: 200, fontSize: '14px', color: '#646464', marginBottom: '8px', marginTop: '8px' }}>
-    Assigned Team: not available
-
-    </Typography>
-    <Typography variant="body2" component="h1" sx={{ fontFamily: 'Arial ', fontWeight: 200, fontSize: '14px', color: '#646464', marginBottom: '8px', marginTop: '8px' }}>
-    Project Manager: not available
-    </Typography>
     </Grid>
     <Grid item xs={12} md={6}>
     <Typography variant="body2" component="h1" sx={{ fontFamily: 'Arial ', fontWeight: 200, fontSize: '14px', color: '#646464', marginBottom: '8px'}}>
@@ -306,12 +298,8 @@ Edit project      </Button>
   )}
     </Typography>
 
-    <Typography variant="body2" component="h1" sx={{ fontFamily: 'Arial ', fontWeight: 200, fontSize: '14px', color: '#646464' , marginBottom: '8px', marginTop: '8px'}}>
-    Meets: not available
-    </Typography>
-    <Typography variant="body2" component="h1" sx={{ fontFamily: 'Arial ', fontWeight: 200, fontSize: '14px', color: '#646464', marginBottom: '8px', marginTop: '8px' }}>
-    Tickets issued: not available
-    </Typography>
+    
+   
 
     </Grid>
       </Grid>

@@ -347,8 +347,8 @@ const navigation = () => {
 
 
      {
-      title: t('Pricing'),
-      path: '/pages/pricing',
+      title: t('Upgrade'),
+      path: '/pages/Payment',
       ...(TeamManagerUser && { hidden: true}),
 
       ...(TeamManagerandOwner && { hidden: false}),
