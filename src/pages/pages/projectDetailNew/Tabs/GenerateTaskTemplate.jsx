@@ -1,9 +1,9 @@
 import * as XLSX from 'xlsx';
 
- const generateTaskTemplate = () => {
+export const generateTaskTemplate = () => {
   const rows = [
     {
-      Level: '',
+      Level: 'Task',
       TaskName: '',
       Weight: '',
       Floor: '',
@@ -14,7 +14,7 @@ import * as XLSX from 'xlsx';
       AssignedUser: '',
     },
     {
-      Level: '',
+      Level: 'Subtask',
       TaskName: '',
       Weight: '',
       Floor: '',
@@ -25,7 +25,7 @@ import * as XLSX from 'xlsx';
       AssignedUser: '',
     },
     {
-      Level: '',
+      Level: 'Sub-subtask',
       TaskName: '',
       Weight: '',
       Floor: '',
@@ -45,4 +45,3 @@ import * as XLSX from 'xlsx';
   XLSX.utils.book_append_sheet(workbook, worksheet, 'Task Template');
   XLSX.writeFile(workbook, 'task_template.xlsx');
 };
-export default generateTaskTemplate;
