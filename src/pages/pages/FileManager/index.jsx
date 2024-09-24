@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Button, Typography, Paper, CircularProgress, TextField } from '@mui/material';
+import { Box, Button, Typography, Paper, CircularProgress, TextField, Grid } from '@mui/material';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import FolderIcon from '@mui/icons-material/Folder';
@@ -109,18 +109,17 @@ const FileManager = () => {
           'Authorization': `Bearer ${usertoken.payload.token}`,
         },
       });
-  
+
       if (!response.ok) {
         throw new Error('Failed to move file');
       }
-  
+
       const updatedFile = await response.json();
       console.log('File moved successfully:', updatedFile);
     } catch (error) {
       console.error('Error moving file:', error);
     }
   };
-  
 
   const handleDragStart = (file) => {
     setDraggingFile(file);
@@ -139,10 +138,7 @@ const FileManager = () => {
       });
 
       setFetchedFolders(updatedFolders);
-
-      // Call the API to move the file
       await moveFile(draggingFile.id, folder.id);
-
       setDraggingFile(null);
     }
   };
@@ -248,98 +244,102 @@ const FileManager = () => {
       {loadingFetch ? (
         <CircularProgress color="primary" />
       ) : (
-        <Box sx={{ width: '100%', maxWidth: '800px' }}>
+        <Grid container spacing={3} sx={{ width: '100%', maxWidth: '800px' }}>
           {fetchedFolders.map((folder) => (
+            <Grid item key={folder.id} xs={12} sm={6} md={4}>
+              <Box
+                sx={{
+                  mb: 4,
+                  width: '100%',
+                  border: '1px solid #ddd',
+                  borderRadius: '4px',
+                  padding: '16px',
+                  backgroundColor: '#fafafa',
+                }}
+                onDragOver={handleDragOver}
+                onDrop={() => handleDrop(folder)}
+              >
+                <Typography
+                  variant="h6"
+                  gutterBottom
+                  sx={{ display: 'flex', alignItems: 'center' }}
+                >
+                  <FolderIcon sx={{ mr: 1 }} />
+                  {folder.name}
+                </Typography>
+                <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                  {folder.files.map((file) => (
+                    <Box
+                      key={file.id}
+                      sx={{
+                        padding: '8px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        border: '1px solid #ddd',
+                        borderRadius: '4px',
+                        mb: 1,
+                        backgroundColor: draggingFile === file ? '#e0e0e0' : 'transparent',
+                      }}
+                      draggable
+                      onDragStart={() => handleDragStart(file)}
+                    >
+                      <InsertDriveFileIcon sx={{ mr: 1 }} />
+                      <Typography variant="body1" sx={{ flexGrow: 1 }}>
+                        {file.documentName}
+                      </Typography>
+                      <Button onClick={() => handleDownload(file)} variant="contained" color="primary">
+                        Download
+                      </Button>
+                    </Box>
+                  ))}
+                </Box>
+              </Box>
+            </Grid>
+          ))}
+        </Grid>
+      )}
+
+      {/* Display files not in any folder */}
+      <Box
+        sx={{
+          mb: 4,
+          width: '100%',
+          border: '1px solid #ddd',
+          borderRadius: '4px',
+          padding: '16px',
+          backgroundColor: '#fafafa',
+        }}
+      >
+        <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center' }}>
+          <InsertDriveFileIcon sx={{ mr: 1 }} />
+          Files
+        </Typography>
+        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+          {uploadedFiles.map((file) => (
             <Box
-              key={folder.id}
+              key={file.id}
               sx={{
-                mb: 4,
-                width: '100%',
+                padding: '8px',
+                display: 'flex',
+                alignItems: 'center',
                 border: '1px solid #ddd',
                 borderRadius: '4px',
-                padding: '16px',
-                backgroundColor: '#fafafa',
+                mb: 1,
               }}
-              onDragOver={handleDragOver}
-              onDrop={() => handleDrop(folder)}
+              draggable
+              onDragStart={() => setDraggingFile(file)} 
             >
-              <Typography
-                variant="h6"
-                gutterBottom
-                sx={{ display: 'flex', alignItems: 'center' }}
-              >
-                <FolderIcon sx={{ mr: 1 }} />
-                {folder.name}
+              <InsertDriveFileIcon sx={{ mr: 1 }} />
+              <Typography variant="body1" sx={{ flexGrow: 1 }}>
+                {file.documentName}
               </Typography>
-              <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                {folder.files.map((file) => (
-                  <Box
-                    key={file.id}
-                    sx={{
-                      padding: '8px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      border: '1px solid #ddd',
-                      borderRadius: '4px',
-                      mb: 1,
-                      backgroundColor: draggingFile === file ? '#e0e0e0' : 'transparent',
-                    }}
-                    draggable
-                    onDragStart={() => handleDragStart(file)}
-                  >
-                    <InsertDriveFileIcon sx={{ mr: 1 }} />
-                    <Typography variant="body1" sx={{ flexGrow: 1 }}>
-                      {file.documentName}
-                    </Typography>
-                    <Button onClick={() => handleDownload(file)} variant="contained" color="primary">
-                      Download
-                    </Button>
-                  </Box>
-                ))}
-              </Box>
+              <Button onClick={() => handleDownload(file)} variant="contained" color="primary">
+                Download
+              </Button>
             </Box>
           ))}
-          {/* Display files not in any folder */}
-          <Box
-            sx={{
-              mb: 4,
-              width: '100%',
-              border: '1px solid #ddd',
-              borderRadius: '4px',
-              padding: '16px',
-              backgroundColor: '#fafafa',
-            }}
-          >
-            <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center' }}>
-              <InsertDriveFileIcon sx={{ mr: 1 }} />
-              Files
-            </Typography>
-            <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-              {uploadedFiles.map((file) => (
-                <Box
-                  key={file.id}
-                  sx={{
-                    padding: '8px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    border: '1px solid #ddd',
-                    borderRadius: '4px',
-                    mb: 1,
-                  }}
-                >
-                  <InsertDriveFileIcon sx={{ mr: 1 }} />
-                  <Typography variant="body1" sx={{ flexGrow: 1 }}>
-                    {file.documentName}
-                  </Typography>
-                  <Button onClick={() => handleDownload(file)} variant="contained" color="primary">
-                    Download
-                  </Button>
-                </Box>
-              ))}
-            </Box>
-          </Box>
         </Box>
-      )}
+      </Box>
     </Box>
   );
 };

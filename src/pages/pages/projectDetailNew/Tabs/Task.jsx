@@ -31,6 +31,7 @@ import { loginSuccess } from '../../../../features/reducers/authReducer';
 import { useSelector } from 'react-redux';
 import Tooltip from '@mui/material/Tooltip';
 import TaskTable from './TaskTable';
+import { generateTaskTemplate } from './excelsheet';
 function getStatusColor(status) {
     switch (status) {
       case 'Active':
@@ -92,6 +93,9 @@ function getStatusColor(status) {
         setOnAddTask(false);
       }
       }, [id,onAddTask]);
+      const handleDownloadTemplate = () => {
+        generateTaskTemplate();
+      };
       
   
       const base64Url = userToken?.payload?.token?.split('.')[1];
@@ -124,6 +128,7 @@ function getStatusColor(status) {
  const Manager= userrole === 'User' &&  cr === 'TeamManager';
     return (
       <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <Button onClick={handleDownloadTemplate}>Download Excel Template</Button>
    
      
 
@@ -147,6 +152,8 @@ function getStatusColor(status) {
         >
           Create a new Task
         </Button>
+ 
+
       ):(null)}
         <Divider sx={{ borderColor: 'gray', borderWidth: '1px', width: '100%', marginBottom: '20px' }} />
   

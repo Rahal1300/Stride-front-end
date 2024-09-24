@@ -213,21 +213,12 @@ const PageLeads = () => {
           >
             Date
           </Button>
+          
           <Image src="/images/icons/path.png" width={12} height={7} alt="Filter Icon" />
 
-          <Menu anchorEl={dateAnchorEl} open={Boolean(dateAnchorEl)} onClose={handleDateClose}>
-            <MenuItem onClick={handleDateClose}>Option 1</MenuItem>
-            <MenuItem onClick={handleDateClose}>Option 2</MenuItem>
-            <MenuItem onClick={handleDateClose}>Option 3</MenuItem>
-          </Menu>
+      
 
-          <Button
-            onClick={handleTypeOpen}
-            style={{ backgroundColor: '#FFFFFF', color: '#202224', textTransform: 'none', fontSize: '14px' }}
-          >
-            Order Type
-          </Button>
-          <Image src="/images/icons/path.png" width={12} height={7} alt="Filter Icon" />
+    
 
           <Menu anchorEl={typeAnchorEl} open={Boolean(typeAnchorEl)} onClose={handleTypeClose}>
             <MenuItem onClick={handleTypeClose}>Option 1</MenuItem>
