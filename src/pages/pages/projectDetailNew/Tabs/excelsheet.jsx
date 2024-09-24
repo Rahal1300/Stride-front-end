@@ -45,3 +45,4 @@ export const generateTaskTemplate = () => {
   XLSX.utils.book_append_sheet(workbook, worksheet, 'Task Template');
   XLSX.writeFile(workbook, 'task_template.xlsx');
 };
+export default generateTaskTemplate;
