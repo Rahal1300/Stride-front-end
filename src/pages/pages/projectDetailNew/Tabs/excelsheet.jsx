@@ -1,6 +1,6 @@
 import * as XLSX from 'xlsx';
 
-export const generateTaskTemplate = () => {
+ const generateTaskTemplate = () => {
   const rows = [
     {
       Level: '',
