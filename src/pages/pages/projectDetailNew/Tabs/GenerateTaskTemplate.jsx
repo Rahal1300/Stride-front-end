@@ -3,7 +3,7 @@ import * as XLSX from 'xlsx';
 export const generateTaskTemplate = () => {
   const rows = [
     {
-      Level: 'Task',
+      Level: '',
       TaskName: '',
       Weight: '',
       Floor: '',
@@ -14,7 +14,7 @@ export const generateTaskTemplate = () => {
       AssignedUser: '',
     },
     {
-      Level: 'Subtask',
+      Level: '',
       TaskName: '',
       Weight: '',
       Floor: '',
@@ -25,7 +25,7 @@ export const generateTaskTemplate = () => {
       AssignedUser: '',
     },
     {
-      Level: 'Sub-subtask',
+      Level: '',
       TaskName: '',
       Weight: '',
       Floor: '',

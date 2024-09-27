@@ -696,7 +696,7 @@ function Row(props) {
 
               </TableCell>
 
-                        <TableCell  >{subtask.assigneduser ?  subtask.assigneduser :'No memeber assigne'}</TableCell>
+                        <TableCell  >{subtask.assigneduser ?  subtask.assigneduser :'No member assigned'}</TableCell>
                      {/*   <TableCell  >
                                     {subtask.documents.length > 0 ? (
                                       <React.Fragment>
@@ -776,7 +776,20 @@ function Row(props) {
                           <CheckIcon style={{ color: 'green' }} />
                         </IconButton>
                       </Tooltip>
-                      </div>):(<>{subtask.progress}</>)}
+                      </div>):(<>{subtask.progress}
+                        <Tooltip title="Validate">
+        <IconButton
+            aria-label="confirm percentage"
+            size="small"
+            onClick={() => handleValidatePercentage(row.id)}
+            >
+            <DoneAllIcon style={{ color: 'red' }} />
+          </IconButton>        </Tooltip>
+                      
+                      
+                      
+                      
+                      </>)}
                     </TableCell>
                {/*  <TableCell>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

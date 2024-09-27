@@ -627,7 +627,7 @@ function Row(props) {
 
               </TableCell>
 
-                        <TableCell  >{subtask.assigneduser ?  subtask.assigneduser :'No memeber assigne'}</TableCell>
+                        <TableCell  >{subtask.assigneduser ?  subtask.assigneduser :'No member assigned'}</TableCell>
                      {/*   <TableCell  >
                                     {subtask.documents.length > 0 ? (
                                       <React.Fragment>

@@ -30,7 +30,6 @@ import { loginSuccess } from '../../../../features/reducers/authReducer';
 import { useSelector } from 'react-redux';
 import Tooltip from '@mui/material/Tooltip';
 import TaskTable from './TaskTable';
-
 function getStatusColor(status) {
     switch (status) {
       case 'Active':
@@ -42,9 +41,7 @@ function getStatusColor(status) {
         return '#FFFFFF'; 
     }
   }
-  
 
-  
   const customTheme = createTheme({
     components: {
       MuiAvatar: {
@@ -64,7 +61,6 @@ function getStatusColor(status) {
     }
   });
   
-   
   function Tasks({ descipline, progress, base, floornb ,Team ,id,documents,remain, start, end ,onUpdate  }) {
     const [open, setOpen] = useState(false);
     const [tasks, setTasks] = useState([]);
@@ -77,16 +73,10 @@ function getStatusColor(status) {
     const [uploadSuccess, setUploadSuccess] = useState(false);
     const [uploadError, setUploadError] = useState(false);
     const [uploadLoading, setUploadLoading] = useState(false);
-    
     const [downloadClicked, setDownloadClicked] = useState(false);
-
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
     const handleSnackbarClose = () => setSnackbarOpen(false);
-
- 
-  
-
     useEffect(() => {
       if (id || onAddTask) { 
         setOnAddTask(false);
