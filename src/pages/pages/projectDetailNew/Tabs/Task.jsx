@@ -19,7 +19,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Snackbar from '@mui/material/Snackbar';
 import SnackbarContent from '@mui/material/SnackbarContent';
 import Alert from '@mui/material/Alert';
-import { generateTaskTemplate } from './GenerateTaskTemplate';
+import { generateTaskTemplate } from 'src/GenerateTaskTemplate';
 import TablePagination from '@mui/material/TablePagination';
 import TextField from '@mui/material/TextField';
 import { format } from 'date-fns'; 
