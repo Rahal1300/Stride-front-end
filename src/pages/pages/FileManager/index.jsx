@@ -85,7 +85,7 @@ const FileManager = () => {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${usertoken.payload.token}`,
           },
-          body: JSON.stringify({ name: newFolderName }),
+          body:  newFolderName ,
         });
 
         if (response.ok) {
@@ -245,6 +245,7 @@ const FileManager = () => {
         <CircularProgress color="primary" />
       ) : (
         <Grid container spacing={3} sx={{ width: '100%', maxWidth: '800px' }}>
+          {console.log(fetchedFolders)}
           {fetchedFolders.map((folder) => (
             <Grid item key={folder.id} xs={12} sm={6} md={4}>
               <Box

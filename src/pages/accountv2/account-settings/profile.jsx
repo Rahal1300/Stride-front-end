@@ -31,7 +31,7 @@ const Profile = () => {
     const fetchData = async () => {
       try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/profil`, {
-          headers: {
+         headers: {
             Authorization: `Bearer ${token}`,
           },
         });

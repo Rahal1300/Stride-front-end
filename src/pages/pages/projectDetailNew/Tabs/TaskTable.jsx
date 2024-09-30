@@ -531,101 +531,11 @@ function Row(props) {
               </TableCell>
 
         <TableCell  >{row.assigneduser ?  row.assigneduser :'No memeber assigne'}</TableCell>
-        {/*THIS IS THE START OF DOCUMENTS SECTION*/}
-  {/*      <TableCell  >
-  {row.documents && row.documents.length > 0 ? (
-    <React.Fragment>
-      {row.documents.map((file, index) => (
-        <Tooltip title="Download File" key={index}>
-          <IconButton
-            onClick={() => handleFileDownload(file.fileName)}
-            aria-label={`download file ${file.fileName}`}
-            size="small"
-          >
-            <CloudDownloadIcon />
-          </IconButton>
-        </Tooltip>
-      ))}
-      <input
-        accept=".pdf,.doc,.docx"
-        style={{ display: 'none' }}
-        id={`file-upload-${row.title}`}
-        type="file"
-        onChange={handleFileUpload}
-      />
-      <label htmlFor={`file-upload-${row.title}`}>
-        <Tooltip title="Upload File">
-          <IconButton
-            aria-label={`upload file for ${row.title}`}
-            size="small"
-            component="span"
-          >
-            <CloudUploadIcon />
-          </IconButton>
-        </Tooltip>
-      </label>
-    </React.Fragment>
-  ) : (
-    <React.Fragment>
-      No Documents
-      <input
-        accept=".pdf,.doc,.docx"
-        style={{ display: 'none' }}
-        id={`file-upload-${row.title}`}
-        type="file"
-        onChange={handleFileUpload}
-      />
-      <label htmlFor={`file-upload-${row.title}`}>
-        <Tooltip title="Upload File">
-          <IconButton
-            aria-label={`upload file for ${row.title}`}
-            size="small"
-            component="span"
-          >
-            <CloudUploadIcon />
-          </IconButton>
-        </Tooltip>
-      </label>
-    </React.Fragment>
-  )}
-</TableCell>*/}
-{/*THIS IS THE END OF DOCUMENTS SECTION*/}
 
 <TableCell  >
           {renderPercentageInput()}
         </TableCell>
-  {/*      <TableCell  >
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <TextField
-          select
-          label="Documents"
-          name="documents"
-          margin="normal"
-          onChange={(e) => handleDocumentSelect(e)}
-          SelectProps={{
-            multiple: true,
-            value: selectedDocumentIds,
-          }}
-          size="small"
-          sx={{ marginRight: '10px', width: '150px' }}
-        >
-          {documents.map((document) => (
-            <MenuItem key={document.id} value={document.id}>
-              {document.documentName}               {document.id}
-
-            </MenuItem>
-          ))}
-        </TextField>
-        <Button
-          variant="contained"
-          size="small"
-          onClick={() => uploadSelectedDocuments(row.id)} // Assuming `row.taskId` is accessible
-        >
-          Upload
-        </Button>
-      </Box>
-</TableCell>
-*/}
+ 
 <TableCell  >
           <StatusChip status={row.status} />
         </TableCell>
@@ -697,100 +607,11 @@ function Row(props) {
               </TableCell>
 
                         <TableCell  >{subtask.assigneduser ?  subtask.assigneduser :'No member assigned'}</TableCell>
-                     {/*   <TableCell  >
-                                    {subtask.documents.length > 0 ? (
-                                      <React.Fragment>
-                                        {subtask.documents.map((file, index) => (
-                                          <Tooltip title="Download File" key={index}>
-                                            <IconButton
-                                              onClick={() => handleFileDownload(file.fileName)}
-                                              aria-label={`download file ${file.fileName}`}
-                                              size="small"
-                                            >
-                                              <CloudDownloadIcon />
-                                            </IconButton>
-                                          </Tooltip>
-                                        ))}
-                                        <input
-                                          accept=".pdf,.doc,.docx"
-                                          style={{ display: 'none' }}
-                                          id={`file-upload-${subtask.name}`}
-                                          type="file"
-                                          onChange={handleFileUpload}
-                                        />
-                                        <label htmlFor={`file-upload-${subtask.name}`}>
-                                          <Tooltip title="Upload File">
-                                            <IconButton
-                                              aria-label={`upload file for ${subtask.name}`}
-                                              size="small"
-                                              component="span"
-                                            >
-                                              <CloudUploadIcon />
-                                            </IconButton>
-                                          </Tooltip>
-                                        </label>
-                                      </React.Fragment>
-                                    ) : (
-                                      <React.Fragment>
-                                        <input
-                                          accept=".pdf,.doc,.docx"
-                                          style={{ display: 'none' }}
-                                          id={`file-upload-${subtask.name}`}
-                                          type="file"
-                                          onChange={handleFileUpload}
-                                        />
-                                        <label htmlFor={`file-upload-${subtask.name}`}>
-                                          <Tooltip title="Upload File">
-                                            <IconButton
-                                              aria-label={`upload file for ${subtask.name}`}
-                                              size="small"
-                                              component="span"
-                                            >
-                                              <CloudUploadIcon />
-                                            </IconButton>
-                                          </Tooltip>
-                                        </label>
-                                      </React.Fragment>
-                                    )}
-                                  </TableCell> */}
-                                  <TableCell  >
-                                  {subtask.progress !== 100 ? (
-                                  <div style={{ display: 'flex', alignItems: 'center' }}>
-
-                                  <TextField
-        type="number"
-        InputProps={{ inputProps: { min: 0, max: 100 } }}
-        onChange={(event) => handlePercentageChangesubtask(event,subtask.id)}
-        size="small"
-        style={{ width: 80, marginRight: 10 }}
-        placeholder={subtask.progress}
-
-      />
-                      <Tooltip title="Confirm">
-                        <IconButton
-
-                          aria-label="confirm percentage"
-                          size="small"
-                          onClick={() => handleConfirmPercentagesubtask(subtask.id)}
-                        >
-                          <CheckIcon style={{ color: 'green' }} />
-                        </IconButton>
-                      </Tooltip>
-                      </div>):(<>{subtask.progress}
-                        <Tooltip title="Validate">
-        <IconButton
-            aria-label="confirm percentage"
-            size="small"
-            onClick={() => handleValidatePercentage(row.id)}
-            >
-            <DoneAllIcon style={{ color: 'red' }} />
-          </IconButton>        </Tooltip>
-                      
-                      
-                      
-                      
-                      </>)}
-                    </TableCell>
+                        <TableCell  >
+          {renderPercentageInput()}
+        </TableCell>
+                  
+                                  
                {/*  <TableCell>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <TextField
@@ -965,31 +786,9 @@ function Row(props) {
   )}
 </TableCell>*/}
 
-
 <TableCell  >
-<div style={{ display: 'flex', alignItems: 'center' }}>
-
-<TextField
-        id={`percentage-input-${row.title}`}
-        type="number"
-        InputProps={{ inputProps: { min: 0, max: 100 } }}
-        onChange={(event) => handlePercentageChangesubsubtask(event,subsubtask.id)}
-        size="small"
-        style={{ width: 80, marginRight: 10 }}
-        placeholder={subsubtask.progress}
-
-      />
-                      <Tooltip title="Confirm">
-                        <IconButton
-                          aria-label="confirm percentage"
-                          size="small"
-                          onClick={() => handleConfirmPercentagesubsubtask(subsubtask.id)}
-                        >
-                          <CheckIcon style={{ color: 'green' }} />
-                        </IconButton>
-                      </Tooltip>
-                      </div>
-                    </TableCell>
+          {renderPercentageInput()}
+        </TableCell>
                     {/*<TableCell>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <TextField
