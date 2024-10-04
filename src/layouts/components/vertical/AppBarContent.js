@@ -100,7 +100,7 @@ const AppBarContent = props => {
           <IconButton
             color='inherit'
             onClick={toggleNavVisibility}
-            sx={{ ml: -2.75, ...(hiddenSm ? {} : { mr: 3.5 }) }}
+           // sx={{ ml: -2.75, ...(hiddenSm ? {} : { mr: 3.5 }) }}
           >
             <Menu />
           </IconButton>

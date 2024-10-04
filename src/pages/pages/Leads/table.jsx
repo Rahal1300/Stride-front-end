@@ -256,14 +256,14 @@ const TableLeads = ({ leads }) => {
               <TableCell style={{ fontSize: '14px', color: 'black' }}>
                 {row.added_date ? new Date(row.added_date).toLocaleDateString() : 'NULL'}
               </TableCell>
-              <TableCell style={{ fontSize: '14px', color: 'black' }}>{row.project || 'NULL'}</TableCell>
+              <TableCell style={{ fontSize: '14px', color: 'black' }}>{row.project || 'No project assigned yet'}</TableCell>
 
-              <TableCell style={{ fontSize: '14px', color: 'black' }}>{row.first_name || 'NULL'}</TableCell>
-              <TableCell style={{ fontSize: '14px', color: 'black' }}>{row.last_name || 'NULL'}</TableCell>
-              <TableCell style={{ fontSize: '14px', color: 'black' }}>{row.phone_number || 'NULL'}</TableCell>
-              <TableCell style={{ fontSize: '14px', color: 'black' }}>{row.company || 'NULL'}</TableCell>
-              <TableCell style={{ fontSize: '14px', color: 'black' }}>{row.source || 'NULL'}</TableCell>
-              <TableCell style={{ fontSize: '14px', color: 'black' }}>{row.channel || 'NULL'}</TableCell>
+              <TableCell style={{ fontSize: '14px', color: 'black' }}>{row.first_name || 'Add first Name'}</TableCell>
+              <TableCell style={{ fontSize: '14px', color: 'black' }}>{row.last_name || 'Add Last Name'}</TableCell>
+              <TableCell style={{ fontSize: '14px', color: 'black' }}>{row.phone_number || 'Add Phone Number'}</TableCell>
+              <TableCell style={{ fontSize: '14px', color: 'black' }}>{row.company || 'Add Compnay'}</TableCell>
+              <TableCell style={{ fontSize: '14px', color: 'black' }}>{row.source || 'Add Source'}</TableCell>
+              <TableCell style={{ fontSize: '14px', color: 'black' }}>{row.channel || 'Add Channel'}</TableCell>
               <TableCell align='right' style={{ fontSize: '14px', color: 'black' }}>
                   {editAssignToRowId === row.leads_id ? (
                     <FormControl variant="outlined" size="small" style={{ minWidth: 120 }}>
