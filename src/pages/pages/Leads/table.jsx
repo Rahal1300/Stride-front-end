@@ -251,6 +251,7 @@ const TableLeads = ({ leads }) => {
           </TableRow>
         </TableHead>
         <TableBody>
+          {console.log(leads)}
           {leads?.map((row) => (
             <TableRow key={row.leads_id} sx={{ '&:last-of-type td, &:last-of-type th': { border: 0 } }}>
               <TableCell style={{ fontSize: '14px', color: 'black' }}>
@@ -281,7 +282,7 @@ const TableLeads = ({ leads }) => {
                       </Select>
                     </FormControl>
                   ) : (
-                    <Chip label={row.user_assigned_to || 'No Team Manager Found'} />
+                    <Chip label={row.referral_email || 'No assigned User yet'} />
                   )}
                 </TableCell>              <TableCell style={{ fontSize: '14px', color: 'black' }}>
                 {row.notes ? (
