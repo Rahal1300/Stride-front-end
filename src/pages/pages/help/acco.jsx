@@ -7,7 +7,6 @@ import { MDBAccordion, MDBAccordionItem } from 'mdb-react-ui-kit';
 import Image from 'react-bootstrap/Image';
 import { useTranslation } from 'react-i18next';
 
-
 const Acco = () => {
   const { t } = useTranslation(); 
   const  token  = useSelector(loginSuccess);
