@@ -26,7 +26,7 @@ const BoxWrapper = styled(Box)(({ theme }) => ({
 
 // Custom styled card to enhance layout
 const StyledCard = styled(Card)(({ theme }) => ({
-  width: '100%', // Make card width responsive
+  width: '400%', // Make card width responsive
   height: '100%', // Full height of grid cell
   padding: theme.spacing(2),
   display: 'flex',
@@ -189,53 +189,117 @@ function Tickets() {
           justifyContent="center"
         >
           {data.map((post) => (
-            <Grid
-              item
-              xs={12}  // Full width on small screens
-              sm={6}   // 2 cards per row on medium screens
-              md={4}   // 3 cards per row on larger screens
-              key={post.id}
+  <Grid
+    item
+    xs={12}  // Full width on small screens
+    sm={6}   // 2 cards per row on medium screens
+    md={4}   // 3 cards per row on larger screens
+    key={post.id}
+  >
+    <StyledCard sx={{ boxShadow: 3, borderRadius: 3, padding: 2 }}>
+      <CardContent>
+        <Typography
+          variant="h5"
+          component="div"
+          align="center"
+          gutterBottom
+          sx={{
+            fontWeight: 'bold',
+            fontSize: '1.5rem',
+            color: '#1e88e5', // Customize the color
+            textTransform: 'capitalize',
+          }}
+        >
+          {post.title}
+        </Typography>
+
+        <Typography
+          variant="body2"
+          gutterBottom
+          sx={{
+            fontSize: '1rem',
+            lineHeight: 1.5,
+            marginBottom: 2,
+            color: '#424242', // Greyish tone
+            textAlign: 'justify',
+          }}
+        >
+          {post.content}
+        </Typography>
+
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          sx={{
+            fontStyle: 'italic',
+            color: '#757575', // Muted color for secondary text
+            textAlign: 'right',
+          }}
+        >
+          Created by: {post.creatorName}
+        </Typography>
+      </CardContent>
+
+      <CardActions sx={{ justifyContent: 'space-between', paddingTop: 1 }}>
+        {post.comments && post.comments.length > 0 && (
+          <Box sx={{ width: '100%', paddingTop: 2 }}>
+            <Typography
+              variant="h6"
+              color="text.secondary"
+              gutterBottom
+              sx={{ fontWeight: 'bold', color: '#1976d2' }} // Blue shade for comments heading
             >
-              <StyledCard>
-                <CardContent>
-                  <Typography variant="h5" component="div" align="center" gutterBottom>
-                    {post.title}
-                  </Typography>
-                  <Typography variant="body2" gutterBottom>
-                    {post.content}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary" gutterBottom>
-                    {post.creatorName}
-                  </Typography>
-                </CardContent>
+              Comments
+            </Typography>
 
-                <CardActions sx={{ justifyContent: 'space-between' }}>
-                  {post.comments && post.comments.length > 0 && (
-                    <Box sx={{ width: '100%' }}>
-                      <Typography variant="h6" color="text.secondary" gutterBottom>
-                        Comments
-                      </Typography>
+            {post.comments.map((comment) => (
+              <CommentBox
+                key={comment.id}
+                sx={{
+                  backgroundColor: '#f1f1f1', // Light grey background for comments
+                  padding: 1,
+                  borderRadius: 2,
+                  marginBottom: 1.5,
+                }}
+              >
+                <Typography
+                  variant="body1"
+                  color="text.primary"
+                  sx={{ fontWeight: 500, color: '#333' }}
+                >
+                  {comment.author}
+                </Typography>
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{ color: '#616161' }} // Slightly darker color for comment content
+                >
+                  {comment.content}
+                </Typography>
+              </CommentBox>
+            ))}
+          </Box>
+        )}
 
-                      {post.comments.map((comment) => (
-                        <CommentBox key={comment.id}>
-                          <Typography variant="body1" color="text.primary" sx={{ fontWeight: 500 }}>
-                            {comment.author}
-                          </Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            {comment.content}
-                          </Typography>
-                        </CommentBox>
-                      ))}
-                    </Box>
-                  )}
+        <StyledButton
+          size="small"
+          variant="contained"
+          onClick={() => handleOpenCommentModal(post.id)}
+          sx={{
+            backgroundColor: '#4caf50', // Green button for adding comments
+            '&:hover': { backgroundColor: '#388e3c' },
+           mb:2
+           ,ml:2
+          }}
+        >
+          Add Comment
+        </StyledButton>
+      </CardActions>
+    </StyledCard>
+  </Grid>
+))}
 
-                  <StyledButton size="small" variant="contained" onClick={() => handleOpenCommentModal(post.id)}>
-                    Add Comment
-                  </StyledButton>
-                </CardActions>
-              </StyledCard>
-            </Grid>
-          ))}
+          
         </Grid>
       </BoxWrapper>
     </Box>
