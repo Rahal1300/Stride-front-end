@@ -83,18 +83,30 @@ const Index = () => {
 
   const handleSubmit = async () => {
     const formData = new FormData();
-    setIsLoading(true); 
- 
+    setIsLoading(true);
+  
     try {
+      let hasChanges = false;
+  
       Object.keys(editedProfileInfo).forEach((key) => {
-        if (key !== 'image') {
+        if (key !== 'image' && editedProfileInfo[key] !== profileInfo[key]) {
           formData.append(key, editedProfileInfo[key]);
+          hasChanges = true;
         }
       });
+  
       if (selectedImage) {
         formData.append('image', selectedImage);
+        hasChanges = true;
       }
-     
+  
+      if (!hasChanges) {
+        setIsLoading(false);
+        // You might want to use a proper notification system here
+        alert('No changes detected. Profile not updated.');
+        return;
+      }
+  
       const updateResponse = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/profil/updateInfo`, {
         method: 'PUT',
         headers: {
@@ -102,25 +114,24 @@ const Index = () => {
         },
         body: formData,
       });
-    
+  
       if (!updateResponse.ok) {
         throw new Error('Failed to update profile data');
       }
-      if (updateResponse.ok) {
-        const updatedData = await updateResponse.json();
-        setProfileInfo(updatedData);
-        setIsEditing(false);
-        window.location.reload(); 
-        setIsLoading(false);
-
-      }
-     
+  
+      const updatedData = await updateResponse.json();
+      setProfileInfo(updatedData);
+      setIsEditing(false);
+      setIsLoading(false);
+      // You might want to use a proper notification system here
+      alert('Profile updated successfully!');
+  
     } catch (error) {
       setIsLoading(false);
-
       console.error('Error updating profile data:', error.message);
+      // You might want to use a proper notification system here
+      alert(`Error updating profile: ${error.message}`);
     }
- 
   };
   
 

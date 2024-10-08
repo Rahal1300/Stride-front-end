@@ -173,7 +173,6 @@ Back to projects      </Button>
 Edit project      </Button>
 
 
-
         </Box>
         <Grid container spacing={2} >
           <Grid item xs={12}>
@@ -192,8 +191,6 @@ Edit project      </Button>
                     layout="responsive"
                   />
                 <LinearProgress variant="determinate" value={project.progress}  style={{height:'10px',borderRadius: '0 0 20px 20px'}} />
-
-
                 </div>
               </Grid>
               <Grid item xs={12} md={6}>
@@ -212,8 +209,6 @@ Edit project      </Button>
               <Grid container spacing={12} justifyContent="center" >
 
               <Grid item xs={12} md={6} >
-
-
               <Typography variant="body2" component="h1" sx={{ fontFamily: 'Arial ', fontWeight: 200, fontSize: '14px', color: '#646464',display: 'inline', marginBottom: '8px' }}>
         Owner:
         {project.owner ? (
@@ -297,10 +292,6 @@ Edit project      </Button>
     " not available"
   )}
     </Typography>
-
-    
-   
-
     </Grid>
       </Grid>
     </Grid>
@@ -350,9 +341,6 @@ Edit project      </Button>
     />
     </CustomTabPanel>
 </Box>
-
-
-
     </>
       ) : null}
     </div>

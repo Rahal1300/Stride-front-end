@@ -118,6 +118,7 @@ function Tickets() {
       const data = await response.json();
       setData(data);
       setLoading(false);
+      console.log("dataaa",data );
     } catch (error) {
       console.error('Error fetching posts:', error);
       setLoading(false);
