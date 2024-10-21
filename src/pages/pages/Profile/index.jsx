@@ -45,7 +45,6 @@ const Index = () => {
             'Content-Type': 'application/json',
           },
         });
-
         if (!response.ok) {
           throw new Error('Failed to fetch profile data');
         }

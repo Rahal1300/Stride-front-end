@@ -3,6 +3,7 @@ import { Box, Button, Typography, Paper, CircularProgress, TextField, Grid } fro
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import FolderIcon from '@mui/icons-material/Folder';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useSelector } from 'react-redux';
 import { loginSuccess } from '../../../features/reducers/authReducer';
 
@@ -13,14 +14,42 @@ const FileManager = () => {
   const [loadingUpload, setLoadingUpload] = useState(false);
   const [newFolderName, setNewFolderName] = useState('');
   const [draggingFile, setDraggingFile] = useState(null);
+  const [currentFolder, setCurrentFolder] = useState(null);
+  const [breadcrumbs, setBreadcrumbs] = useState([]);
   const usertoken = useSelector(loginSuccess);
 
   useEffect(() => {
-    fetchDocuments();
-    fetchFolders();
+    fetchFolderContents();
+    fetchAllDocuments();
   }, []);
 
-  const fetchDocuments = async () => {
+  const fetchFolderContents = async (folderId = null) => {
+    setLoadingFetch(true);
+    try {
+      const url = folderId 
+        ? `http://192.168.30.200:8087/folders/${folderId}`
+        : 'http://192.168.30.200:8087/folders/all';
+      const response = await fetch(url, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${usertoken.payload.token}`,
+        },
+      });
+      const data = await response.json();
+      if (folderId) {
+        setCurrentFolder(data);
+      } else {
+        setFetchedFolders(data);
+        setCurrentFolder(null);
+      }
+    } catch (error) {
+      console.error('Error fetching folder contents:', error);
+    } finally {
+      setLoadingFetch(false);
+    }
+  };
+
+  const fetchAllDocuments = async () => {
     try {
       const response = await fetch('http://192.168.30.200:8087/projects/getdocuments', {
         headers: {
@@ -35,23 +64,6 @@ const FileManager = () => {
     }
   };
 
-  const fetchFolders = async () => {
-    try {
-      const response = await fetch('http://192.168.30.200:8087/folders/all', {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${usertoken.payload.token}`,
-        },
-      });
-      const data = await response.json();
-      setFetchedFolders(data);
-    } catch (error) {
-      console.error('Error fetching folders:', error);
-    } finally {
-      setLoadingFetch(false);
-    }
-  };
-
   const handleFileChange = async (event) => {
     setLoadingUpload(true);
     const files = Array.from(event.target.files);
@@ -59,6 +71,9 @@ const FileManager = () => {
     for (const file of files) {
       const formData = new FormData();
       formData.append('file', file);
+      if (currentFolder) {
+        formData.append('folderId', currentFolder.id);
+      }
 
       try {
         await fetch('http://192.168.30.200:8087/projects/upload', {
@@ -68,7 +83,13 @@ const FileManager = () => {
           },
           body: formData,
         });
-        await fetchDocuments();
+        // Refresh the current folder contents after upload
+        if (currentFolder) {
+          await fetchFolderContents(currentFolder.id);
+        } else {
+          await fetchFolderContents();
+        }
+        await fetchAllDocuments(); // Refresh all documents
       } catch (error) {
         console.error('Error uploading file:', error);
       }
@@ -85,12 +106,18 @@ const FileManager = () => {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${usertoken.payload.token}`,
           },
-          body:  newFolderName ,
+          body: JSON.stringify({
+            name: newFolderName,
+            parentId: currentFolder ? currentFolder.id : null
+          }),
         });
-
         if (response.ok) {
           const newFolder = await response.json();
-          setFetchedFolders((prev) => [...prev, { ...newFolder, files: [] }]);
+          if (currentFolder) {
+            await fetchFolderContents(currentFolder.id);
+          } else {
+            await fetchFolderContents();
+          }
           setNewFolderName('');
         } else {
           console.error('Error creating folder');
@@ -116,6 +143,14 @@ const FileManager = () => {
 
       const updatedFile = await response.json();
       console.log('File moved successfully:', updatedFile);
+      
+      // Refresh the current folder contents after moving the file
+      if (currentFolder) {
+        await fetchFolderContents(currentFolder.id);
+      } else {
+        await fetchFolderContents();
+      }
+      await fetchAllDocuments(); // Refresh all documents
     } catch (error) {
       console.error('Error moving file:', error);
     }
@@ -127,17 +162,6 @@ const FileManager = () => {
 
   const handleDrop = async (folder) => {
     if (draggingFile) {
-      const updatedFolders = fetchedFolders.map((f) => {
-        if (f.id === folder.id) {
-          return { ...f, files: [...f.files, draggingFile] };
-        }
-        if (f.files.includes(draggingFile)) {
-          return { ...f, files: f.files.filter((file) => file !== draggingFile) };
-        }
-        return f;
-      });
-
-      setFetchedFolders(updatedFolders);
       await moveFile(draggingFile.id, folder.id);
       setDraggingFile(null);
     }
@@ -152,6 +176,22 @@ const FileManager = () => {
     link.href = `data:${file.type};base64,${file.content}`;
     link.download = file.documentName;
     link.click();
+  };
+
+  const handleFolderClick = async (folder) => {
+    await fetchFolderContents(folder.id);
+    setBreadcrumbs(prev => [...prev, folder]);
+  };
+
+  const handleBackClick = () => {
+    if (breadcrumbs.length > 1) {
+      const newBreadcrumbs = breadcrumbs.slice(0, -1);
+      setBreadcrumbs(newBreadcrumbs);
+      fetchFolderContents(newBreadcrumbs[newBreadcrumbs.length - 1].id);
+    } else {
+      fetchFolderContents();
+      setBreadcrumbs([]);
+    }
   };
 
   return (
@@ -226,6 +266,21 @@ const FileManager = () => {
         </Box>
       </Box>
 
+      {/* Breadcrumbs */}
+      <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+        {breadcrumbs.length > 0 && (
+          <Button startIcon={<ArrowBackIcon />} onClick={handleBackClick}>
+            Back
+          </Button>
+        )}
+        {breadcrumbs.map((folder, index) => (
+          <Typography key={folder.id} variant="body1">
+            {index > 0 && " > "}
+            {folder.name}
+          </Typography>
+        ))}
+      </Box>
+
       {/* Folder Creation */}
       <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mb: 4 }}>
         <TextField
@@ -245,8 +300,7 @@ const FileManager = () => {
         <CircularProgress color="primary" />
       ) : (
         <Grid container spacing={3} sx={{ width: '100%', maxWidth: '800px' }}>
-          {console.log(fetchedFolders)}
-          {fetchedFolders.map((folder) => (
+          {(currentFolder ? currentFolder.subFolders : fetchedFolders).map((folder) => (
             <Grid item key={folder.id} xs={12} sm={6} md={4}>
               <Box
                 sx={{
@@ -256,7 +310,9 @@ const FileManager = () => {
                   borderRadius: '4px',
                   padding: '16px',
                   backgroundColor: '#fafafa',
+                  cursor: 'pointer',
                 }}
+                onClick={() => handleFolderClick(folder)}
                 onDragOver={handleDragOver}
                 onDrop={() => handleDrop(folder)}
               >
@@ -268,39 +324,13 @@ const FileManager = () => {
                   <FolderIcon sx={{ mr: 1 }} />
                   {folder.name}
                 </Typography>
-                <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                  {folder.files.map((file) => (
-                    <Box
-                      key={file.id}
-                      sx={{
-                        padding: '8px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        border: '1px solid #ddd',
-                        borderRadius: '4px',
-                        mb: 1,
-                        backgroundColor: draggingFile === file ? '#e0e0e0' : 'transparent',
-                      }}
-                      draggable
-                      onDragStart={() => handleDragStart(file)}
-                    >
-                      <InsertDriveFileIcon sx={{ mr: 1 }} />
-                      <Typography variant="body1" sx={{ flexGrow: 1 }}>
-                        {file.documentName}
-                      </Typography>
-                      <Button onClick={() => handleDownload(file)} variant="contained" color="primary">
-                        Download
-                      </Button>
-                    </Box>
-                  ))}
-                </Box>
               </Box>
             </Grid>
           ))}
         </Grid>
       )}
 
-      {/* Display files not in any folder */}
+      {/* Display files in current folder or all documents if no folder is selected */}
       <Box
         sx={{
           mb: 4,
@@ -316,7 +346,7 @@ const FileManager = () => {
           Files
         </Typography>
         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-          {uploadedFiles.map((file) => (
+          {(currentFolder ? currentFolder.files : uploadedFiles).map((file) => (
             <Box
               key={file.id}
               sx={{
@@ -326,9 +356,10 @@ const FileManager = () => {
                 border: '1px solid #ddd',
                 borderRadius: '4px',
                 mb: 1,
+                backgroundColor: draggingFile === file ? '#e0e0e0' : 'transparent',
               }}
               draggable
-              onDragStart={() => setDraggingFile(file)} 
+              onDragStart={() => handleDragStart(file)}
             >
               <InsertDriveFileIcon sx={{ mr: 1 }} />
               <Typography variant="body1" sx={{ flexGrow: 1 }}>
