@@ -11,8 +11,9 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import withAuth from '../../../features/reducers/withAuth';
 import { useSelector } from 'react-redux';
 import { loginSuccess } from '../../../features/reducers/authReducer';
-import CustomizedProgressBars from './loading'
+import CustomizedProgressBars from './loading';
 import SubscriptionDetails from './SubscriptionDetails';
+
 const theme = createTheme({
   breakpoints: {
     values: {
@@ -101,7 +102,6 @@ const Index = () => {
   
       if (!hasChanges) {
         setIsLoading(false);
-        // You might want to use a proper notification system here
         alert('No changes detected. Profile not updated.');
         return;
       }
@@ -122,215 +122,212 @@ const Index = () => {
       setProfileInfo(updatedData);
       setIsEditing(false);
       setIsLoading(false);
-      // You might want to use a proper notification system here
       alert('Profile updated successfully!');
   
     } catch (error) {
       setIsLoading(false);
       console.error('Error updating profile data:', error.message);
-      // You might want to use a proper notification system here
       alert(`Error updating profile: ${error.message}`);
     }
   };
-  
+
+  // Function to handle null and "null" values
+  const handleValue = (value) => {
+    return value === null || value === "null" ? "Not available" : value;
+  };
 
   return (
     <ThemeProvider theme={theme}>
- {isLoading ? <CustomizedProgressBars /> : (
-          <>
-      <Box sx={{ padding: 1 ,mt:-2}}>
-        <Grid container spacing={2} justifyContent="center">
-          <Grid item xs={12} sm={8}>
-          <Typography variant="h3" component="div" sx={{ fontWeight: 700,fontFamily: 'Arial',fontSize: '32px'
-, '&::first-letter': {
-                  color: 'secondary.main',
-                }}}>
-            
-              Profile
-            </Typography>
-          </Grid>
-          <Grid item xs={12} sm={4} 
-          sx={{display:'flex',justifyContent:'flex-end'}}>
-            <Button
-              variant="contained"
-              onClick={handleEditProfile}
-              disabled={isEditing}
-              sx={{ width: '50%', bgcolor: '#6226EF', color: 'white' }}
-            >
-Customize Profile            </Button>
-          </Grid>
-        </Grid>
-        <SubscriptionDetails />
-
-        <Card sx={{ padding: 2, marginTop: 2 }}>
-          <Grid container spacing={2} sx={{ padding: 2, marginTop: 2 }}>
-          <Grid item xs={12} sm={4} sx={{ padding: 2, marginTop: 2 }}>
-  <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-    {imagePreviewUrl || profileInfo?.image ? (
-      <div style={{ borderRadius: '50%', overflow: 'hidden', marginBottom: '1rem' }}>
-        <Image
-          src={imagePreviewUrl ? imagePreviewUrl : `data:image/png;base64, ${profileInfo.image}`}
-          alt="User Image"
-          height={192}
-          width={192}
-        />
-      </div>
-    ) : (
-      <Image src={'/images/icons/Photo.png'} alt="Placeholder Image" height={192} width={192} />
-    )}
-    <label htmlFor="image-upload">
-      <input
-        id="image-upload"
-        type="file"
-        accept="image/*"
-        style={{ display: 'none' }}
-        disabled={!isEditing}
-        onChange={handleImageChange}
-      />
-      <Typography component="span" sx={{ color: '#4379EE', mt: 1 }}>
-        Profile Picture
-      </Typography>
-    </label>
-    <Typography variant="body1" gutterBottom sx={{ marginRight: 'auto', marginTop: '1rem' }}>
-      BIO
-    </Typography>
-    <TextField
-      fullWidth
-      multiline
-      rows={8}
-      sx={{ width: '100%', marginRight: 'auto' }}
-      name="bio"
-      value={editedProfileInfo.bio || ''}
-      onChange={handleInputChange}
-      disabled={!isEditing}
-    />
-  </Box>
-</Grid>
-
-            <Grid item xs={12} sm={4} sx={{ padding: 2, marginTop: 5 }}>
-              <Typography variant="body1" gutterBottom>
-                First Name
-              </Typography>
-              <TextField
-                fullWidth
-                sx={{ paddingBottom: 2 }}
-                name="first_name"
-                value={editedProfileInfo.first_name || ''}
-                onChange={handleInputChange}
-                disabled={!isEditing}
-              />
-              <Typography variant="body1" gutterBottom>
-                Last Name
-              </Typography>
-              <TextField
-                fullWidth
-                sx={{ paddingBottom: 2 }}
-                name="last_name"
-                value={editedProfileInfo.last_name || ''}
-                onChange={handleInputChange}
-                disabled={!isEditing}
-              />
-              <Typography variant="body1" gutterBottom>
-                Phone Number
-              </Typography>
-              <TextField
-                fullWidth
-                sx={{ paddingBottom: 2 }}
-                name="phone_number"
-                value={editedProfileInfo.phone_number || ''}
-                onChange={handleInputChange}
-                disabled={!isEditing}
-                type='number'
-                />
-              <Typography variant="body1" gutterBottom>
-                Country
-              </Typography>
-              <TextField
-                fullWidth
-                sx={{ paddingBottom: 2 }}
-                name="country"
-                value={editedProfileInfo.country || ''}
-                onChange={handleInputChange}
-                disabled={!isEditing}
-              />
-              <Typography variant="body1" gutterBottom>
-                Company
-              </Typography>
-              <TextField
-                fullWidth
-                sx={{ paddingBottom: 2 }}
-                name="company"
-                value={editedProfileInfo.company || ''}
-                onChange={handleInputChange}
-                disabled
-              />
-             
+      {isLoading ? <CustomizedProgressBars /> : (
+        <>
+          <Box sx={{ padding: 1, mt: -2 }}>
+            <Grid container spacing={2} justifyContent="center">
+              <Grid item xs={12} sm={8}>
+                <Typography variant="h3" component="div" sx={{ fontWeight: 700, fontFamily: 'Arial', fontSize: '32px', '&::first-letter': { color: 'secondary.main' } }}>
+                  Profile
+                </Typography>
+              </Grid>
+              <Grid item xs={12} sm={4} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                <Button
+                  variant="contained"
+                  onClick={handleEditProfile}
+                  disabled={isEditing}
+                  sx={{ width: '50%', bgcolor: '#6226EF', color: 'white' }}
+                >
+                  Customize Profile
+                </Button>
+              </Grid>
             </Grid>
-            <Grid item xs={12} sm={4} sx={{ padding: 2, marginTop: 5 }}>
-              <Box>
-                <Typography variant="body1" gutterBottom>
-                  Link
-                </Typography>
-                <TextField
-                  fullWidth
-                  sx={{ paddingBottom: 2 }}
-                  name="link"
-                  value={editedProfileInfo.link || ''}
-                  onChange={handleInputChange}
-                  disabled={!isEditing}
-                />
-                <Typography variant="body1" gutterBottom>
-                  City
-                </Typography>
-                <TextField
-                  fullWidth
-                  sx={{ paddingBottom: 2 }}
-                  name="city"
-                  value={editedProfileInfo.city || ''}
-                  onChange={handleInputChange}
-                  disabled={!isEditing}
-                />
-                <Typography variant="body1" gutterBottom>
-                  Date joined
-                </Typography>
-                <TextField
-                  fullWidth
-                  sx={{ paddingBottom: 2 }}
-                  name="join_Date"
-                  value={editedProfileInfo.join_Date || ''}
-                  onChange={handleInputChange}
-                  disabled={true}
-                />
-                <Typography variant="body1" gutterBottom>
-                  Years Of Experience
-                </Typography>
-                <TextField
-                  fullWidth
-                  sx={{ paddingBottom: 2 }}
-                  name="yearsOfExperience"
-                  value={editedProfileInfo.yearsOfExperience || ''}
-                  onChange={handleInputChange}
-                  disabled={!isEditing}
-                  type='number'
+            <SubscriptionDetails />
 
-                />
-              </Box>
-            </Grid>
-          </Grid>
-        </Card>
+            <Card sx={{ padding: 2, marginTop: 2 }}>
+              <Grid container spacing={2} sx={{ padding: 2, marginTop: 2 }}>
+                <Grid item xs={12} sm={4} sx={{ padding: 2, marginTop: 2 }}>
+                  <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    {imagePreviewUrl || profileInfo?.image ? (
+                      <div style={{ borderRadius: '50%', overflow: 'hidden', marginBottom: '1rem' }}>
+                        <Image
+                          src={imagePreviewUrl ? imagePreviewUrl : `data:image/png;base64, ${profileInfo.image}`}
+                          alt="User Image"
+                          height={192}
+                          width={192}
+                        />
+                      </div>
+                    ) : (
+                      <Image src={'/images/icons/Photo.png'} alt="Placeholder Image" height={192} width={192} />
+                    )}
+                    <label htmlFor="image-upload">
+                      <input
+                        id="image-upload"
+                        type="file"
+                        accept="image/*"
+                        style={{ display: 'none' }}
+                        disabled={!isEditing}
+                        onChange={handleImageChange}
+                      />
+                      <Typography component="span" sx={{ color: '#4379EE', mt: 1 }}>
+                        Profile Picture
+                      </Typography>
+                    </label>
+                    <Typography variant="body1" gutterBottom sx={{ marginRight: 'auto', marginTop: '1rem' }}>
+                      BIO
+                    </Typography>
+                    <TextField
+                      fullWidth
+                      multiline
+                      rows={8}
+                      sx={{ width: '100%', marginRight: 'auto' }}
+                      name="bio"
+                      value={editedProfileInfo.bio || 'Not available'}
+                      onChange={handleInputChange}
+                      disabled={!isEditing}
+                    />
+                  </Box>
+                </Grid>
+
+                <Grid item xs={12} sm={4} sx={{ padding: 2, marginTop: 5 }}>
+                  <Typography variant="body1" gutterBottom>
+                    First Name
+                  </Typography>
+                  <TextField
+                    fullWidth
+                    sx={{ paddingBottom: 2 }}
+                    name="first_name"
+                    value={handleValue(editedProfileInfo.first_name)}
+                    onChange={handleInputChange}
+                    disabled={!isEditing}
+                  />
+                  <Typography variant="body1" gutterBottom>
+                    Last Name
+                  </Typography>
+                  <TextField
+                    fullWidth
+                    sx={{ paddingBottom: 2 }}
+                    name="last_name"
+                    value={handleValue(editedProfileInfo.last_name)}
+                    onChange={handleInputChange}
+                    disabled={!isEditing}
+                  />
+                  <Typography variant="body1" gutterBottom>
+                    Phone Number
+                  </Typography>
+                  <TextField
+                    fullWidth
+                    sx={{ paddingBottom: 2 }}
+                    name="phone_number"
+                    value={handleValue(editedProfileInfo.phone_number)}
+                    onChange={handleInputChange}
+                    disabled={!isEditing}
+                    type='number'
+                  />
+                  <Typography variant="body1" gutterBottom>
+                    Country
+                  </Typography>
+                  <TextField
+                    fullWidth
+                    sx={{ paddingBottom: 2 }}
+                    name="country"
+                    value={handleValue(editedProfileInfo.country)}
+                    onChange={handleInputChange}
+                    disabled={!isEditing}
+                  />
+                  <Typography variant="body1" gutterBottom>
+                    Company
+                  </Typography>
+                  <TextField
+                    fullWidth
+                    sx={{ paddingBottom: 2 }}
+                    name="company"
+                    value={handleValue(editedProfileInfo.company)}
+                    onChange={handleInputChange}
+                    disabled
+                  />
+                </Grid>
+                <Grid item xs={12} sm={4} sx={{ padding: 2, marginTop: 5 }}>
+                  <Box>
+                    <Typography variant="body1" gutterBottom>
+                      Link
+                    </Typography>
+                    <TextField
+                      fullWidth
+                      sx={{ paddingBottom: 2 }}
+                      name="link"
+                      value={handleValue(editedProfileInfo.link)}
+                      onChange={handleInputChange}
+                      disabled={!isEditing}
+                    />
+                    <Typography variant="body1" gutterBottom>
+                      City
+                    </Typography>
+                    <TextField
+                      fullWidth
+                      sx={{ paddingBottom: 2 }}
+                      name="city"
+                      value={handleValue(editedProfileInfo.city)}
+                      onChange={handleInputChange}
+                      disabled={!isEditing}
+                    />
+                    <Typography variant="body1" gutterBottom>
+                      Date joined
+                    </Typography>
+                    <TextField
+                      fullWidth
+                      sx={{ paddingBottom: 2 }}
+                      name="join_Date"
+                      value={handleValue(editedProfileInfo.join_Date)}
+                      onChange={handleInputChange}
+                      disabled={true}
+                    />
+                    <Typography variant="body1" gutterBottom>
+                      Years Of Experience
+                    </Typography>
+                    <TextField
+                      fullWidth
+                      sx={{ paddingBottom: 2 }}
+                      name="yearsOfExperience"
+                      value={handleValue(editedProfileInfo.yearsOfExperience)}
+                      onChange={handleInputChange}
+                      disabled={!isEditing}
+                      type='number'
+                    />
+                  </Box>
+                </Grid>
+              </Grid>
+            </Card>
      
-        <Box sx={{ display: 'flex', justifyContent: 'right', mt: 2 }}>
-          <Button
-            variant="contained"
-            onClick={handleSubmit}
-            disabled={!isEditing}
-            sx={{ bgcolor: '#6226EF', color: 'white', width: '10%' }}
-          >
-            Save
-          </Button>
-        </Box>
-      </Box>  </>
-        )}
+            <Box sx={{ display: 'flex', justifyContent: 'right', mt: 2 }}>
+              <Button
+                variant="contained"
+                onClick={handleSubmit}
+                disabled={!isEditing}
+                sx={{ bgcolor: '#6226EF', color: 'white', width: '10%' }}
+              >
+                Save
+              </Button>
+            </Box>
+          </Box>
+        </>
+      )}
     </ThemeProvider>
   );
 };
