@@ -25,7 +25,6 @@ const theme = createTheme({
     },
   },
 });
-
 const Index = () => {
   const usertoken = useSelector(loginSuccess);
   const router = useRouter();
@@ -130,12 +129,10 @@ const Index = () => {
       alert(`Error updating profile: ${error.message}`);
     }
   };
-
   // Function to handle null and "null" values
   const handleValue = (value) => {
     return value === null || value === "null" ? "Not available" : value;
   };
-
   return (
     <ThemeProvider theme={theme}>
       {isLoading ? <CustomizedProgressBars /> : (

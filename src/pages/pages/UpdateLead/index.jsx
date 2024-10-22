@@ -72,7 +72,7 @@ const Index = () => {
           },
         });
         const data = await response.json();
-  
+    
   
         if (response.ok) {
           setLead(data);
