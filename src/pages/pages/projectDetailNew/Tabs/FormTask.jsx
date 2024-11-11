@@ -28,6 +28,7 @@ import { grey } from '@mui/material/colors'; // Import grey colors from Material
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'; // Import the error icon you want to use
 import Tooltip from '@mui/material/Tooltip';
 import { format, parse } from 'date-fns';
+import * as XLSX from 'xlsx';
 
 const CustomInput = forwardRef((props, ref) => {
   return <TextField fullWidth {...props} inputRef={ref} label='Start Date' autoComplete='off' />;
@@ -94,6 +95,244 @@ function TaskForm({ onClose, discipline, progress, base, floor, Team, id, onAddT
       setLevel1Tasks(updatedTasks);
     }
   };
+
+/* 11/11/2024*/
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      readExcelAndFormatTasks(file, id);
+    } else {
+      console.error("No file selected");
+    }
+  };
+
+  const readExcelAndFormatTasks = (file, id) => {
+    const reader = new FileReader();
+    
+    reader.onload = (e) => {
+      const data = new Uint8Array(e.target.result);
+      const workbook = XLSX.read(data, { type: 'array' });
+      const sheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[sheetName];
+      const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+      const formattedTasks = formatTasksFromExcel(jsonData, id);
+      console.log('Formatted Tasks:', formattedTasks);
+
+      // Send the formatted tasks to your API
+      sendTasksToAPI(formattedTasks);
+    };
+
+    reader.readAsArrayBuffer(file);
+  };
+
+  const formatTasksFromExcel = (data, id) => {
+    const level1Tasks = [];
+    const taskMap = {};
+    let lastParentId = null;
+    let lastSubtaskId = null; 
+  for (let i = 1; i < data.length; i++) {
+    const row = data[i];
+    console.log("Processing row:", row); // Log the entire row for debugging
+
+    const parentId = row[0]; // Column A: Parent Task ID
+    const subtaskId = row[1]; // Column B: Subtask ID
+    const subSubtaskId = row[2]; // Column C: Sub-subtask ID
+    const taskName = row[4]; // Column E: Task Name
+
+    // Log the values of interest
+    console.log("parentId value:", parentId);
+    console.log("subtaskId value:", subtaskId);
+    console.log("subSubtaskId value:", subSubtaskId);
+    console.log("taskName value:", taskName);
+
+    // Skip empty rows or rows without task names
+    if (!taskName) continue;
+
+    // Determine the level based on the parentId
+    let currentLevel = 1; // Default to level 1
+    if (parentId && typeof parentId === 'string') {
+      currentLevel = parentId.split('.').length; // Count the number of dots to determine the level
+      lastParentId = parentId; // Update last valid parent ID
+    } else if (subtaskId && typeof subtaskId === 'string') {
+      currentLevel = subtaskId.split('.').length; // If parentId is empty, check subtaskId
+      lastSubtaskId = subtaskId; // Update last valid subtask ID
+    } else if (subSubtaskId && typeof subSubtaskId === 'string') {
+      currentLevel = subSubtaskId.split('.').length; // If subtaskId is empty, check subSubtaskId
+    }
+
+    if (currentLevel === 1) {
+      // Level 1 Task
+      const level1Task = { 
+        parentTaskName: taskName,
+        parentTaskWeight: null,
+        parentTaskFloor: "",
+        parentTaskBasement: "",
+        parentTaskStartDate: "",
+        parentTaskDeadline: "",
+        description: "",
+        assignedUserId: "",
+        subtasks: []
+      };
+      level1Tasks.push(level1Task);
+      taskMap[parentId] = level1Task; // Store reference by ID
+      lastParentId = parentId; // Update last valid parent ID
+    } else if (currentLevel === 2) {
+      // Level 2 Task (Subtask)
+      const level2Task = { 
+        name: taskName,
+        weight: null,
+        floor: "",
+        basement: "",
+        startDate: "",
+        deadline: "",
+        description: "",
+        assignedUserId: "",
+        subtasks: []
+      };
+      if (taskMap[lastParentId]) {
+        taskMap[lastParentId].subtasks.push(level2Task);
+        taskMap[subtaskId] = level2Task; // Store reference by ID
+        lastSubtaskId = subtaskId; // Update last valid subtask ID
+      } else {
+        console.error("Parent task not found for subtask:", subtaskId);
+      }
+    } else if (currentLevel === 3) {
+      // Level 3 Task (Sub-subtask)
+      const level3Task = { 
+        name: taskName,
+        weight: null,
+        floor: "",
+        basement: "",
+        startDate: "",
+        deadline: "",
+        description: "",
+        assignedUserId: "",
+        subtasks: []
+      };
+      if (taskMap[lastSubtaskId]) { // Use lastSubtaskId to find the parent for sub-subtask
+        taskMap[lastSubtaskId].subtasks.push(level3Task);
+      } else {
+        console.error("Parent subtask not found for sub-subtask:", subSubtaskId);
+      }
+    }
+   
+  }
+  
+
+  
+
+   
+
+    return {
+      projectId: id, // Use the passed project ID
+      tasks: level1Tasks,
+    };
+  };
+
+  const sendTasksToAPI = (formattedTasks) => {
+    fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/tasks/createTasks`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${userToken.payload.token}`,
+      },
+      body: JSON.stringify(formattedTasks),
+    })
+      .then(response => {
+        if (response.ok) {
+          console.log('Task saved successfully');
+        } else {
+          console.error('Error saving task');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+  };
+
+  
+ 
+
+
+const formatDataToTasks = (data) => {
+    const tasks = [];
+    const taskMap = {};
+
+    data.forEach(row => {
+        if (row.Level === "Task") {
+            const task = {
+                parentTaskName: row['Task Title'] || '',
+                parentTaskWeight: row['Percentage'] ? parseInt(row['Percentage'], 10) : null,
+                parentTaskFloor: row['Floor'] || '',
+                parentTaskBasement: row['Basement'] || '',
+                parentTaskStartDate: row['Start Date'] || '',
+                parentTaskDeadline: row['Deadline'] || '',
+                description: row['Description'] || '',
+                assignedUserId: row['Assigned Member'] || '',
+                subtasks: []
+            };
+            tasks.push(task);
+            taskMap[row['Task Title']] = task; // Map task title to task object
+        } else if (row.Level === "Subtask") {
+            const subtask = {
+                name: row['Subtask Title'] || '',
+                weight: row['Subtask Percentage'] ? parseInt(row['Subtask Percentage'], 10) : null,
+                floor: row['Subtask Floor'] || '',
+                basement: row['Subtask Basement'] || '',
+                startDate: row['Subtask Start Date'] || '',
+                deadline: row['Subtask Deadline'] || '',
+                description: row['Subtask Description'] || '',
+                assignedUserId: row['Subtask Assigned Member'] || '',
+                subtasks: [] // Initialize for potential nested subtasks
+            };
+
+            // Find the parent task and add the subtask to it
+            const parentTask = taskMap[row['Task Title']];
+            if (parentTask) {
+                parentTask.subtasks.push(subtask);
+            }
+        }
+    });
+
+            return {
+                projectId: id, // Pass the project ID from props
+                tasks: tasks
+            };
+};
+
+const sendTaskRequest = async (taskRequest) => {
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/tasks/createTasks`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${userToken.payload.token}`,
+            },
+            body: JSON.stringify(taskRequest),
+        });
+
+        if (response.ok) {
+            setSnackbarMessage('Tasks saved successfully');
+            setResponseStatus(response.status);
+            setSnackbarOpen(true);
+        } else {
+            setSnackbarMessage('Error saving tasks');
+            setResponseStatus(response.status);
+            setSnackbarOpen(true);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        setSnackbarMessage('Error saving tasks');
+        setResponseStatus(null);
+        setSnackbarOpen(true);
+    }
+};
+
+
+//**/ */
+  
 
   const handleAddLevel2Task = (level1Index) => {
     const updatedTasks = [...level1Tasks];
@@ -974,9 +1213,9 @@ function TaskForm({ onClose, discipline, progress, base, floor, Team, id, onAddT
                                       </MenuItem>
                                     ))}
                                   </TextField>
-                                                                    </Grid>
-                                                                    <Grid item xs={12} sm={4}>
-                                                                    <TextField
+                                      </Grid>
+                                      <Grid item xs={12} sm={4}>
+                                      <TextField
                                     select
                                     fullWidth
                                     label="Basement"
@@ -1133,6 +1372,9 @@ Save
                                   <Button variant="contained" color="primary" onClick={handleFinish}>
                                   Save All And  Finish
                                   </Button>
+                                  <div>
+                                     <input type="file" accept=".xlsx, .xls" onChange={handleFileChange} />
+                                  </div>
                                 </Box>
 
                                     </Box>
