@@ -11,7 +11,7 @@ import {
   IconButton,
   MenuItem,
   Snackbar,
-  SnackbarContent,
+  SnackbarContent,Input
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AddIcon from '@mui/icons-material/Add';
@@ -97,9 +97,29 @@ function TaskForm({ onClose, discipline, progress, base, floor, Team, id, onAddT
   };
 
 /* 11/11/2024*/
+const downloadTemplate = () => {
+  const link = document.createElement('a');
+  // Adjust this path to match your file location
+  link.href = '/assets/TaskTemplate.xlsx';
+  link.download = 'TaskTemplate.xlsx';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
+    if (!file) {
+      console.error("No file selected");
+      return;
+    }
+  
+    // Check if the file name matches exactly
+    if (file.name !== 'TemplateExcel.xlsx') {
+      alert('Please use the provided template file (TemplateExcel.xlsx). Other files are not accepted.');
+      event.target.value = ''; // Reset file input
+      return;
+    }
     if (file) {
       readExcelAndFormatTasks(file, id);
     } else {
@@ -811,52 +831,52 @@ const sendTaskRequest = async (taskRequest) => {
       multiple: true,
     }}
   >
-    {Array.from({ length: floor }, (_, i) => (
-      <MenuItem key={i} value={i}>
-        Floor {i}
-      </MenuItem>
-    ))}
-  </TextField>
-              </Grid>
-              <Grid item xs={12} sm={4}>
-              <TextField
-    select
-    fullWidth
-    label="Basement"
-    name="basement"
-    value={task.basement}
-    onChange={(e) => handleLevel1TaskChange(index, 'basement', e.target.value)}
-    margin="normal"
-    SelectProps={{
-      multiple: true,
-    }}
-  >
-    {Array.from({ length: base }, (_, i) => (
-      <MenuItem key={i + 1} value={i + 1}>
-        Basement {i + 1}
-      </MenuItem>
-    ))}
-  </TextField>
+            {Array.from({ length: floor }, (_, i) => (
+              <MenuItem key={i} value={i}>
+                Floor {i}
+              </MenuItem>
+            ))}
+                    </TextField>
+                        </Grid>
+                        <Grid item xs={12} sm={4}>
+                        <TextField
+              select
+              fullWidth
+              label="Basement"
+              name="basement"
+              value={task.basement}
+              onChange={(e) => handleLevel1TaskChange(index, 'basement', e.target.value)}
+              margin="normal"
+              SelectProps={{
+                multiple: true,
+              }}
+            >
+              {Array.from({ length: base }, (_, i) => (
+                <MenuItem key={i + 1} value={i + 1}>
+                  Basement {i + 1}
+                </MenuItem>
+              ))}
+            </TextField>
               </Grid>
 
               <Grid item xs={12}sm={2}>
               <DatePickerWrapper     sx={{ marginTop:2}}>
 
-    <DatePicker
-   label="Start Date"
-   selected={task.startDate}
-   onChange={(date) =>
-     handleLevel1TaskChange(index, 'startDate', date)
-   } // 'date' will be a Date object
-   showYearDropdown
-   showMonthDropdown
-   placeholderText="DD/MM/YYYY"
-   dateFormat="dd/MM/yyyy"
+                <DatePicker
+              label="Start Date"
+              selected={task.startDate}
+              onChange={(date) =>
+                handleLevel1TaskChange(index, 'startDate', date)
+              } // 'date' will be a Date object
+              showYearDropdown
+              showMonthDropdown
+              placeholderText="DD/MM/YYYY"
+              dateFormat="dd/MM/yyyy"
 
-   className="custom-datepicker-input"
-   customInput={<CustomInput />}
+              className="custom-datepicker-input"
+              customInput={<CustomInput />}
 
-    />
+                />
                       </DatePickerWrapper>
 
 
@@ -1369,12 +1389,57 @@ Save
                                         Add Level 1 Task
                                       </Button>
                                       <Box display="flex" justifyContent="flex-end" mt={2}>
-                                  <Button variant="contained" color="primary" onClick={handleFinish}>
-                                  Save All And  Finish
-                                  </Button>
-                                  <div>
-                                     <input type="file" accept=".xlsx, .xls" onChange={handleFileChange} />
-                                  </div>
+                                      <Box sx={{ 
+                                            display: 'flex', 
+                                            gap: 2,  // Creates equal spacing between elements
+                                            alignItems: 'center',
+                                            mt: 2  // Adds margin top
+                                          }}>
+                                      <Button 
+                                        variant="contained" 
+                                        color="primary" 
+                                        onClick={handleFinish}
+                                        sx={{
+                                          height: '44px',
+                                          textTransform: 'none',
+                                        }}
+                                      >
+                                        Save All And Finish
+                                      </Button>
+
+                                      <Input 
+                                        type="file" 
+                                        accept=".xlsx, .xls" 
+                                        onChange={handleFileChange}  
+                                        sx={{
+                                          color: 'white',
+                                          height: '44px',
+                                          textTransform: 'none',
+                                          background: '#6226EF',
+                                          '&:hover': {
+                                            background: '#6226EF',
+                                          },
+                                          flex: 1  // Takes up remaining space
+                                        }}
+                                      />
+
+                                      <Button
+                                        type="submit"
+                                        onClick={downloadTemplate}
+                                        sx={{
+                                          color: 'white',
+                                          height: '44px',
+                                          textTransform: 'none',
+                                          background: '#6226EF',
+                                          '&:hover': {
+                                            background: '#6226EF',
+                                          },
+                                          minWidth: '150px'  // Fixed width instead of percentage
+                                        }}
+                                      >
+                                        + Download Template
+                                      </Button>
+                                    </Box>
                                 </Box>
 
                                     </Box>
