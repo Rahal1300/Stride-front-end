@@ -83,7 +83,16 @@ function getStatusColor(status) {
       }
       }, [id,onAddTask]);
       const handleDownloadTemplate = () => {
-        generateTaskTemplate();
+       
+          const link = document.createElement('a');
+          // Adjust this path to match your file location
+          link.href = '/assets/TaskTemplate.xlsx';
+          link.download = 'TaskTemplate.xlsx';
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+       
+        
       };
       
   

@@ -113,13 +113,12 @@ const downloadTemplate = () => {
       console.error("No file selected");
       return;
     }
-  
-    // Check if the file name matches exactly
-    if (file.name !== 'TemplateExcel.xlsx') {
+  /*console.log("file name !!! ",file.name)// Check if the file name matches exactly
+    if (file.name !== 'TaskTemplate.xlsx') {
       alert('Please use the provided template file (TemplateExcel.xlsx). Other files are not accepted.');
       event.target.value = ''; // Reset file input
       return;
-    }
+    }*/
     if (file) {
       readExcelAndFormatTasks(file, id);
     } else {

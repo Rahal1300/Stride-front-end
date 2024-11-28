@@ -90,12 +90,10 @@ const TeamCard = ({ team }) => {
             />
           </Box>
           <CardContent>
-            <Typography variant="h5" gutterBottom>
+            {<Typography variant="h5" gutterBottom>
               Team Name : {team.teamName}
-            </Typography>
-            <Typography variant="body1">
-              Team Leader: {team.teamManager}
-            </Typography>
+            </Typography>}
+          
             <Typography variant="body1" sx={{ marginTop: 2, marginBottom: 1 }}>
               Assigned Projects: {team.numberofprojects}
             </Typography>

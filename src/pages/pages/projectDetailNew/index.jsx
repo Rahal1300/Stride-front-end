@@ -21,6 +21,7 @@ import Meets from './Tabs/Meets';
 import Files from './Tabs/Files';
 import Tickets from './Tabs/Tickets';
 import withAuth from '../../../features/reducers/withAuth';
+import axios from 'axios';
 
 const theme = createTheme({
   breakpoints: {
@@ -97,6 +98,59 @@ const Index = () => {
   const handleOpen = () => {
     router.push(`/pages/Editproject?id=${id}`);
   };
+  const fetchProfileData = async () => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/profil`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${usertoken.payload.token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      if (!response.ok) {
+        throw new Error('Failed to fetch profile data');
+      }
+
+      const data = await response.json();
+     return data;
+  
+    } catch (error) {
+      console.error('Error fetching profile data:', error.message);
+    }
+  };
+  const cloneProjectToBimFlow = async (
+
+
+  ) =>{
+
+    const user = await fetchProfileData();
+    console.log("project ",project);
+   
+    const data = {
+      projectName:project.projectName,
+
+      description:project.description,
+
+      image:project.image,
+
+      documents:project.documents,
+
+      user,
+
+      project_id:project.id,
+
+      project_users:project.projectUsersAndRoles,
+
+     
+
+    }
+    const response = await axios.post('https://5126-41-225-11-34.ngrok-free.app/api/v1/objects/stride',data)
+  
+
+    console.log(response.data);
+
+
+  }
   // Decoding token logic
   const base64Url = usertoken?.payload?.token?.split('.')[1];
   let isAdmin = false;
@@ -295,6 +349,7 @@ const Index = () => {
                   onUpdate={fetchData}
                 />
               </CustomTabPanel>
+              <Button onClick={cloneProjectToBimFlow}> send to BimFlow</Button>
             </Box>
           </>
         ) : null}

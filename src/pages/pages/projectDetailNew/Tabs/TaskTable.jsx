@@ -608,7 +608,40 @@ function Row(props) {
 
                         <TableCell  >{subtask.assigneduser ?  subtask.assigneduser :'No member assigned'}</TableCell>
                         <TableCell  >
-          {renderPercentageInput()}
+                        <TableCell  >
+                                  {subtask.progress !== 100 ? (
+                                  <div style={{ display: 'flex', alignItems: 'center' }}>
+
+                                  <TextField
+        type="number"
+        InputProps={{ inputProps: { min: 0, max: 100 } }}
+        onChange={(event) => handlePercentageChangesubtask(event,subtask.id)}
+        size="small"
+        style={{ width: 80, marginRight: 10 }}
+        placeholder={subtask.progress}
+
+      />
+                      <Tooltip title="Confirm">
+                        <IconButton
+
+                          aria-label="confirm percentage"
+                          size="small"
+                          onClick={() => handleConfirmPercentagesubtask(subtask.id)}
+                        >
+                          <CheckIcon style={{ color: 'green' }} />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title="Validate">
+        <IconButton
+            aria-label="confirm percentage"
+            size="small"
+            onClick={() => handleValidatePercentage(subtask.id)}
+            >
+            <DoneAllIcon style={{ color: 'red' }} />
+          </IconButton>        </Tooltip>
+
+                      </div>):(<>{subtask.progress}</>)}
+                    </TableCell>
         </TableCell>
                   
                                   
@@ -786,9 +819,43 @@ function Row(props) {
   )}
 </TableCell>*/}
 
+
 <TableCell  >
-          {renderPercentageInput()}
-        </TableCell>
+                                  {subtask.progress !== 100 ? (
+                                  <div style={{ display: 'flex', alignItems: 'center' }}>
+
+                                  <TextField
+        type="number"
+        InputProps={{ inputProps: { min: 0, max: 100 } }}
+        onChange={(event) => handlePercentageChangesubsubtask(event,subsubtask.id)}
+        size="small"
+        style={{ width: 80, marginRight: 10 }}
+        placeholder={subsubtask.progress}
+
+      />
+                      <Tooltip title="Confirm">
+                        <IconButton
+
+                          aria-label="confirm percentage"
+                          size="small"
+                          onClick={() => handleConfirmPercentagesubtask(subsubtask.id)}
+                        >
+                          <CheckIcon style={{ color: 'green' }} />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title="Validate">
+        <IconButton
+            aria-label="confirm percentage"
+            size="small"
+            onClick={() => handleValidatePercentage(subsubtask.id)}
+            >
+            <DoneAllIcon style={{ color: 'red' }} />
+          </IconButton>        </Tooltip>
+
+                      </div>):(<>{subsubtask.progress}</>)}
+                    </TableCell>
+       
+     =
                     {/*<TableCell>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <TextField

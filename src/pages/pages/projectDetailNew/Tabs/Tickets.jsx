@@ -40,22 +40,68 @@ const StyledCard = styled(Card)(({ theme }) => ({
 }));
 
 function Tickets() {
-  const [open, setOpen] = useState(false); // State for the modal
+  const [open, setOpen] = useState(false);
+  const [openn, setOpenn] = useState(false);
+   // State for the modal
   const [selectedPostId, setSelectedPostId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
   const [newCommentContent, setNewCommentContent] = useState(''); // State for new comment content
   const usertoken = useSelector(loginSuccess);
+  const [description, setNewPostDescription] = useState('');
+  const [newPostTitle, setNewPostTitle] = useState('');
+  const [newPostContent, setNewPostContent] = useState('');
+  const [selectedImage, setSelectedImage] = useState(null);
   const router = useRouter();
   const { id } = router.query;
+  const handleOpenn = () => setOpenn(true);
 
   const handleOpen = (postId) => {
     setSelectedPostId(postId); // Set the selected post ID
     setOpen(true); // Open the modal
   };
+  const handleFileChange = (e) => {
+    setSelectedImage(e.target.files[0]); // Set the selected file
+  };
+  
+  const handleCreatePost = async () => {
+    try {
+      // Create FormData object to handle both text and file data
+      const formData = new FormData();
+      formData.append('projectId', id);
+      formData.append('description', description);
+      formData.append('content', newPostContent);
+  
+      // Assuming you have an image state holding the selected image
+      if (selectedImage) {
+        formData.append('image', selectedImage); // Append the image file to the form data
+      }
+  
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/posts/create`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${usertoken.payload.token}`,
+            // Set the content type to handle file uploads
+          },
+        }
+      );
+  
+      // Clear form and close modal after successful post creation
+      setNewPostTitle('');
+      setNewPostContent('');
+      setSelectedImage(null); // Clear the selected image
+      setOpen(false);
+      fetchData(); // Refetch data to include the new post
+    } catch (error) {
+      console.error('Error creating post:', error);
+    }
+  };
 
   const handleClose = () => {
-    setOpen(false); // Close the modal
+    setOpen(false);
+    setOpenn(false); // Close the modal
     setNewCommentContent(''); // Reset the comment content
   };
 
@@ -130,6 +176,39 @@ const handleAddComment = async (parentId, newComment) => {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       <Divider sx={{ borderColor: 'gray', borderWidth: '1px', width: '80%', marginBottom: '20px' }} />
+      
+      <Button variant="contained" color="primary" onClick={handleOpenn}>Create Post</Button>
+
+      <Modal
+        open={openn}
+        onClose={handleClose}
+        aria-labelledby="create-post-modal-title"
+        aria-describedby="create-post-modal-description"
+      >
+        <Box sx={{ p: 3, maxWidth: 400, margin: 'auto', mt: '20%', bgcolor: 'background.paper', borderRadius: 2 }}>
+          <Typography variant="h6" mb={2}>Create a Post</Typography>
+          <TextField
+            fullWidth
+            margin="normal"
+            label="Title"
+            variant="outlined"
+            value={description}
+            onChange={(e) => setNewPostDescription(e.target.value)}
+          />
+          <TextField
+            fullWidth
+            margin="normal"
+            label="Content"
+            variant="outlined"
+            multiline
+            rows={4}
+            value={newPostContent}
+            onChange={(e) => setNewPostContent(e.target.value)}
+          />
+          <input type="file" onChange={handleFileChange} />
+          <Button onClick={handleCreatePost} variant="contained" color="primary" sx={{ mt: 2 }}>Submit</Button>
+        </Box>
+      </Modal>
 
       <BoxWrapper>
         <Typography variant="h1">Posts</Typography>
@@ -138,6 +217,7 @@ const handleAddComment = async (parentId, newComment) => {
             <Grid item xs={12} sm={6} md={4} key={post.id}>
               <StyledCard>
                 <CardContent>
+                  
                   <Typography variant="h5" component="div" align="center" gutterBottom>
                     {post.title}
                   </Typography>
@@ -145,6 +225,7 @@ const handleAddComment = async (parentId, newComment) => {
                   <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'right' }}>
                     Created by: {post.creatorName}
                   </Typography>
+                
                 </CardContent>
 
                 <CardActions sx={{ justifyContent: 'space-between', display: 'flex', flexDirection: 'column' }}>
