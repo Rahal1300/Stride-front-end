@@ -61,6 +61,7 @@ const PaymentForm = () => {
 
     if (!stripe || !elements) {
       // Stripe.js has not yet loaded.
+      console.log("heree");
       return;
     }
 
@@ -101,7 +102,7 @@ const PaymentForm = () => {
                 Authorization: `Bearer ${usertoken.payload.token}`,
               },
               body: JSON.stringify({ companyName: e.target.Company.value,
-                subscriptionType: title.toLocaleUpperCase(),
+              
                 country: e.target.Country.value ,
                 state: e.target.State.value,
                 phoneNumber: e.target.phone.value,
@@ -335,6 +336,7 @@ Card details</Typography>
     onClose={handleErrorSnackbarClose}
     anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
   >
+  
     <SnackbarContent
       sx={{ background: '#f44336' }} // Customize the background color
       message={

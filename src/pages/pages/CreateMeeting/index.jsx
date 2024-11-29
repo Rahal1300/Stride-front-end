@@ -29,6 +29,7 @@ import withAuth from '../../../features/reducers/withAuth';
 import MuiAlert from '@mui/material/Alert';
 import DatePicker from 'react-datepicker';
 import Chip from '@mui/material/Chip';
+import jwt from 'jsonwebtoken';
 
 const CustomInput = forwardRef(({ value, onClick }, ref) => (
   <TextField
@@ -101,6 +102,18 @@ const Create = () => {
     router.back();
   };
 
+
+
+  function getAuthenticatedUserEmail() {
+    const token = localStorage.getItem('token'); // or use your state management solution
+    if (token) {
+      const decodedToken = jwtDecode(token);
+      console.log(decodedToken)
+      return decodedToken.email; // Adjust according to the structure of your token payload
+    }
+    return null; // Return null if no token is found or user is not authenticated
+  }
+
   const handleTaskChange = (event) => {
     setSelectedTask(event.target.value);
   };
@@ -114,6 +127,11 @@ const Create = () => {
   
     const isMandatoryString = isMandatory ? 'Yes' : 'No';
     const userEmails = members.map(member => member.email);
+    const creatorEmail = getAuthenticatedUserEmail(); 
+    const decodedToken = jwt.decode(usertoken.payload.token);
+
+
+   
 
     const formData = {
       name:Name,
@@ -125,7 +143,11 @@ const Create = () => {
       description:description,
       label:selectedLabels,
       idProject: projects ? projects.id : null,
+      documents: projects ? projects.documents : [],
+      projectName:projects.projectName,
+      project_image:projects.image,
       meeting_type:meetingType,
+      creatorEmail: decodedToken.email,
     };
     setLoading(true);
     try {
@@ -293,7 +315,7 @@ const Create = () => {
                   <InputLabel id="projects-label">Projects</InputLabel>
                                   <Select
                   labelId="projects-label"
-                  value={projects.id}
+                  value={projects}
                   onChange={(e) => setProjects(e.target.value)}
                   
                   renderValue={(selected) => (

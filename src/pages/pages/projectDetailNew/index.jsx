@@ -144,7 +144,7 @@ const Index = () => {
      
 
     }
-    const response = await axios.post('https://5126-41-225-11-34.ngrok-free.app/api/v1/objects/stride',data)
+    const response = await axios.post('https://adae-41-225-11-34.ngrok-free.app/api/v1/objects/stride',data)
   
 
     console.log(response.data);

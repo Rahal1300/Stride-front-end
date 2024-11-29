@@ -5,7 +5,6 @@ import DialogContent from '@mui/material/DialogContent';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Box from '@mui/material/Box';
-
 import Typography from '@mui/material/Typography';
 import { loginSuccess } from '../../../features/reducers/authReducer';
 import { useSelector } from 'react-redux';
@@ -15,7 +14,6 @@ import TextField from '@mui/material/TextField';
 import CircularProgress from '@mui/material/CircularProgress';
 import Snackbar from '@mui/material/Snackbar';
 import SnackbarContent from '@mui/material/SnackbarContent';
-
 const ModalCard = ({ open, onClose, onTeamCreated }) => {
   const usertoken = useSelector(loginSuccess);
     const [teamName, setTeamName] = useState('');
@@ -83,7 +81,6 @@ const ModalCard = ({ open, onClose, onTeamCreated }) => {
         <Button onClick={createTeam} variant="contained" color="primary" sx={{ display: 'block', margin: 'auto',marginTop:'5px' }}>
   Create Team 
 </Button>
-
                   <Snackbar
         open={snackbarOpen}
         autoHideDuration={1000}
@@ -91,9 +88,6 @@ const ModalCard = ({ open, onClose, onTeamCreated }) => {
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       >
         <SnackbarContent
-
-
-
           sx={{ background: '#4caf50' }}
           message="Team Created Successfully"
         />
@@ -116,5 +110,6 @@ const ModalCard = ({ open, onClose, onTeamCreated }) => {
   </Dialog>
 );
 };
+
 
 export default ModalCard;
