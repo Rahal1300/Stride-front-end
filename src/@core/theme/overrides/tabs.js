@@ -3,12 +3,12 @@ const Tabs = theme => {
     MuiTabs: {
       styleOverrides: {
         vertical: {
-          minWidth: 130,
+          // minWidth: 130,
           marginRight: theme.spacing(4),
           borderRight: `1px solid ${theme.palette.divider}`,
-          '& .MuiTab-root': {
-            minWidth: 130
-          }
+          // '& .MuiTab-root': {
+          //   minWidth: 130
+          // }
         }
       }
     },

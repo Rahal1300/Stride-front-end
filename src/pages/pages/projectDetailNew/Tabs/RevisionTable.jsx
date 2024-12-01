@@ -1103,7 +1103,7 @@ Row.propTypes = {
   return (
     <>
 
-    <TableContainer component={Paper} style={{ width: '130%' }}>
+    <TableContainer component={Paper}>
       <Table aria-label="collapsible table" >
         <TableHead>
         <TableRow >

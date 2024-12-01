@@ -135,7 +135,7 @@ const TableSpanning = ({ meetings }) => {
       />
       <Card sx={{ margin: 5 }}>
         <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 1300 }} aria-label='spanning table'>
+          <Table  aria-label='spanning table'>
             <TableHead>
               <TableRow>
                 <TableCell>Name</TableCell>

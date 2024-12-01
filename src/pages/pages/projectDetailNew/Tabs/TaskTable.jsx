@@ -1,37 +1,50 @@
-import React, { forwardRef, useState,useEffect  } from 'react';
-import PropTypes from 'prop-types';
-import Box from '@mui/material/Box';
-import Collapse from '@mui/material/Collapse';
-import IconButton from '@mui/material/IconButton';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Typography from '@mui/material/Typography';
-import Paper from '@mui/material/Paper';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import Chip from '@mui/material/Chip';
-import Tooltip from '@mui/material/Tooltip';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
-import TextField from '@mui/material/TextField';
-import CheckIcon from '@mui/icons-material/Check';
-import GetAppIcon from '@mui/icons-material/GetApp';
-import Button from '@mui/material/Button';
-import MenuItem from '@mui/material/MenuItem';
-import { loginSuccess } from '../../../../features/reducers/authReducer';
-import { useSelector } from 'react-redux';
-import Snackbar from '@mui/material/Snackbar';
-import MuiAlert from '@mui/material/Alert';
-import {TablePagination} from '@mui/material';
+import React, { forwardRef, useState, useEffect } from 'react'
+import PropTypes from 'prop-types'
+import Box from '@mui/material/Box'
+import Collapse from '@mui/material/Collapse'
+import IconButton from '@mui/material/IconButton'
+import Table from '@mui/material/Table'
+import TableBody from '@mui/material/TableBody'
+import TableCell from '@mui/material/TableCell'
+import TableContainer from '@mui/material/TableContainer'
+import TableHead from '@mui/material/TableHead'
+import TableRow from '@mui/material/TableRow'
+import Typography from '@mui/material/Typography'
+import Paper from '@mui/material/Paper'
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
+import Chip from '@mui/material/Chip'
+import Tooltip from '@mui/material/Tooltip'
+import CloudUploadIcon from '@mui/icons-material/CloudUpload'
+import CloudDownloadIcon from '@mui/icons-material/CloudDownload'
+import TextField from '@mui/material/TextField'
+import CheckIcon from '@mui/icons-material/Check'
+import GetAppIcon from '@mui/icons-material/GetApp'
+import Button from '@mui/material/Button'
+import MenuItem from '@mui/material/MenuItem'
+import { loginSuccess } from '../../../../features/reducers/authReducer'
+import { useSelector } from 'react-redux'
+import Snackbar from '@mui/material/Snackbar'
+import MuiAlert from '@mui/material/Alert'
+import { TablePagination } from '@mui/material'
 import DeleteButton from './Actiontask'
-import DoneAllIcon from '@mui/icons-material/DoneAll';
+import DoneAllIcon from '@mui/icons-material/DoneAll'
 
-import DeleteIcon from '@mui/icons-material/Delete';
-function createTaskData(taskId,parentTaskName, description, parentTaskWeight, parentTaskFloor, parentTaskBasement, parentTaskStartDate, parentTaskDeadline, status, memberName, documents, subtasks) {
+import DeleteIcon from '@mui/icons-material/Delete'
+function createTaskData(
+  taskId,
+  parentTaskName,
+  description,
+  parentTaskWeight,
+  parentTaskFloor,
+  parentTaskBasement,
+  parentTaskStartDate,
+  parentTaskDeadline,
+  status,
+  memberName,
+  documents,
+  subtasks
+) {
   return {
     taskId,
     parentTaskName,
@@ -45,11 +58,24 @@ function createTaskData(taskId,parentTaskName, description, parentTaskWeight, pa
     memberName,
     documents,
     subtasks,
-    percentage: 0,
-  };
+    percentage: 0
+  }
 }
 
-function createSubtaskData(taskId,name, description, weight, floor, basement, startDate, deadline, status, memberName, documents, subsubtasks) {
+function createSubtaskData(
+  taskId,
+  name,
+  description,
+  weight,
+  floor,
+  basement,
+  startDate,
+  deadline,
+  status,
+  memberName,
+  documents,
+  subsubtasks
+) {
   return {
     taskId,
     name,
@@ -62,11 +88,23 @@ function createSubtaskData(taskId,name, description, weight, floor, basement, st
     status,
     memberName,
     documents,
-    subsubtasks,
-  };
+    subsubtasks
+  }
 }
 
-function createSubsubtaskData(taskId,name, description, weight, floor, basement, startDate, deadline, status, memberName, documents) {
+function createSubsubtaskData(
+  taskId,
+  name,
+  description,
+  weight,
+  floor,
+  basement,
+  startDate,
+  deadline,
+  status,
+  memberName,
+  documents
+) {
   return {
     taskId,
     name,
@@ -78,40 +116,39 @@ function createSubsubtaskData(taskId,name, description, weight, floor, basement,
     deadline,
     status,
     memberName,
-    documents,
-
-  };
+    documents
+  }
 }
 function StatusChip({ status }) {
-  const getStatusStyle = (status) => {
+  const getStatusStyle = status => {
     switch (status) {
       case 'Done':
         return {
           backgroundColor: 'rgba(0, 182, 155, 0.2)',
-          color: '#00B69B',
-        };
+          color: '#00B69B'
+        }
       case 'In progress':
         return {
           backgroundColor: 'rgba(98, 38, 239, 0.2)',
-          color: '#6226EF',
-        };
+          color: '#6226EF'
+        }
       case 'Rejected':
         return {
           backgroundColor: 'rgba(239, 56, 38, 0.2)',
-          color: '#EF3826',
-        };
-        case 'pending':
-          return {
-            backgroundColor: 'rgba(239, 56, 38, 0.2)',
-            color: '#EA3526',
-          };
+          color: '#EF3826'
+        }
+      case 'pending':
+        return {
+          backgroundColor: 'rgba(239, 56, 38, 0.2)',
+          color: '#EA3526'
+        }
       default:
-        return {};
+        return {}
     }
-  };
+  }
   return (
     <Chip
-      size="small"
+      size='small'
       label={status}
       style={{
         ...getStatusStyle(status),
@@ -120,399 +157,370 @@ function StatusChip({ status }) {
         fontSize: '0.75rem',
         fontWeight: 600,
         borderRadius: '4px',
-        marginRight: '10px',
+        marginRight: '10px'
       }}
     />
-  );
+  )
 }
 function Row(props) {
-  const { row,documents,onUpdate,base,floor  } = props;
-  const [open, setOpen] = React.useState(false);
-  const [descOpen, setDescOpen] = React.useState(false);
-  const [percentages, setPercentages] = useState({});
+  const { row, documents, onUpdate, base, floor } = props
+  const [open, setOpen] = React.useState(false)
+  const [descOpen, setDescOpen] = React.useState(false)
+  const [percentages, setPercentages] = useState({})
 
-
-  const [isConfirmed, setIsConfirmed] = React.useState(false);
-  const truncate = (text, length) => text.length > length ? text.substring(0, length) + '...' : text;
-  const userToken = useSelector(loginSuccess);
-  const [selectedDocumentIds, setSelectedDocumentIds] = useState([]);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [snackbarSeverity, setSnackbarSeverity] = useState('success');
-  const [openLevel3Rows, setOpenLevel3Rows] = useState([]);
-  const toggleLevel3Collapse = (subtaskIndex) => {
-    const currentIndex = openLevel3Rows.indexOf(subtaskIndex);
-    const newOpenRows = [...openLevel3Rows];
+  const [isConfirmed, setIsConfirmed] = React.useState(false)
+  const truncate = (text, length) => (text.length > length ? text.substring(0, length) + '...' : text)
+  const userToken = useSelector(loginSuccess)
+  const [selectedDocumentIds, setSelectedDocumentIds] = useState([])
+  const [snackbarOpen, setSnackbarOpen] = useState(false)
+  const [snackbarMessage, setSnackbarMessage] = useState('')
+  const [snackbarSeverity, setSnackbarSeverity] = useState('success')
+  const [openLevel3Rows, setOpenLevel3Rows] = useState([])
+  const toggleLevel3Collapse = subtaskIndex => {
+    const currentIndex = openLevel3Rows.indexOf(subtaskIndex)
+    const newOpenRows = [...openLevel3Rows]
 
     if (currentIndex === -1) {
-      newOpenRows.push(subtaskIndex);
+      newOpenRows.push(subtaskIndex)
     } else {
-      newOpenRows.splice(currentIndex, 1);
+      newOpenRows.splice(currentIndex, 1)
     }
 
-    setOpenLevel3Rows(newOpenRows);
-  };
+    setOpenLevel3Rows(newOpenRows)
+  }
   const handleSnackbarClose = () => {
-    setSnackbarOpen(false);
-  };
-  const handleFileUpload = (event) => {
-    const file = event.target.documents[0];
-    console.log('File uploaded:', file);
-  };
-  const handleFileDownload = (fileName) => {
-    console.log('File downloaded:', fileName);
-  };
+    setSnackbarOpen(false)
+  }
+  const handleFileUpload = event => {
+    const file = event.target.documents[0]
+    console.log('File uploaded:', file)
+  }
+  const handleFileDownload = fileName => {
+    console.log('File downloaded:', fileName)
+  }
   const handlePercentageChange = (event, taskId) => {
-    const newPercentage = event.target.value;
+    const newPercentage = event.target.value
     if (newPercentage >= 0 && newPercentage <= 100) {
-      setPercentages((prevPercentages) => ({
+      setPercentages(prevPercentages => ({
         ...prevPercentages,
-        [taskId]: newPercentage,
-      }));
-      setIsConfirmed((prevIsConfirmed) => ({
+        [taskId]: newPercentage
+      }))
+      setIsConfirmed(prevIsConfirmed => ({
         ...prevIsConfirmed,
-        [taskId]: false,
-      }));
+        [taskId]: false
+      }))
     }
-  };
+  }
 
   const handlePercentageChangesubtask = (event, subtaskId) => {
-    const newPercentage = event.target.value;
+    const newPercentage = event.target.value
     if (newPercentage >= 0 && newPercentage <= 100) {
-      setPercentages((prevPercentages) => ({
+      setPercentages(prevPercentages => ({
         ...prevPercentages,
-        [subtaskId]: newPercentage,
-      }));
-      setIsConfirmed((prevIsConfirmed) => ({
+        [subtaskId]: newPercentage
+      }))
+      setIsConfirmed(prevIsConfirmed => ({
         ...prevIsConfirmed,
-        [subtaskId]: false,
-      }));
+        [subtaskId]: false
+      }))
     }
-  };
+  }
 
   const handlePercentageChangesubsubtask = (event, subsubtaskId) => {
-    const newPercentage = event.target.value;
+    const newPercentage = event.target.value
     if (newPercentage >= 0 && newPercentage <= 100) {
-      setPercentages((prevPercentages) => ({
+      setPercentages(prevPercentages => ({
         ...prevPercentages,
-        [subsubtaskId]: newPercentage,
-      }));
-      setIsConfirmed((prevIsConfirmed) => ({
+        [subsubtaskId]: newPercentage
+      }))
+      setIsConfirmed(prevIsConfirmed => ({
         ...prevIsConfirmed,
-        [subsubtaskId]: false,
-      }));
+        [subsubtaskId]: false
+      }))
     }
-  };
+  }
 
-  const handleValidatePercentage = async (taskId) => {
-    const percentage = percentages[taskId];
-    setIsConfirmed((prevIsConfirmed) => ({
+  const handleValidatePercentage = async taskId => {
+    const percentage = percentages[taskId]
+    setIsConfirmed(prevIsConfirmed => ({
       ...prevIsConfirmed,
-      [taskId]: true,
-    }));
+      [taskId]: true
+    }))
 
-    setIsConfirmed(true); // Set confirmation flag to true
+    setIsConfirmed(true) // Set confirmation flag to true
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/tasks/${taskId}/validate-progress`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${userToken.payload.token}`,
-        },
-
-      });
+          Authorization: `Bearer ${userToken.payload.token}`
+        }
+      })
 
       if (!response.ok) {
-        setSnackbarOpen(true);
+        setSnackbarOpen(true)
 
-        setSnackbarSeverity('error');
+        setSnackbarSeverity('error')
 
-        setSnackbarMessage('Error: Failed to validate Task progress');
-        throw new Error('Failed to validate subtask progress');
-
+        setSnackbarMessage('Error: Failed to validate Task progress')
+        throw new Error('Failed to validate subtask progress')
       }
-      const contentType = response.headers.get("content-type");
-      let responseData;
-      if (contentType && contentType.includes("application/json")) {
-        responseData = await response.json();
+      const contentType = response.headers.get('content-type')
+      let responseData
+      if (contentType && contentType.includes('application/json')) {
+        responseData = await response.json()
       } else {
-        responseData = {};
-
+        responseData = {}
       }
 
-      setSnackbarSeverity('success');
+      setSnackbarSeverity('success')
 
-        setSnackbarMessage('Successful Validation !');
-        setSnackbarOpen(true);
-        setTimeout(() => {
-          onUpdate();
-        }, 2000);
+      setSnackbarMessage('Successful Validation !')
+      setSnackbarOpen(true)
+      setTimeout(() => {
+        onUpdate()
+      }, 2000)
     } catch (error) {
-      console.error('Error validating subtask:', error.message);
-
+      console.error('Error validating subtask:', error.message)
     }
-
-  };
-  const handleConfirmPercentage = async (taskId) => {
-    const percentage = percentages[taskId];
-    setIsConfirmed((prevIsConfirmed) => ({
+  }
+  const handleConfirmPercentage = async taskId => {
+    const percentage = percentages[taskId]
+    setIsConfirmed(prevIsConfirmed => ({
       ...prevIsConfirmed,
-      [taskId]: true,
-    }));
+      [taskId]: true
+    }))
 
-    setIsConfirmed(true); // Set confirmation flag to true
+    setIsConfirmed(true) // Set confirmation flag to true
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/tasks/${taskId}/progress?progress=${percentage}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${userToken.payload.token}`,
-        },
-
-      });
-
-      if (!response.ok) {
-        setSnackbarOpen(true);
-
-        setSnackbarSeverity('error');
-
-        setSnackbarMessage('Error: Failed to update Task progress');
-        throw new Error('Failed to update subtask progress');
-
-      }
-      const contentType = response.headers.get("content-type");
-      let responseData;
-      if (contentType && contentType.includes("application/json")) {
-        responseData = await response.json();
-      } else {
-        responseData = {};
-
-      }
-
-      setSnackbarSeverity('success');
-
-        setSnackbarMessage('Update successful!');
-        setSnackbarOpen(true);
-        setTimeout(() => {
-          onUpdate();
-        }, 2000);
-    } catch (error) {
-      console.error('Error updating subtask:', error.message);
-
-    }
-
-  };
-  const handleConfirmPercentagesubtask = async (subtaskId) => {
-    const percentage = percentages[subtaskId];
-    setIsConfirmed((prevIsConfirmed) => ({
-      ...prevIsConfirmed,
-      [subtaskId]: true,
-    }));
-
-    setIsConfirmed(true); // Set confirmation flag to true
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/tasks/updateSubtaskProgress?subtaskId=${subtaskId}&newProgress=${percentage}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${userToken.payload.token}`,
-        },
-
-      });
-
-      if (!response.ok) {
-        setSnackbarSeverity('error');
-        setSnackbarMessage('Error: Failed to update SubTask progress');
-        setSnackbarOpen(true);
-        throw new Error('Failed to update subtask progress');
-
-      }
-      const contentType = response.headers.get("content-type");
-      let responseData;
-      if (contentType && contentType.includes("application/json")) {
-        responseData = await response.json();
-      } else {
-        responseData = {};
-
-      }
-
-      setSnackbarSeverity('success');
-
-        setSnackbarMessage('Update successful!');
-        setSnackbarOpen(true);
-        setTimeout(() => {
-          onUpdate();
-        }, 2000);
-
-    } catch (error) {
-      console.error('Error updating subtask:', error.message);
-
-    }
-
-  };
-  const handleConfirmPercentagesubsubtask = async (subsubtaskId) => {
-    const percentage = percentages[subsubtaskId];
-  setIsConfirmed((prevIsConfirmed) => ({
-    ...prevIsConfirmed,
-    [subsubtaskId]: true,
-  }));
-    setIsConfirmed(true); // Set confirmation flag to true
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/tasks/updateSubtaskProgress?subtaskId=${subsubtaskId}&newProgress=${percentage}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${userToken.payload.token}`,
-        },
-
-      });
-
-      if (!response.ok) {
-        setSnackbarSeverity('error');
-        setSnackbarMessage('Error: Failed to update SubTask progress');
-        setSnackbarOpen(true);
-        throw new Error('Failed to update subtask progress');
-
-      }
-      const contentType = response.headers.get("content-type");
-      let responseData;
-      if (contentType && contentType.includes("application/json")) {
-        responseData = await response.json();
-      } else {
-        responseData = {};
-
-      }
-
-      setSnackbarSeverity('success');
-
-        setSnackbarMessage('Update successful!');
-        setSnackbarOpen(true);
-        setTimeout(() => {
-          onUpdate();
-        }, 2000);
-    } catch (error) {
-      console.error('Error updating subtask:', error.message);
-
-    }
-
-  };
-  const handleDownloadAll = () => {
-    console.log('Percentage confirmed:');
-  };
-
-    const handleDocumentSelect = (e) => {
-      setSelectedDocumentIds(e.target.value);
-    };
-
-    const uploadSelectedDocuments = async (taskId) => {
-      try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/tasks/${taskId}/documents`, {
-          method: 'POST',
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/tasks/${taskId}/progress?progress=${percentage}`,
+        {
+          method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${userToken.payload.token}`,
-          },
-          body: JSON.stringify({
-            documentIds: selectedDocumentIds,
-          }),
-        });
-
-
-        if (!response.ok) {
-          throw new Error('Failed to upload documents');
+            Authorization: `Bearer ${userToken.payload.token}`
+          }
         }
+      )
 
-        setSnackbarSeverity('success');
-        setSnackbarMessage('Documents uploaded successfully');
-        setSnackbarOpen(true);      } catch (error) {
-          setSnackbarSeverity('error');
-          setSnackbarMessage('Failed to upload documents');
-          setSnackbarOpen(true);
-        console.error('Error uploading documents:', error.message);
+      if (!response.ok) {
+        setSnackbarOpen(true)
+
+        setSnackbarSeverity('error')
+
+        setSnackbarMessage('Error: Failed to update Task progress')
+        throw new Error('Failed to update subtask progress')
       }
-    };
-    const formatDate = (isoDate) => {
-      if (!isoDate) return ''; // Handle case where date is null or undefined
-
-      const date = new Date(isoDate);
-      if (isNaN(date.getTime())) {
-        console.error(`Invalid date format: ${isoDate}`);
-        return ''; // Return an empty string or handle the error as needed
+      const contentType = response.headers.get('content-type')
+      let responseData
+      if (contentType && contentType.includes('application/json')) {
+        responseData = await response.json()
+      } else {
+        responseData = {}
       }
 
-      return date.toLocaleDateString(); // Adjust locale and options as needed
-    };
+      setSnackbarSeverity('success')
+
+      setSnackbarMessage('Update successful!')
+      setSnackbarOpen(true)
+      setTimeout(() => {
+        onUpdate()
+      }, 2000)
+    } catch (error) {
+      console.error('Error updating subtask:', error.message)
+    }
+  }
+  const handleConfirmPercentagesubtask = async subtaskId => {
+    const percentage = percentages[subtaskId]
+    setIsConfirmed(prevIsConfirmed => ({
+      ...prevIsConfirmed,
+      [subtaskId]: true
+    }))
+
+    setIsConfirmed(true) // Set confirmation flag to true
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/tasks/updateSubtaskProgress?subtaskId=${subtaskId}&newProgress=${percentage}`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${userToken.payload.token}`
+          }
+        }
+      )
+
+      if (!response.ok) {
+        setSnackbarSeverity('error')
+        setSnackbarMessage('Error: Failed to update SubTask progress')
+        setSnackbarOpen(true)
+        throw new Error('Failed to update subtask progress')
+      }
+      const contentType = response.headers.get('content-type')
+      let responseData
+      if (contentType && contentType.includes('application/json')) {
+        responseData = await response.json()
+      } else {
+        responseData = {}
+      }
+
+      setSnackbarSeverity('success')
+
+      setSnackbarMessage('Update successful!')
+      setSnackbarOpen(true)
+      setTimeout(() => {
+        onUpdate()
+      }, 2000)
+    } catch (error) {
+      console.error('Error updating subtask:', error.message)
+    }
+  }
+  const handleConfirmPercentagesubsubtask = async subsubtaskId => {
+    const percentage = percentages[subsubtaskId]
+    setIsConfirmed(prevIsConfirmed => ({
+      ...prevIsConfirmed,
+      [subsubtaskId]: true
+    }))
+    setIsConfirmed(true) // Set confirmation flag to true
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/tasks/updateSubtaskProgress?subtaskId=${subsubtaskId}&newProgress=${percentage}`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${userToken.payload.token}`
+          }
+        }
+      )
+
+      if (!response.ok) {
+        setSnackbarSeverity('error')
+        setSnackbarMessage('Error: Failed to update SubTask progress')
+        setSnackbarOpen(true)
+        throw new Error('Failed to update subtask progress')
+      }
+      const contentType = response.headers.get('content-type')
+      let responseData
+      if (contentType && contentType.includes('application/json')) {
+        responseData = await response.json()
+      } else {
+        responseData = {}
+      }
+
+      setSnackbarSeverity('success')
+
+      setSnackbarMessage('Update successful!')
+      setSnackbarOpen(true)
+      setTimeout(() => {
+        onUpdate()
+      }, 2000)
+    } catch (error) {
+      console.error('Error updating subtask:', error.message)
+    }
+  }
+  const handleDownloadAll = () => {
+    console.log('Percentage confirmed:')
+  }
+
+  const handleDocumentSelect = e => {
+    setSelectedDocumentIds(e.target.value)
+  }
+
+  const uploadSelectedDocuments = async taskId => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/tasks/${taskId}/documents`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${userToken.payload.token}`
+        },
+        body: JSON.stringify({
+          documentIds: selectedDocumentIds
+        })
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to upload documents')
+      }
+
+      setSnackbarSeverity('success')
+      setSnackbarMessage('Documents uploaded successfully')
+      setSnackbarOpen(true)
+    } catch (error) {
+      setSnackbarSeverity('error')
+      setSnackbarMessage('Failed to upload documents')
+      setSnackbarOpen(true)
+      console.error('Error uploading documents:', error.message)
+    }
+  }
+  const formatDate = isoDate => {
+    if (!isoDate) return '' // Handle case where date is null or undefined
+
+    const date = new Date(isoDate)
+    if (isNaN(date.getTime())) {
+      console.error(`Invalid date format: ${isoDate}`)
+      return '' // Return an empty string or handle the error as needed
+    }
+
+    return date.toLocaleDateString() // Adjust locale and options as needed
+  }
   const renderPercentageInput = () => (
-   <> {row.progress !== 100 ? (
-      <div style={{ display: 'flex', alignItems: 'center' }}>
-
-      <TextField
-        id={`percentage-input-${row.title}`}
-        type="number"
-        InputProps={{ inputProps: { min: 0, max: 100 } }}
-        onChange={(event) => handlePercentageChange(event, row.id)}
-        size="small"
-        style={{ width: 80, marginRight: 10 }}
-
-        placeholder={row.progress}
-
-      />
-        <Tooltip title="Confirm">
-          <IconButton
-            aria-label="confirm percentage"
-            size="small"
-            onClick={() => handleConfirmPercentage(row.id)}
-            >
-            <CheckIcon style={{ color: 'green' }} />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Validate">
-        <IconButton
-            aria-label="confirm percentage"
-            size="small"
-            onClick={() => handleValidatePercentage(row.id)}
-            >
-            <DoneAllIcon style={{ color: 'red' }} />
-          </IconButton>        </Tooltip>
-
-      </div>):(
-      <div >
-        {row.progress}
-
-        <Tooltip title="Validate">
-        <IconButton
-            aria-label="confirm percentage"
-            size="small"
-            onClick={() => handleValidatePercentage(row.id)}
-            >
-            <DoneAllIcon style={{ color: 'red' }} />
-          </IconButton>        </Tooltip>
+    <>
+      {' '}
+      {row.progress !== 100 ? (
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <TextField
+            id={`percentage-input-${row.title}`}
+            type='number'
+            InputProps={{ inputProps: { min: 0, max: 100 } }}
+            onChange={event => handlePercentageChange(event, row.id)}
+            size='small'
+            style={{ width: 80, marginRight: 10 }}
+            placeholder={row.progress}
+          />
+          <Tooltip title='Confirm'>
+            <IconButton aria-label='confirm percentage' size='small' onClick={() => handleConfirmPercentage(row.id)}>
+              <CheckIcon style={{ color: 'green' }} />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title='Validate'>
+            <IconButton aria-label='confirm percentage' size='small' onClick={() => handleValidatePercentage(row.id)}>
+              <DoneAllIcon style={{ color: 'red' }} />
+            </IconButton>{' '}
+          </Tooltip>
         </div>
-        
-      )}</>
-  );
+      ) : (
+        <div>
+          {row.progress}
+
+          <Tooltip title='Validate'>
+            <IconButton aria-label='confirm percentage' size='small' onClick={() => handleValidatePercentage(row.id)}>
+              <DoneAllIcon style={{ color: 'red' }} />
+            </IconButton>{' '}
+          </Tooltip>
+        </div>
+      )}
+    </>
+  )
   return (
     <React.Fragment>
       <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
-
         <TableCell>
-        {row.subtasks.length > 0 && (
-
-          <IconButton
-            aria-label="expand row"
-            size="small"
-            onClick={() => setOpen(!open)}
-          >
-            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-          </IconButton>)}
+          {row.subtasks.length > 0 && (
+            <IconButton aria-label='expand row' size='small' onClick={() => setOpen(!open)}>
+              {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+            </IconButton>
+          )}
         </TableCell>
-        <TableCell component="th" scope="row">
+        <TableCell component='th' scope='row'>
           {row.title}
         </TableCell>
-        <TableCell  >
+        <TableCell>
           <Tooltip title={row.description ? row.description : 'No Description'}>
             <Typography
-              variant="body2"
+              variant='body2'
               onClick={() => setDescOpen(!descOpen)}
               style={{ cursor: row.description ? 'pointer' : 'default' }}
             >
@@ -520,73 +528,113 @@ function Row(props) {
             </Typography>
           </Tooltip>
         </TableCell>
-        <TableCell  >{row.weight  ?   row.weight.toFixed(2):'No weight'}</TableCell>
-        <TableCell  >{row.floor ?  row.floor :'No Floor'}</TableCell>
-        <TableCell  >{row.basement  ?  row.basement :'No Basement'}</TableCell>
-        <TableCell   sx={{ fontSize: '12px' }}>
-                {formatDate(row.startdate) ? formatDate(row.startdate) :'No Start Date'}
-              </TableCell>
-              <TableCell   sx={{ fontSize: '12px' }}>
-                {formatDate(row.deadline) ?  formatDate(row.deadline) :'No Dead Line'}
-              </TableCell>
-
-        <TableCell  >{row.assigneduser ?  row.assigneduser :'No memeber assigne'}</TableCell>
-
-<TableCell  >
-          {renderPercentageInput()}
+        <TableCell>{row.weight ? row.weight.toFixed(2) : 'No weight'}</TableCell>
+        <TableCell>{row.floor ? row.floor : 'No Floor'}</TableCell>
+        <TableCell>{row.basement ? row.basement : 'No Basement'}</TableCell>
+        <TableCell sx={{ fontSize: '12px' }}>
+          {formatDate(row.startdate) ? formatDate(row.startdate) : 'No Start Date'}
         </TableCell>
- 
-<TableCell  >
+        <TableCell sx={{ fontSize: '12px' }}>
+          {formatDate(row.deadline) ? formatDate(row.deadline) : 'No Dead Line'}
+        </TableCell>
+
+        <TableCell>{row.assigneduser ? row.assigneduser : 'No memeber assigne'}</TableCell>
+
+        <TableCell>{renderPercentageInput()}</TableCell>
+
+        <TableCell>
           <StatusChip status={row.status} />
         </TableCell>
-        <TableCell  >
-        <DeleteButton taskId={row.id} onUpdate={onUpdate} row={row } base={base}floor={floor}/>        </TableCell>
+        <TableCell>
+          <DeleteButton taskId={row.id} onUpdate={onUpdate} row={row} base={base} floor={floor} />{' '}
+        </TableCell>
       </TableRow>
       <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={11} >
-
-          <Collapse in={open} timeout="auto" unmountOnExit>
+        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={11}>
+          <Collapse in={open} timeout='auto' unmountOnExit>
             <Box sx={{ margin: 1 }}>
-              <Typography variant="h6" gutterBottom component="div">
-
-
-
-              </Typography>
-              <Table size="small" aria-label="subtasks" sx={{marginLeft:'100px'}}>
-
-                <TableHead>
+              <Typography variant='h6' gutterBottom component='div'></Typography>
+              <Table size='small' aria-label='subtasks'>
+                <TableHead style={{backgroundColor: "#2931ac47"}}>
                   <TableRow>
 
-                    <TableCell sx={{ fontWeight: '600' }} >Name</TableCell>
-                    <TableCell   sx={{ fontWeight: '600' }}>Description</TableCell>
-                    <TableCell  sx={{ fontWeight: '600' }}>Weight</TableCell>
-                    <TableCell   sx={{ fontWeight: '600' }}>Floor</TableCell>
-                    <TableCell   sx={{ fontWeight: '600' }}>Basement</TableCell>
-                    <TableCell   sx={{ fontWeight: '600' }}>Start Date</TableCell>
-                    <TableCell   sx={{ fontWeight: '600' }}>Deadline</TableCell>
-                    <TableCell   sx={{ fontWeight: '600' }}>Member Name</TableCell>
-                   {/* <TableCell   sx={{ fontWeight: '600' }}>Upload/Download Files</TableCell>*/}
-                    <TableCell   sx={{ fontWeight: '600' }}>Percentage</TableCell>
-                   {/* <TableCell   sx={{ fontWeight: '600' }}>documents</TableCell>*/}
-                    <TableCell   sx={{ fontWeight: '600' }}>Status</TableCell>
-                    <TableCell   sx={{ fontWeight: '600' }}>Action</TableCell>
+{/*
+                  {row.subtasks.map((subtask, subIndex) => {
+                    {subtask.subtasks.length > 0 ?
+                      (
+                      <TableCell>
+                      <IconButton
+                        aria-label='expand row'
+                        size='small'
+                        onClick={() => toggleLevel3Collapse(subtask.id)}
+                      >
+                        {openLevel3Rows.includes(subtask.id) ? (
+                          <KeyboardArrowUpIcon />
+                        ) : (
+                          <KeyboardArrowDownIcon />
+                        )}
+                      </IconButton>
+                    </TableCell>)
+                       : (
+                        <TableCell>emptt</TableCell>
+                       )}
+                  }
+                  )} */}
 
 
+{/* {row.subtasks.map((subtask, subIndex) => (
+  <TableCell key={subIndex}>
+    {subtask.subtasks && subtask.subtasks.length > 0 ? (
+      <IconButton
+        aria-label="expand row"
+        size="small"
+        onClick={() => toggleLevel3Collapse(subtask.id)}
+      >
+        {openLevel3Rows.includes(subtask.id) ? (
+          <KeyboardArrowUpIcon />
+        ) : (
+          <KeyboardArrowDownIcon />
+        )}
+      </IconButton>
+    ) : null}
+  </TableCell>
+))} */}
+
+
+
+
+
+
+
+
+
+
+                    <TableCell sx={{ fontWeight: '600' }}>Name</TableCell>
+                    <TableCell sx={{ fontWeight: '600' }}>Description</TableCell>
+                    <TableCell sx={{ fontWeight: '600' }}>Weight</TableCell>
+                    <TableCell sx={{ fontWeight: '600' }}>Floor</TableCell>
+                    <TableCell sx={{ fontWeight: '600' }}>Basement</TableCell>
+                    <TableCell sx={{ fontWeight: '600' }}>Start Date</TableCell>
+                    <TableCell sx={{ fontWeight: '600' }}>Deadline</TableCell>
+                    <TableCell sx={{ fontWeight: '600' }}>Member Namessss</TableCell>
+                    {/* <TableCell   sx={{ fontWeight: '600' }}>Upload/Download Files</TableCell>*/}
+                    <TableCell sx={{ fontWeight: '600' }}>Percentage</TableCell>
+                    {/* <TableCell   sx={{ fontWeight: '600' }}>documents</TableCell>*/}
+                    <TableCell sx={{ fontWeight: '600' }}>Status</TableCell>
+                    <TableCell sx={{ fontWeight: '600' }}>Action</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {row.subtasks.map((subtask,subIndex) => (
+                  {row.subtasks.map((subtask, subIndex) => (
                     <React.Fragment key={subtask.title}>
-
                       <TableRow>
-
-                        <TableCell component="th" scope="row">
+                        <TableCell component='th' scope='row'>
                           {subtask.title}
                         </TableCell>
-                        <TableCell  >
+                        <TableCell>
                           <Tooltip title={subtask.description ? subtask.description : 'No Description'}>
                             <Typography
-                              variant="body2"
+                              variant='body2'
                               onClick={() => setDescOpen(!descOpen)}
                               style={{ cursor: subtask.description ? 'pointer' : 'default' }}
                             >
@@ -594,58 +642,55 @@ function Row(props) {
                             </Typography>
                           </Tooltip>
                         </TableCell>
-                        <TableCell  >{subtask.weight ? subtask.weight.toFixed(2) :'No weight'}</TableCell>
-                        <TableCell  >{subtask.floor ? subtask.floor :'No Floor'}</TableCell>
-                        <TableCell  >{subtask.basement ? subtask.basement :'No Basement'}</TableCell>
-                        <TableCell   sx={{ fontSize: '12px' }}>
-                {formatDate(subtask.startdate) ?  formatDate(subtask.startdate) :'No Start Date'}
+                        <TableCell>{subtask.weight ? subtask.weight.toFixed(2) : 'No weight'}</TableCell>
+                        <TableCell>{subtask.floor ? subtask.floor : 'No Floor'}</TableCell>
+                        <TableCell>{subtask.basement ? subtask.basement : 'No Basement'}</TableCell>
+                        <TableCell sx={{ fontSize: '12px' }}>
+                          {formatDate(subtask.startdate) ? formatDate(subtask.startdate) : 'No Start Date'}
+                        </TableCell>
+                        <TableCell sx={{ fontSize: '12px' }}>
+                          {formatDate(subtask.deadline) ? formatDate(subtask.deadline) : 'No Dead Line'}
+                        </TableCell>
 
-              </TableCell>
-              <TableCell   sx={{ fontSize: '12px' }}>
-                {formatDate(subtask.deadline) ?  formatDate(subtask.deadline) :'No Dead Line'}
+                        <TableCell>{subtask.assigneduser ? subtask.assigneduser : 'No member assigned'}</TableCell>
+                        <TableCell>
+                          <TableCell>
+                            {subtask.progress !== 100 ? (
+                              <div style={{ display: 'flex', alignItems: 'center' }}>
+                                <TextField
+                                  type='number'
+                                  InputProps={{ inputProps: { min: 0, max: 100 } }}
+                                  onChange={event => handlePercentageChangesubtask(event, subtask.id)}
+                                  size='small'
+                                  style={{ width: 80, marginRight: 10 }}
+                                  placeholder={subtask.progress}
+                                />
+                                <Tooltip title='Confirm'>
+                                  <IconButton
+                                    aria-label='confirm percentage'
+                                    size='small'
+                                    onClick={() => handleConfirmPercentagesubtask(subtask.id)}
+                                  >
+                                    <CheckIcon style={{ color: 'green' }} />
+                                  </IconButton>
+                                </Tooltip>
+                                <Tooltip title='Validate'>
+                                  <IconButton
+                                    aria-label='confirm percentage'
+                                    size='small'
+                                    onClick={() => handleValidatePercentage(subtask.id)}
+                                  >
+                                    <DoneAllIcon style={{ color: 'red' }} />
+                                  </IconButton>{' '}
+                                </Tooltip>
+                              </div>
+                            ) : (
+                              <>{subtask.progress}</>
+                            )}
+                          </TableCell>
+                        </TableCell>
 
-              </TableCell>
-
-                        <TableCell  >{subtask.assigneduser ?  subtask.assigneduser :'No member assigned'}</TableCell>
-                        <TableCell  >
-                        <TableCell  >
-                                  {subtask.progress !== 100 ? (
-                                  <div style={{ display: 'flex', alignItems: 'center' }}>
-
-                                  <TextField
-        type="number"
-        InputProps={{ inputProps: { min: 0, max: 100 } }}
-        onChange={(event) => handlePercentageChangesubtask(event,subtask.id)}
-        size="small"
-        style={{ width: 80, marginRight: 10 }}
-        placeholder={subtask.progress}
-
-      />
-                      <Tooltip title="Confirm">
-                        <IconButton
-
-                          aria-label="confirm percentage"
-                          size="small"
-                          onClick={() => handleConfirmPercentagesubtask(subtask.id)}
-                        >
-                          <CheckIcon style={{ color: 'green' }} />
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip title="Validate">
-        <IconButton
-            aria-label="confirm percentage"
-            size="small"
-            onClick={() => handleValidatePercentage(subtask.id)}
-            >
-            <DoneAllIcon style={{ color: 'red' }} />
-          </IconButton>        </Tooltip>
-
-                      </div>):(<>{subtask.progress}</>)}
-                    </TableCell>
-        </TableCell>
-                  
-                                  
-               {/*  <TableCell>
+                        {/*  <TableCell>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <TextField
         select
@@ -676,81 +721,100 @@ function Row(props) {
         </Button>
 
     </Box></TableCell>*/}
-    <TableCell  >
+                        <TableCell>
                           <StatusChip status={subtask.status} />
                         </TableCell>
-                        <TableCell  >
-                        <DeleteButton taskId={row.id} onUpdate={onUpdate} row={subtask } base={base}floor={floor}/>       </TableCell>
+                        <TableCell>
+                          <DeleteButton taskId={row.id} onUpdate={onUpdate} row={subtask} base={base} floor={floor} />{' '}
+                        </TableCell>
                       </TableRow>
                       <TableRow onClick={() => toggleLevel3Collapse(subtask.id)}>
-
-                      <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={11}>
-
-                        { subtask.subtasks &&  subtask.subtasks.length > 0 && (
-                         <TableRow >
+                        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={11}>
+                          {subtask.subtasks && subtask.subtasks.length > 0 && (
+                            <TableRow>
                               <TableCell>
-          <IconButton
-            aria-label="expand row"
-            size="small"
-            onClick={() => toggleLevel3Collapse(subtask.id)}
-          >
-          {openLevel3Rows.includes(subtask.id) ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-          </IconButton>
-        </TableCell>
+                                <IconButton
+                                  aria-label='expand row'
+                                  size='small'
+                                  onClick={() => toggleLevel3Collapse(subtask.id)}
+                                >
+                                  {openLevel3Rows.includes(subtask.id) ? (
+                                    <KeyboardArrowUpIcon />
+                                  ) : (
+                                    <KeyboardArrowDownIcon />
+                                  )}
+                                </IconButton>
+                              </TableCell>
 
-                         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={11}>
-                           <Collapse in={openLevel3Rows.includes(subtask.id)} timeout="auto" unmountOnExit>
-                            <Box sx={{ margin: 1 }}>
+                        <TableCell />
 
-                              <Table size="small" aria-label="subsubtasks"  sx={{marginLeft:'100px'}}>
-                                <TableHead>
-                                  <TableRow>
-                                    <TableCell sx={{ fontWeight: '600' }}>Name</TableCell>
-                                    <TableCell   sx={{ fontWeight: '600' }}>Description</TableCell>
-                                    <TableCell   sx={{ fontWeight: '600' }}>Weight</TableCell>
-                                    <TableCell   sx={{ fontWeight: '600' }}>Floor</TableCell>
-                                    <TableCell   sx={{ fontWeight: '600' }}>Basement</TableCell>
-                                    <TableCell   sx={{ fontWeight: '600' }}>Start Date</TableCell>
-                                    <TableCell   sx={{ fontWeight: '600' }}>Deadline</TableCell>
-                                    <TableCell   sx={{ fontWeight: '600' }}>Member Name</TableCell>
-                                    {/*<TableCell   sx={{ fontWeight: '600' }}>Upload/Download Files</TableCell>*/}
-                                    <TableCell   sx={{ fontWeight: '600' }}>Percentage</TableCell>
-                                    {/*<TableCell   sx={{ fontWeight: '600' }}>documents</TableCell>*/}
-                                    <TableCell   sx={{ fontWeight: '600' }}>Status</TableCell>
-                                    <TableCell   sx={{ fontWeight: '600' }}>Action</TableCell>
-
-                                  </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                  { subtask.subtasks && subtask.subtasks.map((subsubtask) => (
-                                    <TableRow key={subsubtask.title}>
-                                      <TableCell component="th" scope="row">
-                                        {subsubtask.title}
-                                      </TableCell>
-                                      <TableCell  >
-                                        <Tooltip title={subsubtask.description ? subsubtask.description : 'No Description'}>
-                                          <Typography
-                                            variant="body2"
-                                            onClick={() => setDescOpen(!descOpen)}
-                                            style={{ cursor: subsubtask.description ? 'pointer' : 'default' }}
-                                          >
-                                            {subsubtask.description ? truncate(subsubtask.description, 20) : 'No Description'}
-                                          </Typography>
-                                        </Tooltip>
-                                      </TableCell>
-                                      <TableCell  > {subsubtask.weight  ?  subsubtask.weight.toFixed(2) :'No weight'}</TableCell>
-                                      <TableCell  > {subsubtask.floor  ?  subsubtask.floor :'No floor'}</TableCell>
-                                      <TableCell  >{subsubtask.basement  ?  subsubtask.basement :'No basement'}</TableCell>
-                                      <TableCell  >
-                                         {formatDate(subsubtask.startdate) ?  formatDate(subsubtask.startdate) :'No Start Date'}
-                                        </TableCell>
-                                      <TableCell  >
-                                       {formatDate(subsubtask.deadline) ?  formatDate(subsubtask.deadline) :'No Dead line'}
-
-                                      </TableCell>
-
-                                      <TableCell  >{subsubtask.memberName  ?  subsubtask.memberName :'No memberName'}</TableCell>
-                       {/*               <TableCell  >
+                              <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={11}>
+                                <Collapse in={openLevel3Rows.includes(subtask.id)} timeout='auto' unmountOnExit>
+                                  <Box sx={{ margin: 1 }}>
+                                    <Table size='small' aria-label='subsubtasks' sx={{ marginLeft: '5px' }}>
+                                      <TableHead style={{backgroundColor: "#2931ac47"}}>
+                                        <TableRow>
+                                          <TableCell sx={{ fontWeight: '600' }}>Name</TableCell>
+                                          <TableCell sx={{ fontWeight: '600' }}>Description</TableCell>
+                                          <TableCell sx={{ fontWeight: '600' }}>Weight</TableCell>
+                                          <TableCell sx={{ fontWeight: '600' }}>Floor</TableCell>
+                                          <TableCell sx={{ fontWeight: '600' }}>Basement</TableCell>
+                                          <TableCell sx={{ fontWeight: '600' }}>Start Date</TableCell>
+                                          <TableCell sx={{ fontWeight: '600' }}>Deadline</TableCell>
+                                          <TableCell sx={{ fontWeight: '600' }}>Member Name</TableCell>
+                                          {/*<TableCell   sx={{ fontWeight: '600' }}>Upload/Download Files</TableCell>*/}
+                                          <TableCell sx={{ fontWeight: '600' }}>Percentage</TableCell>
+                                          {/*<TableCell   sx={{ fontWeight: '600' }}>documents</TableCell>*/}
+                                          <TableCell sx={{ fontWeight: '600' }}>Status</TableCell>
+                                          <TableCell sx={{ fontWeight: '600' }}>Action</TableCell>
+                                        </TableRow>
+                                      </TableHead>
+                                      <TableBody>
+                                        {subtask.subtasks &&
+                                          subtask.subtasks.map(subsubtask => (
+                                            <TableRow key={subsubtask.title}>
+                                              <TableCell component='th' scope='row'>
+                                                {subsubtask.title}
+                                              </TableCell>
+                                              <TableCell>
+                                                <Tooltip
+                                                  title={
+                                                    subsubtask.description ? subsubtask.description : 'No Description'
+                                                  }
+                                                >
+                                                  <Typography
+                                                    variant='body2'
+                                                    onClick={() => setDescOpen(!descOpen)}
+                                                    style={{ cursor: subsubtask.description ? 'pointer' : 'default' }}
+                                                  >
+                                                    {subsubtask.description
+                                                      ? truncate(subsubtask.description, 20)
+                                                      : 'No Description'}
+                                                  </Typography>
+                                                </Tooltip>
+                                              </TableCell>
+                                              <TableCell>
+                                                {' '}
+                                                {subsubtask.weight ? subsubtask.weight.toFixed(2) : 'No weight'}
+                                              </TableCell>
+                                              <TableCell> {subsubtask.floor ? subsubtask.floor : 'No floor'}</TableCell>
+                                              <TableCell>
+                                                {subsubtask.basement ? subsubtask.basement : 'No basement'}
+                                              </TableCell>
+                                              <TableCell>
+                                                {formatDate(subsubtask.startdate)
+                                                  ? formatDate(subsubtask.startdate)
+                                                  : 'No Start Date'}
+                                              </TableCell>
+                                              <TableCell>
+                                                {formatDate(subsubtask.deadline)
+                                                  ? formatDate(subsubtask.deadline)
+                                                  : 'No Dead line'}
+                                              </TableCell>
+                                              <TableCell>
+                                                {subsubtask.memberName ? subsubtask.memberName : 'No memberName'}
+                                              </TableCell>
+                                              {/*               <TableCell  >
   {subsubtask.documents && subsubtask.documents.length > 0 ? (
     <React.Fragment>
       {subsubtask.documents.length > 3 ? (
@@ -818,45 +882,44 @@ function Row(props) {
     </React.Fragment>
   )}
 </TableCell>*/}
-
-
-<TableCell  >
-                                  {subtask.progress !== 100 ? (
-                                  <div style={{ display: 'flex', alignItems: 'center' }}>
-
-                                  <TextField
-        type="number"
-        InputProps={{ inputProps: { min: 0, max: 100 } }}
-        onChange={(event) => handlePercentageChangesubsubtask(event,subsubtask.id)}
-        size="small"
-        style={{ width: 80, marginRight: 10 }}
-        placeholder={subsubtask.progress}
-
-      />
-                      <Tooltip title="Confirm">
-                        <IconButton
-
-                          aria-label="confirm percentage"
-                          size="small"
-                          onClick={() => handleConfirmPercentagesubtask(subsubtask.id)}
-                        >
-                          <CheckIcon style={{ color: 'green' }} />
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip title="Validate">
-        <IconButton
-            aria-label="confirm percentage"
-            size="small"
-            onClick={() => handleValidatePercentage(subsubtask.id)}
-            >
-            <DoneAllIcon style={{ color: 'red' }} />
-          </IconButton>        </Tooltip>
-
-                      </div>):(<>{subsubtask.progress}</>)}
-                    </TableCell>
-       
-     =
-                    {/*<TableCell>
+                                              <TableCell>
+                                                {subtask.progress !== 100 ? (
+                                                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                                                    <TextField
+                                                      type='number'
+                                                      InputProps={{ inputProps: { min: 0, max: 100 } }}
+                                                      onChange={event =>
+                                                        handlePercentageChangesubsubtask(event, subsubtask.id)
+                                                      }
+                                                      size='small'
+                                                      style={{ width: 80, marginRight: 10 }}
+                                                      placeholder={subsubtask.progress}
+                                                    />
+                                                    <Tooltip title='Confirm'>
+                                                      <IconButton
+                                                        aria-label='confirm percentage'
+                                                        size='small'
+                                                        onClick={() => handleConfirmPercentagesubtask(subsubtask.id)}
+                                                      >
+                                                        <CheckIcon style={{ color: 'green' }} />
+                                                      </IconButton>
+                                                    </Tooltip>
+                                                    <Tooltip title='Validate'>
+                                                      <IconButton
+                                                        aria-label='confirm percentage'
+                                                        size='small'
+                                                        onClick={() => handleValidatePercentage(subsubtask.id)}
+                                                      >
+                                                        <DoneAllIcon style={{ color: 'red' }} />
+                                                      </IconButton>{' '}
+                                                    </Tooltip>
+                                                  </div>
+                                                ) : (
+                                                  <>{subsubtask.progress}</>
+                                                )}
+                                              </TableCell>
+                                              =
+                                              {/*<TableCell>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <TextField
         select
@@ -887,22 +950,28 @@ function Row(props) {
         </Button>
 
     </Box></TableCell>  */}
-    <TableCell  >
-                                        <StatusChip status={subsubtask.status} />
-
-                                      </TableCell>
-                                      <TableCell  >
-        <DeleteButton taskId={row.id} onUpdate={onUpdate} row={subsubtask } base={base}floor={floor}/>        </TableCell>
-                                    </TableRow>
-                                  ))}
-                                </TableBody>
-                              </Table>
-                            </Box>
-                            </Collapse>
-    </TableCell>
-  </TableRow>)}
+                                              <TableCell>
+                                                <StatusChip status={subsubtask.status} />
+                                              </TableCell>
+                                              <TableCell>
+                                                <DeleteButton
+                                                  taskId={row.id}
+                                                  onUpdate={onUpdate}
+                                                  row={subsubtask}
+                                                  base={base}
+                                                  floor={floor}
+                                                />{' '}
+                                              </TableCell>
+                                            </TableRow>
+                                          ))}
+                                      </TableBody>
+                                    </Table>
+                                  </Box>
+                                </Collapse>
+                              </TableCell>
+                            </TableRow>
+                          )}
                         </TableCell>
-
                       </TableRow>
                     </React.Fragment>
                   ))}
@@ -917,10 +986,10 @@ function Row(props) {
         autoHideDuration={6000}
         onClose={handleSnackbarClose}
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-        >
+      >
         <MuiAlert
           elevation={6}
-          variant="filled"
+          variant='filled'
           onClose={handleSnackbarClose}
           severity={snackbarSeverity} // This sets the severity for the MuiAlert, not Snackbar
         >
@@ -928,7 +997,7 @@ function Row(props) {
         </MuiAlert>
       </Snackbar>
     </React.Fragment>
-  );
+  )
 }
 
 Row.propTypes = {
@@ -945,7 +1014,7 @@ Row.propTypes = {
     documents: PropTypes.arrayOf(
       PropTypes.shape({
         fileName: PropTypes.string,
-        fileLink: PropTypes.string,
+        fileLink: PropTypes.string
       })
     ).isRequired,
     status: PropTypes.string,
@@ -966,7 +1035,7 @@ Row.propTypes = {
         documents: PropTypes.arrayOf(
           PropTypes.shape({
             fileName: PropTypes.string,
-            fileLink: PropTypes.string,
+            fileLink: PropTypes.string
           })
         ).isRequired,
         status: PropTypes.string,
@@ -988,99 +1057,94 @@ Row.propTypes = {
             documents: PropTypes.arrayOf(
               PropTypes.shape({
                 fileName: PropTypes.string,
-                fileLink: PropTypes.string,
+                fileLink: PropTypes.string
               })
-            ),
+            )
           })
-        ),
+        )
       })
-    ),
-  }),
-};
+    )
+  })
+}
 
+function TaskTable({ documents, id, onUpdate, base, floor }) {
+  const [loadingFetch, setLoadingFetch] = useState(false)
+  const [rows, setRows] = useState([])
+  const [currentPage, setCurrentPage] = useState(0)
+  const [pageSize, setPageSize] = useState(5)
+  const [totalPages, setTotalPages] = useState(0)
+  const [totalItems, setTotalItems] = useState(0)
 
-
- function TaskTable({documents,id,onUpdate,base,floor  }) {
-  const [loadingFetch, setLoadingFetch] = useState(false);
-  const [rows, setRows] = useState([]);
-  const [currentPage, setCurrentPage] = useState(0);
-  const [pageSize, setPageSize] = useState(5);
-  const [totalPages, setTotalPages] = useState(0);
-  const [totalItems, setTotalItems] = useState(0);
-
-  const userToken = useSelector(loginSuccess);
+  const userToken = useSelector(loginSuccess)
   useEffect(() => {
-    fetchTasks();
-  }, [currentPage]);
+    fetchTasks()
+  }, [currentPage])
 
   const fetchTasks = async () => {
-    setLoadingFetch(true);
+    setLoadingFetch(true)
 
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/tasks/project/${id}`, {
         method: 'GET',
         headers: {
-          Authorization: `Bearer ${userToken.payload.token}`,
-        },
-      });
-      const data = await response.json();
-      console.log("tasks: ",data);
-      const newTotalItems = data.length;
-      setTotalItems(newTotalItems);
-      const newTotalPages = Math.ceil(newTotalItems / pageSize);
-      setTotalPages(newTotalPages);
-      const startIndex = currentPage * pageSize;
-      const endIndex = Math.min(startIndex + pageSize, newTotalItems);
-      const slicedData = data.slice(startIndex, endIndex);
-      setRows(slicedData);
-      setLoadingFetch(false);
+          Authorization: `Bearer ${userToken.payload.token}`
+        }
+      })
+      const data = await response.json()
+      console.log('tasks: ', data)
+      const newTotalItems = data.length
+      setTotalItems(newTotalItems)
+      const newTotalPages = Math.ceil(newTotalItems / pageSize)
+      setTotalPages(newTotalPages)
+      const startIndex = currentPage * pageSize
+      const endIndex = Math.min(startIndex + pageSize, newTotalItems)
+      const slicedData = data.slice(startIndex, endIndex)
+      setRows(slicedData)
+      setLoadingFetch(false)
     } catch (error) {
-      setLoadingFetch(false);
-      console.error('Error fetching tasks:', error);
+      setLoadingFetch(false)
+      console.error('Error fetching tasks:', error)
     }
-  };
+  }
   const handleChangePage = (event, newPage) => {
-    setCurrentPage(newPage);
-  };
+    setCurrentPage(newPage)
+  }
 
-  const handleChangeRowsPerPage = (event) => {
-    const newPageSize = parseInt(event.target.value, 10);
-    setPageSize(newPageSize);
-    setCurrentPage(0);
-  };
+  const handleChangeRowsPerPage = event => {
+    const newPageSize = parseInt(event.target.value, 10)
+    setPageSize(newPageSize)
+    setCurrentPage(0)
+  }
   return (
     <>
-
-    <TableContainer component={Paper} style={{ width: '130%' }}>
-      <Table aria-label="collapsible table" >
-        <TableHead>
-        <TableRow >
-        <TableCell />
-            <TableCell sx={{ fontWeight: '600' }}>Task Name</TableCell>
-            <TableCell   sx={{ fontWeight: '600' }}>Description</TableCell>
-            <TableCell   sx={{ fontWeight: '600' }}>Weight</TableCell>
-            <TableCell   sx={{ fontWeight: '600' }}>Floor</TableCell>
-            <TableCell   sx={{ fontWeight: '600' }}>Basement</TableCell>
-            <TableCell   sx={{ fontWeight: '600' }}>Start Date</TableCell>
-           <TableCell   sx={{ fontWeight: '600' }}>Deadline</TableCell>
-            <TableCell   sx={{ fontWeight: '600' }}>Member Name</TableCell>
-          {/*}  <TableCell   sx={{ fontWeight: '600' }}>Upload/Download Files</TableCell>*/}
-            <TableCell   sx={{ fontWeight: '600' }}>Percentage</TableCell>
-            {/*<TableCell align="center" sx={{ fontWeight: '600' }}>documents</TableCell>*/}
-            <TableCell   sx={{ fontWeight: '600' }}>Status</TableCell>
-            <TableCell   sx={{ fontWeight: '600' }}>Action</TableCell>
-
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rows.map((row) => (
-            <Row key={row.id} row={row} documents={documents} onUpdate ={onUpdate} base={base} floor={floor} />
-          ))}
-        </TableBody>
-      </Table>
-
-    </TableContainer>
-    <TablePagination
+      <TableContainer component={Paper}>
+        <Table aria-label='collapsible table'>
+          <TableHead style={{backgroundColor: "#2931ac47"}}>
+            <TableRow>
+              <TableCell />
+              <TableCell sx={{ fontWeight: '600' }}>Task Name</TableCell>
+              <TableCell sx={{ fontWeight: '600' }}>Description</TableCell>
+              <TableCell sx={{ fontWeight: '600' }}>Weight</TableCell>
+              <TableCell sx={{ fontWeight: '600' }}>Floor</TableCell>
+              <TableCell sx={{ fontWeight: '600' }}>Basement</TableCell>
+              <TableCell sx={{ fontWeight: '600' }}>Start Date</TableCell>
+              <TableCell sx={{ fontWeight: '600' }}>Deadline</TableCell>
+              <TableCell sx={{ fontWeight: '600' }}>Member Name</TableCell>
+              {/*}  <TableCell   sx={{ fontWeight: '600' }}>Upload/Download Files</TableCell>*/}
+              <TableCell sx={{ fontWeight: '600' }}>Percentage</TableCell>
+              {/*<TableCell align="center" sx={{ fontWeight: '600' }}>documents</TableCell>*/}
+              <TableCell sx={{ fontWeight: '600' }}>Status</TableCell>
+              <TableCell sx={{ fontWeight: '600' }}>Action</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {rows.map(row => (
+              <Row key={row.id} row={row} documents={documents} onUpdate={onUpdate} base={base} floor={floor} />
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <TablePagination
         rowsPerPageOptions={[5, 10, 25]}
         count={totalItems} // Use totalItems for accurate pagination count
         rowsPerPage={pageSize}
@@ -1088,7 +1152,7 @@ Row.propTypes = {
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
-</>
-  );
+    </>
+  )
 }
-export default TaskTable;
+export default TaskTable
