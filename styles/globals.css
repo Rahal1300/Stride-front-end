@@ -1,0 +1,118 @@
+html,
+body {
+  min-height: 100%;
+}
+
+#__next {
+  height: 100%;
+}
+
+code {
+  font-family: 'Arial  ';
+  padding: 0.1rem 0.4rem;
+  font-size: 90%;
+  border-radius: 0.1335rem;
+}
+code:not([class*='language-']):before,
+code:not([class*='language-']):after {
+  content: '`';
+}
+code[class*='language-'] {
+  padding: 0;
+}
+/* Customize the appearance of the day grid month view */
+
+/* :root {
+  --fc-small-font-size: .85em;
+  --fc-page-bg-color: #fff;
+  --fc-neutral-bg-color: hsla(0,0%,82%,.3);
+  --fc-neutral-text-color: grey;
+  --fc-border-color: #ddd;
+  --fc-button-text-color: #8C11D4;
+  --fc-button-bg-color: #fff;
+  --fc-button-border-color: #9155FD;
+  --fc-button-hover-bg-color: #fff;
+  --fc-button-hover-border-color: #9155FD;
+  --fc-button-active-bg-color: #5A8DFF;
+  --fc-button-active-border-color: #9155FD;
+  --fc-event-bg-color: #3788d8;
+  --fc-event-border-color: #3788d8;
+  --fc-event-text-color: #fff;
+  --fc-event-selected-overlay-color: #9155FD;
+  --fc-more-link-bg-color: #d0d0d0;
+  --fc-more-link-text-color: inherit;
+  --fc-event-resizer-thickness: 8px;
+  --fc-event-resizer-dot-total-width: 8px;
+  --fc-event-resizer-dot-border-width: 1px;
+  --fc-non-business-color: hsla(0,0%,84%,.3);
+  --fc-bg-event-color: #8fdf82;
+  --fc-bg-event-opacity: 0.3;
+  --fc-highlight-color: rgba(188,232,241,.3);
+  --fc-today-bg-color: rgba(255,220,40,.15);
+
+    --fc-event-border-color: blue;
+    --fc-event-bg-color: blue;
+
+
+
+
+
+} */
+/* Styling for the active buttons */
+.fc-dayGridMonth-button.fc-button-primary,
+.fc-timeGridWeek-button.fc-button-primary,
+.fc-timeGridDay-button.fc-button-primary ,
+.fc-prev-button.fc-button-primary ,
+.fc-next-button.fc-button-primary ,
+.fc-today-button.fc-button-primary  {
+  background-color: #F1F4F9;
+  color: black;
+  border: none; 
+  border-radius: 5px;
+
+}
+.fc-dayGridMonth-button:hover,
+.fc-timeGridWeek-button:hover,
+.fc-timeGridDay-button:hover,
+.fc-prev-button:hover,
+.fc-next-button:hover,
+.fc-today-button:hover {
+  background-color: #5a8dff ; 
+  color: #fff ; 
+  border: none ; 
+  border-radius: 5px ; 
+  
+  
+}
+
+
+:root {
+  --fc-small-font-size: .85em;
+
+  --fc-button-border-color: #9155FD;
+  --fc-button-hover-bg-color: #5a8dff;
+  --fc-button-hover-border-color: #9155FD;
+  --fc-button-active-bg-color: #5A8DFF;
+  --fc-button-active-border-color: #9155FD;
+
+} 
+/* Target the center section */
+.fc-header-toolbar .fc-toolbar-chunk:nth-child(2) {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Make the children flex items */
+.fc-header-toolbar .fc-toolbar-chunk:nth-child(2) > * {
+  flex: 1; /* Make each child take up equal space */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Adjust spacing for the buttons */
+.fc-header-toolbar .fc-toolbar-chunk:nth-child(2) .fc-prev-button,
+.fc-header-toolbar .fc-toolbar-chunk:nth-child(2) .fc-next-button {
+  margin: 0 5px; /* Adjust margin as needed */
+}
