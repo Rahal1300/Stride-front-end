@@ -293,7 +293,7 @@ const Index = () => {
             <Box sx={{ width: '100%', marginTop: '50px' }}>
               <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" centered sx={{ background: 'white' }}>
-                  <Tab label="Dashboard" sx={{ fontSize: '16px', fontWeight: '600', color: '#3A3541', fontFamily: 'Arial ' }} />
+                  {/* <Tab label="Dashboard" sx={{ fontSize: '16px', fontWeight: '600', color: '#3A3541', fontFamily: 'Arial ' }} /> */}
                   <Tab label="Team" sx={{ fontSize: '16px', fontWeight: '600', color: '#3A3541', fontFamily: 'Arial ' }} />
                   {(Owner || Manager || TeamManagerandOwner) ? <Tab label="Files" sx={{ fontSize: '16px', fontWeight: '600', color: '#3A3541', fontFamily: 'Arial ' }} /> : null}
                   <Tab label="Meets" sx={{ fontSize: '16px', fontWeight: '600', color: '#3A3541', fontFamily: 'Arial ' }} />
@@ -302,24 +302,23 @@ const Index = () => {
                   <Tab label="Revision" sx={{ fontSize: '16px', fontWeight: '600', color: '#3A3541', fontFamily: 'Arial ' }} />
                 </Tabs>
               </Box>
+              {/* <CustomTabPanel value={value} index={0}>
+              </CustomTabPanel> */}
               <CustomTabPanel value={value} index={0}>
-                {/* Dashboard Content */}
-              </CustomTabPanel>
-              <CustomTabPanel value={value} index={1}>
                 <Team Team={project.projectUsersAndRoles} />
               </CustomTabPanel>
               {Owner || Manager || TeamManagerandOwner ? (
-                <CustomTabPanel value={value} index={2}>
+                <CustomTabPanel value={value} index={1}>
                   <Files id={id} />
                 </CustomTabPanel>
               ) : null}
-              <CustomTabPanel value={value} index={Owner || Manager || TeamManagerandOwner ? 3 : 2}>
+              <CustomTabPanel value={value} index={Owner || Manager || TeamManagerandOwner ? 2 : 1}>
                 <Meets id={id} />
               </CustomTabPanel>
-              <CustomTabPanel value={value} index={Owner || Manager || TeamManagerandOwner ? 4 : 3}>
+              <CustomTabPanel value={value} index={Owner || Manager || TeamManagerandOwner ? 3 : 2}>
                 <Tickets />
               </CustomTabPanel>
-              <CustomTabPanel value={value} index={Owner || Manager || TeamManagerandOwner ? 5 : 4}>
+              <CustomTabPanel value={value} index={Owner || Manager || TeamManagerandOwner ? 4 : 3}>
                 <Task
                   descipline={project.descipline}
                   progress={project.progress}
@@ -334,7 +333,7 @@ const Index = () => {
                   onUpdate={fetchData}
                 />
               </CustomTabPanel>
-              <CustomTabPanel value={value} index={Owner || Manager || TeamManagerandOwner ? 6 : 5}>
+              <CustomTabPanel value={value} index={Owner || Manager || TeamManagerandOwner ? 5 : 4}>
                 <Revision
                   descipline={project.descipline}
                   progress={project.progress}

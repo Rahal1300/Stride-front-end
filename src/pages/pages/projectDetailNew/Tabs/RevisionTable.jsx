@@ -575,7 +575,7 @@ function Row(props) {
               </Typography>
               <Table size="small" aria-label="subtasks" sx={{marginLeft:'100px'}}>
 
-                <TableHead>
+                <TableHead style={{backgroundColor: "#2931ac47"}}>
                   <TableRow>
 
                     <TableCell sx={{ fontWeight: '600' }} >Name</TableCell>
@@ -767,7 +767,7 @@ function Row(props) {
                             <Box sx={{ margin: 1 }}>
 
                               <Table size="small" aria-label="subsubtasks"  sx={{marginLeft:'100px'}}>
-                                <TableHead>
+                                <TableHead style={{backgroundColor: "#2931ac47"}}>
                                   <TableRow>
                                     <TableCell sx={{ fontWeight: '600' }}>Name</TableCell>
                                     <TableCell   sx={{ fontWeight: '600' }}>Description</TableCell>
@@ -1105,7 +1105,7 @@ Row.propTypes = {
 
     <TableContainer component={Paper}>
       <Table aria-label="collapsible table" >
-        <TableHead>
+        <TableHead style={{backgroundColor: "#2931ac47"}}>
         <TableRow >
         <TableCell />
             <TableCell sx={{ fontWeight: '600' }}>Task Name</TableCell>

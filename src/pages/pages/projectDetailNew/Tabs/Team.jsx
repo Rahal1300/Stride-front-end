@@ -127,7 +127,7 @@ function Team({ Team }) {
           <Button sx={{ backgroundColor: '#E2EAF8', width: '126px', height: '38px', color: '#202224', fontWeight: '550' }} onClick={handleViewTeam}>View Team</Button>
         </Box>
       </Box>
-      <Button sx={{ backgroundColor: '#E2EAF8', width: '126px', height: '38px', color: '#202224', fontWeight: '550', marginLeft: '90.7%' }} onClick={handleOpen}>Add Users</Button>
+      <Button sx={{ backgroundColor: '#E2EAF8', width: '126px', height: '38px', color: '#202224', fontWeight: '550', marginLeft: '90.7%', marginBottom:'25px' }} onClick={handleOpen}>Add Users</Button>
       <Modal
         open={open}
         onClose={handleClose}
@@ -152,14 +152,15 @@ function Team({ Team }) {
       </Modal>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label='team details table'>
-          <TableHead>
+          <TableHead style={{backgroundColor: "#2931ac47"}}>
             <TableRow>
               <TableCell sx={{ fontFamily: 'Arial', fontWeight: 600, fontSize: '16px', color: '#202224' }}>Role</TableCell>
               <TableCell align='center' sx={{ fontFamily: 'Arial', fontWeight: 600, fontSize: '16px', color: '#202224' }}>Name</TableCell>
               <TableCell align='center' sx={{ fontFamily: 'Arial', fontWeight: 600, fontSize: '16px', color: '#202224' }}>Email</TableCell>
               <TableCell align='center' sx={{ fontFamily: 'Arial', fontWeight: 600, fontSize: '16px', color: '#202224' }}>Phone Number</TableCell>
               <TableCell align='center' sx={{ fontFamily: 'Arial', fontWeight: 600, fontSize: '16px', color: '#202224' }}>Status</TableCell>
-              {userToken.payload.userId !== undefined && <TableCell align='center' sx={{ fontFamily: 'Arial', fontWeight: 600, fontSize: '16px', color: '#202224' }}>Actions</TableCell>}
+              {/* {userToken.payload.userId !== undefined && <TableCell align='center' sx={{ fontFamily: 'Arial', fontWeight: 600, fontSize: '16px', color: '#202224' }}>Actions</TableCell>} */}
+           <TableCell align='center' sx={{ fontFamily: 'Arial', fontWeight: 600, fontSize: '16px', color: '#202224' }}>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -186,8 +187,8 @@ function Team({ Team }) {
                     }}
                   />
                 </TableCell>
-                {(row.id !== currentUserId && canDeleteUser) && (
-                  <TableCell align='center'>
+                <TableCell align='center'>
+                {(row.id !== currentUserId && canDeleteUser) ? (
                     <Button
                       variant="contained"
                       color="error"
@@ -196,8 +197,8 @@ function Team({ Team }) {
                     >
                       Delete
                     </Button>
-                  </TableCell>
-                )}
+                ) : "---"}
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>

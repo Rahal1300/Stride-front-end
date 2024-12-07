@@ -30,12 +30,12 @@ const CommentBox = ({ comment = {}, onReply }) => { // Default value for comment
   }
 
   return (
-    <Box sx={{ marginTop: 2, padding: 1, backgroundColor: '#f1f1f1', borderRadius: 2 }}>
+    <Box sx={{ marginTop: 2, padding: 1, width:'500px', backgroundColor: '#f1f1f1', borderRadius: 2 }}>
       <Typography variant="body1" color="text.primary" sx={{ fontWeight: 'bold' }}>
-        {comment.author}
+       Author: {comment.author}
       </Typography>
       <Typography variant="body2" color="text.secondary">
-        {comment.content}
+      Comment:   {comment.content}
       </Typography>
       <Button 
         onClick={() => setShowReplyForm(!showReplyForm)} 
@@ -61,7 +61,7 @@ const CommentBox = ({ comment = {}, onReply }) => { // Default value for comment
 
       {/* Render replies with indentation */}
       {comment.replies && comment.replies.length > 0 && (
-        <Box sx={{ marginLeft: 2, marginTop: 1 }}>
+        <Box sx={{ marginLeft: 2, marginTop: 1, width:'2px !important',}}>
           {comment.replies.map((reply) => (
             <CommentBox key={reply.id} comment={reply} onReply={onReply} />
           ))}

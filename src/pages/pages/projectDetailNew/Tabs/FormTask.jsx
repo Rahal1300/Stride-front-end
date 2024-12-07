@@ -1406,7 +1406,7 @@ Save
                                         Save All And Finish
                                       </Button>
 
-                                      <Input 
+                                      {/* <Input 
                                         type="file" 
                                         accept=".xlsx, .xls" 
                                         onChange={handleFileChange}  
@@ -1437,7 +1437,7 @@ Save
                                         }}
                                       >
                                         + Download Template
-                                      </Button>
+                                      </Button> */}
                                     </Box>
                                 </Box>
 
