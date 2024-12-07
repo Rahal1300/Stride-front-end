@@ -19,7 +19,7 @@ import UserDropdown from 'src/@core/layouts/components/shared-components/UserDro
 const AppBarContent = props => {
   // ** Props
   const { hidden, toggleNavVisibility, sendDataToParent } = props
-  const hiddenSm = useMediaQuery(theme => theme.breakpoints.down('sm'))
+  // const hiddenSm = useMediaQuery(theme => theme.breakpoints.down('sm'))
   const [snackbarOpen, setSnackbarOpen] = useState(false)
   const router = useRouter()
   const userRole = useSelector(state => state.Role)
